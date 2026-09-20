@@ -25,22 +25,17 @@
 
 :root {
 
-    /* NOTION DARK DIŞ ARKA PLAN */
     --notion-bg: #191919;
 
-    /* KART ESKİ SİYAH */
     --card: #121212;
     --card-dark: #101010;
 
-    /* TURUNCU */
     --orange: #ff7a00;
     --orange-light: #ff922b;
     --orange-dark: #c75d00;
 
-    /* SINIRLAR */
     --border: #303030;
 
-    /* METİNLER */
     --text: #f2f2f2;
     --text-soft: #cfcfcf;
     --text-muted: #888888;
@@ -350,6 +345,55 @@ body {
 
     word-break:
         break-word;
+
+}
+
+
+/* =========================================================
+   GÖRSEL
+========================================================= */
+
+.gorsel-wrap {
+
+    display:
+        none;
+
+    margin-top:
+        14px;
+
+}
+
+
+.gorsel-wrap.show {
+
+    display:
+        block;
+
+}
+
+
+.gorsel {
+
+    display:
+        block;
+
+    width:
+        100%;
+
+    max-height:
+        300px;
+
+    object-fit:
+        contain;
+
+    border:
+        1px solid #2d2d2d;
+
+    border-radius:
+        9px;
+
+    background:
+        #0d0d0d;
 
 }
 
@@ -1339,6 +1383,20 @@ textarea {
 
 
     <div
+        class="gorsel-wrap"
+        id="gorselWrap"
+    >
+
+        <img
+            class="gorsel"
+            id="gorsel"
+            alt=""
+        >
+
+    </div>
+
+
+    <div
         class="progress-wrap"
     >
 
@@ -1349,10 +1407,6 @@ textarea {
 
     </div>
 
-
-    <!-- =====================================================
-         ANA BUTONLAR
-    ===================================================== -->
 
     <div class="buttons">
 
@@ -1846,6 +1900,21 @@ const API =
 
 
 /* =========================================================
+   NOTION / EMBED KAYNAK URL
+========================================================= */
+
+const urlParams =
+    new URLSearchParams(
+        window.location.search
+    );
+
+const embedPageUrl =
+    urlParams.get("page") ||
+    document.referrer ||
+    "";
+
+
+/* =========================================================
    VERİLER
 ========================================================= */
 
@@ -1963,6 +2032,16 @@ const toast =
         "toast"
     );
 
+const gorselWrap =
+    document.getElementById(
+        "gorselWrap"
+    );
+
+const gorsel =
+    document.getElementById(
+        "gorsel"
+    );
+
 
 /* =========================================================
    TOAST
@@ -2063,6 +2142,41 @@ function tarihFormatla(
 
 
 /* =========================================================
+   API DİZİSİNİ GÜVENLİ AL
+========================================================= */
+
+function responseItems(
+    data
+) {
+
+    if (
+        Array.isArray(
+            data?.data
+        )
+    ) {
+
+        return data.data;
+
+    }
+
+
+    if (
+        Array.isArray(
+            data?.items
+        )
+    ) {
+
+        return data.items;
+
+    }
+
+
+    return [];
+
+}
+
+
+/* =========================================================
    AKTİF VERİLERİ GETİR
 ========================================================= */
 
@@ -2075,7 +2189,11 @@ async function verileriGetir(
         const response =
             await fetch(
                 API +
-                "/ozetler"
+                "/ozetler",
+                {
+                    cache:
+                        "no-store"
+                }
             );
 
 
@@ -2096,8 +2214,9 @@ async function verileriGetir(
 
 
         bilgiler =
-            data.items ||
-            [];
+            responseItems(
+                data
+            );
 
 
         if (
@@ -2133,14 +2252,15 @@ async function verileriGetir(
                 "0%";
 
 
+            gorselWrap.classList.remove(
+                "show"
+            );
+
+
             return;
 
         }
 
-
-        /*
-           İlk açılışta rastgele getir.
-        */
 
         if (
             ilkYukleme ||
@@ -2153,11 +2273,6 @@ async function verileriGetir(
 
         }
 
-
-        /*
-           Mevcut kart halen aktifse
-           kartı değiştirme.
-        */
 
         const mevcut =
             bilgiler.find(
@@ -2212,7 +2327,11 @@ async function tumNotlariGetir() {
         const response =
             await fetch(
                 API +
-                "/ozetler-tumu"
+                "/ozetler-tumu",
+                {
+                    cache:
+                        "no-store"
+                }
             );
 
 
@@ -2233,8 +2352,9 @@ async function tumNotlariGetir() {
 
 
         ayarBilgileri =
-            data.items ||
-            [];
+            responseItems(
+                data
+            );
 
 
         if (seciliNot) {
@@ -2258,7 +2378,6 @@ async function tumNotlariGetir() {
 
 
         seciliNotuGoster();
-
 
         ayarlarListesiniOlustur();
 
@@ -2392,6 +2511,37 @@ function kartGoster(
                 "0%";
 
 
+            /* GÖRSEL */
+
+            if (
+                item.gorsel
+            ) {
+
+                gorsel.src =
+                    item.gorsel;
+
+                gorsel.alt =
+                    item.baslik ||
+                    "Bilgi görseli";
+
+                gorselWrap.classList.add(
+                    "show"
+                );
+
+            }
+            else {
+
+                gorsel.removeAttribute(
+                    "src"
+                );
+
+                gorselWrap.classList.remove(
+                    "show"
+                );
+
+            }
+
+
             card.classList.remove(
                 "fade"
             );
@@ -2426,24 +2576,12 @@ async function gosterimiKaydet(
     }
 
 
-    /*
-       Önce hafızadaki son gösterimi kullan.
-    */
-
     let oncekiGosterim =
         sonGosterimCache[
             item.id
         ] ||
         null;
 
-
-    /*
-       Sayfa ilk açıldığında cache boşsa
-       Notion'daki mevcut Son Gösterim'i
-       kullan.
-
-       Böylece mevcut veri korunur.
-    */
 
     if (
         !oncekiGosterim &&
@@ -2455,10 +2593,6 @@ async function gosterimiKaydet(
 
     }
 
-
-    /*
-       Bu gösterimin gerçek zamanı.
-    */
 
     const simdikiGosterim =
         new Date().toISOString();
@@ -2514,13 +2648,6 @@ async function gosterimiKaydet(
 
         }
 
-
-        /*
-           Şu anki gösterimi cache'e yaz.
-
-           Bir sonraki gösterimde bu
-           "önceki gösterim" olacak.
-        */
 
         sonGosterimCache[
             item.id
@@ -3063,7 +3190,7 @@ function ayarlarListesiniOlustur() {
 
                         <div
                             class="note-item ${selected}"
-                            onclick="ayarNotuSec('${item.id}')"
+                            onclick="ayarNotuSec('${escapeJs(item.id)}')"
                         >
 
                             <div
@@ -3452,6 +3579,11 @@ async function seciliNotuSil() {
                 progress.style.width =
                     "0%";
 
+
+                gorselWrap.classList.remove(
+                    "show"
+                );
+
             }
 
         }
@@ -3768,10 +3900,6 @@ async function formuKaydet() {
         }
 
 
-        /*
-           DÜZENLEME
-        */
-
         if (
             duzenlemeModu &&
             data.item
@@ -3858,16 +3986,37 @@ async function formuKaydet() {
                     data.item.aciklama ||
                     "";
 
+
+                if (
+                    data.item.gorsel
+                ) {
+
+                    gorsel.src =
+                        data.item.gorsel;
+
+                    gorselWrap.classList.add(
+                        "show"
+                    );
+
+                }
+                else {
+
+                    gorsel.removeAttribute(
+                        "src"
+                    );
+
+                    gorselWrap.classList.remove(
+                        "show"
+                    );
+
+                }
+
             }
 
         }
         else if (
             data.item
         ) {
-
-            /*
-               YENİ EKLEME
-            */
 
             ayarBilgileri.push(
                 data.item
@@ -3901,10 +4050,14 @@ async function formuKaydet() {
         }
 
 
-        toastGoster(
+        const mesaj =
             duzenlemeModu
                 ? "✓ Not güncellendi."
-                : "✓ Bilgi eklendi."
+                : "✓ Bilgi eklendi.";
+
+
+        toastGoster(
+            mesaj
         );
 
 
@@ -3947,11 +4100,6 @@ function konuSayfasiUrlAl() {
     }
 
 
-    /*
-       Düzenleme sırasında mevcut link
-       korunur.
-    */
-
     if (
         duzenlemeModu &&
         seciliNot &&
@@ -3963,15 +4111,26 @@ function konuSayfasiUrlAl() {
     }
 
 
+    /*
+       index1 / diğer embedlerde olduğu gibi
+       önce page parametresini kullan.
+    */
+
+    if (
+        embedPageUrl
+    ) {
+
+        return embedPageUrl;
+
+    }
+
+
     const referrer =
         document.referrer;
 
 
     if (
-        referrer &&
-        referrer.includes(
-            "notion"
-        )
+        referrer
     ) {
 
         return referrer;
@@ -4003,12 +4162,6 @@ function konuyaGit() {
 
     }
 
-
-    /*
-       Gerçek anchor oluşturuyoruz.
-       Bu, bazı iframe/popup ortamlarında
-       window.open'dan daha güvenilir.
-    */
 
     const link =
         document.createElement(
@@ -4053,11 +4206,14 @@ function yapayZeka() {
 
     if (!seciliNot) {
 
-        alert("Önce bir bilgi seçili olmalı.");
+        alert(
+            "Önce bir bilgi seçili olmalı."
+        );
 
         return;
 
     }
+
 
     const prompt =
 `Ders: ${seciliNot.ders || "-"}
@@ -4071,27 +4227,40 @@ Bu konuyu açıkla.`;
 
     const chatUrl =
         "https://chatgpt.com/?q=" +
-        encodeURIComponent(prompt);
+        encodeURIComponent(
+            prompt
+        );
 
 
     const link =
-        document.createElement("a");
+        document.createElement(
+            "a"
+        );
+
 
     link.href =
         chatUrl;
 
+
     link.target =
         "_blank";
+
 
     link.rel =
         "noopener noreferrer";
 
+
     link.style.display =
         "none";
 
-    document.body.appendChild(link);
+
+    document.body.appendChild(
+        link
+    );
+
 
     link.click();
+
 
     link.remove();
 
@@ -4156,16 +4325,17 @@ document.addEventListener(
             mousePause =
                 true;
 
-        }
-        else {
-
-            mousePause =
-                false;
-
-            sonZaman =
-                performance.now();
+            return;
 
         }
+
+
+        mousePause =
+            false;
+
+
+        sonZaman =
+            performance.now();
 
     }
 );
@@ -4206,6 +4376,33 @@ function escapeHtml(
         .replace(
             /'/g,
             "&#039;"
+        );
+
+}
+
+
+/* =========================================================
+   JS STRING GÜVENLİĞİ
+========================================================= */
+
+function escapeJs(
+    value
+) {
+
+    return String(
+        value
+    )
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+        .replace(
+            /'/g,
+            "\\'"
+        )
+        .replace(
+            /"/g,
+            '\\"'
         );
 
 }
