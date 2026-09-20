@@ -3348,31 +3348,39 @@ function ayarNotuSec(
 function seciliNotuDuzenle() {
 
     if (!seciliNot || !seciliNot.id) {
-
-        alert(
-            "Önce bir not seç."
-        );
-
+        toastGoster("Önce bir not seç.");
         return;
-
     }
 
     duzenlemeModu = true;
 
-    formuDoldur(
-        seciliNot
-    );
+    // Mevcut notun bilgilerini forma doldur
+    formuDoldur(seciliNot);
 
-    form.classList.add(
-        "open"
-    );
+    // Formu aç
+    form.classList.add("open");
 
+    // Sayaç dursun
     formPause = true;
 
-    document.getElementById(
-        "status"
-    ).textContent = "";
+    // Durum mesajını temizle
+    document.getElementById("status").textContent = "";
 
+    // Form başlığını düzenleme moduna çevir
+    const formTitle = form.querySelector("h3");
+
+    if (formTitle) {
+        formTitle.textContent = "Notu Düzenle";
+    }
+
+    // Kaydet butonunu düzenleme moduna göre değiştir
+    const kaydetBtn = form.querySelector(
+        'button[onclick="formuKaydet()"]'
+    );
+
+    if (kaydetBtn) {
+        kaydetBtn.textContent = "💾 Değişiklikleri Kaydet";
+    }
 }
 
 
