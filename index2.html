@@ -325,6 +325,14 @@
     mouseZoomArmed: false,
     touchPointers: new Map(),
     pinchDistance: null,
+    pinchStartDistance: null,
+    pinchLastDistance: null,
+    pinchCenterX: 0,
+    pinchCenterY: 0,
+    pinchCenterRatio: null,
+    pinchBaseStart: null,
+    pinchBaseEnd: null,
+    pinchBaseCount: null,
     lastHoverIndex: null,
     mouseDragging: false,
     dragStartX: 0,
@@ -713,23 +721,56 @@
 
   function renderAll(){ renderControls(); drawChart(false); }
 
-  function setFullscreen(active){
-    document.body.classList.toggle('graph-fullscreen',active);
-    $('fullscreenBtn').classList.toggle('active',active);
-    if(active){
-      document.documentElement.requestFullscreen?.().catch(()=>{});
-      try{ screen.orientation?.lock?.('landscape').catch(()=>{}); }catch(_){ }
-      toast('Yatay grafik modu açıldı');
-    }else{
-      if(document.fullscreenElement) document.exitFullscreen?.().catch(()=>{});
-      try{ screen.orientation?.unlock?.(); }catch(_){ }
+  async function lockOrientation(mode){
+    try{
+      if(screen.orientation?.lock) await screen.orientation.lock(mode);
+    }catch(_){
+      // iOS/Safari ve bazı iframe ortamlarında orientation lock desteklenmeyebilir.
     }
-    setTimeout(()=>drawChart(false),120);
   }
 
-  $('fullscreenBtn').addEventListener('click',()=>setFullscreen(!document.body.classList.contains('graph-fullscreen')));
-  document.addEventListener('fullscreenchange',()=>{
-    if(!document.fullscreenElement && document.body.classList.contains('graph-fullscreen')) setFullscreen(false);
+  async function restorePortrait(){
+    try{ screen.orientation?.unlock?.(); }catch(_){ }
+    // Destekleyen tarayıcılarda çıkış sonrası doğal/dikey yönelimi tekrar iste.
+    try{ await lockOrientation('portrait-primary'); }catch(_){ }
+  }
+
+  async function setFullscreen(active){
+    const entering = !!active;
+    if(entering){
+      document.body.classList.add('graph-fullscreen');
+      $('fullscreenBtn').classList.add('active');
+      try{
+        if(!document.fullscreenElement && document.documentElement.requestFullscreen){
+          await document.documentElement.requestFullscreen({navigationUI:'hide'});
+        }
+      }catch(_){
+        // CSS tam ekran modu yine aktif kalsın. Native fullscreen bazı ortamlarda engellenebilir.
+      }
+      await lockOrientation('landscape-primary');
+      toast('Yatay grafik modu açıldı');
+    }else{
+      document.body.classList.remove('graph-fullscreen');
+      $('fullscreenBtn').classList.remove('active');
+      try{
+        if(document.fullscreenElement) await document.exitFullscreen();
+      }catch(_){ }
+      await restorePortrait();
+    }
+    setTimeout(()=>drawChart(false),180);
+  }
+
+  $('fullscreenBtn').addEventListener('click',()=>{
+    setFullscreen(!document.body.classList.contains('graph-fullscreen'));
+  });
+
+  document.addEventListener('fullscreenchange',async()=>{
+    if(!document.fullscreenElement && document.body.classList.contains('graph-fullscreen')){
+      document.body.classList.remove('graph-fullscreen');
+      $('fullscreenBtn').classList.remove('active');
+      await restorePortrait();
+      setTimeout(()=>drawChart(false),180);
+    }
   });
 
   $('settingsBtn').addEventListener('click',e=>{e.stopPropagation();$('settingsPop').classList.toggle('show');$('settingsBtn').classList.toggle('active',$('settingsPop').classList.contains('show'));});
@@ -777,53 +818,119 @@
 
   chart.addEventListener('dblclick',e=>{ e.preventDefault(); resetZoom(); });
 
+  // Mobil dokunmatik kontrol: tek parmak pan, iki parmak gerçek pinch zoom.
+  // Pinch sırasında başlangıç görünümü sabit tutulur; her pointermove bir öncekinin üstüne eklenmez.
+  // Böylece zoom zıplamaz ve parmaklar arası mesafe küçük hareketlerde dahi stabil çalışır.
   chart.addEventListener('pointerdown',e=>{
-    if(e.pointerType==='touch'){
-      chart.setPointerCapture?.(e.pointerId);
-      state.touchPointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
-      if(state.touchPointers.size===1){
-        const data=filteredExams();
-        const count=Number.isInteger(state.viewEnd)&&Number.isInteger(state.viewStart) ? state.viewEnd-state.viewStart+1 : data.length;
-        if(data.length>1 && count < data.length){
-          state.touchDragActive=true;
-          state.touchDragStartX=e.clientX;
-          state.touchDragStartViewStart=state.viewStart;
-          state.touchDragStartViewEnd=state.viewEnd;
-        }
-      }else if(state.touchPointers.size===2){
-        state.touchDragActive=false;
-        const pts=[...state.touchPointers.values()];
-        state.pinchDistance=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y);
-      }
+    if(e.pointerType!=='touch') return;
+    e.preventDefault();
+    chart.setPointerCapture?.(e.pointerId);
+    state.touchPointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+
+    if(state.touchPointers.size===1){
+      const data=filteredExams();
+      const count=Number.isInteger(state.viewEnd)&&Number.isInteger(state.viewStart) ? state.viewEnd-state.viewStart+1 : data.length;
+      state.touchDragActive = data.length>1 && count<data.length;
+      state.touchDragStartX=e.clientX;
+      state.touchDragStartViewStart=state.viewStart;
+      state.touchDragStartViewEnd=state.viewEnd;
+    }else if(state.touchPointers.size===2){
+      state.touchDragActive=false;
+      const pts=[...state.touchPointers.values()];
+      const dx=pts[0].x-pts[1].x;
+      const dy=pts[0].y-pts[1].y;
+      const dist=Math.hypot(dx,dy);
+      const cx=(pts[0].x+pts[1].x)/2;
+      const cy=(pts[0].y+pts[1].y)/2;
+      const rect=chart.getBoundingClientRect();
+      state.pinchDistance=dist;
+      state.pinchStartDistance=dist;
+      state.pinchLastDistance=dist;
+      state.pinchCenterX=cx;
+      state.pinchCenterY=cy;
+      state.pinchBaseStart=Number.isInteger(state.viewStart)?state.viewStart:0;
+      state.pinchBaseEnd=Number.isInteger(state.viewEnd)?state.viewEnd:Math.max(0,filteredExams().length-1);
+      state.pinchBaseCount=Math.max(1,state.pinchBaseEnd-state.pinchBaseStart+1);
+      state.pinchCenterRatio=Math.min(1,Math.max(0,(cx-rect.left)/Math.max(1,rect.width)));
+      state.lastHoverIndex=null;
+      hideTooltip();
     }
   });
+
   chart.addEventListener('pointermove',e=>{
     if(e.pointerType!=='touch') return;
     if(!state.touchPointers.has(e.pointerId)) return;
+    e.preventDefault();
     state.touchPointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+
     if(state.touchPointers.size===2){
       const pts=[...state.touchPointers.values()];
-      const dist=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y);
-      if(state.pinchDistance){
-        const ratio=dist/state.pinchDistance;
-        if(ratio>1.06) zoomBy(1,.5);
-        else if(ratio<.94) zoomBy(-1,.5);
+      const dx=pts[0].x-pts[1].x;
+      const dy=pts[0].y-pts[1].y;
+      const dist=Math.max(2,Math.hypot(dx,dy));
+      const base=state.pinchDistance||dist;
+      const rawScale=dist/base;
+      const totalScale=dist/Math.max(2,state.pinchDistance);
+      const sensitivity=Math.max(.08,Math.min(.5,state.zoomSensitivity));
+      const effectiveScale=Math.pow(
+        Math.max(.2,Math.min(5,dist/Math.max(2,state.pinchDistance))),
+        sensitivity/.18
+      );
+      // Başlangıçtaki mesafeyi referans al; böylece her harekette üst üste katlanma olmaz.
+      const startDistance=Math.max(2,state.pinchStartDistance||state.pinchDistance||dist);
+      const adjustedScale=Math.pow(dist/startDistance,sensitivity/.18);
+      const data=filteredExams();
+      const n=data.length;
+      const baseCount=Math.max(1,state.pinchBaseCount||state.pinchBaseEnd-state.pinchBaseStart+1);
+      let nextCount=Math.round(baseCount/Math.max(.15,Math.min(6,adjustedScale)));
+      nextCount=Math.max(1,Math.min(n,nextCount));
+      const ratio=state.pinchCenterRatio ?? .5;
+      const anchorIndex=(state.pinchBaseStart||0)+Math.round((baseCount-1)*ratio);
+      let nextStart=anchorIndex-Math.round((nextCount-1)*ratio);
+      nextStart=Math.max(0,Math.min(Math.max(0,n-nextCount),nextStart));
+      const nextEnd=nextStart+nextCount-1;
+      if(nextStart!==state.viewStart || nextEnd!==state.viewEnd){
+        state.viewStart=nextStart;
+        state.viewEnd=nextEnd;
+        state.visibleCount=nextCount;
+        drawChart(false);
       }
-      state.pinchDistance=dist;
+      state.pinchLastDistance=dist;
       return;
     }
+
     if(state.touchDragActive && state.touchPointers.size===1){
       panByPixels(e.clientX-state.touchDragStartX,state.touchDragStartViewStart,state.touchDragStartViewEnd);
     }
   });
+
   const clearPointer=e=>{
-    if(e.pointerType==='touch'){
-      state.touchPointers.delete(e.pointerId);
-      if(state.touchPointers.size<2)state.pinchDistance=null;
-      if(state.touchPointers.size===0)state.touchDragActive=false;
+    if(e.pointerType!=='touch') return;
+    state.touchPointers.delete(e.pointerId);
+    if(state.touchPointers.size>=1){
+      // Pinch bitince kalan tek parmakla pan devam edebilsin.
+      const remaining=[...state.touchPointers.values()][0];
+      if(remaining){
+        state.touchDragActive=true;
+        state.touchDragStartX=remaining.x;
+        state.touchDragStartViewStart=state.viewStart;
+        state.touchDragStartViewEnd=state.viewEnd;
+      }
+    }else{
+      state.touchDragActive=false;
+    }
+    if(state.touchPointers.size<2){
+      state.pinchDistance=null;
+      state.pinchStartDistance=null;
+      state.pinchLastDistance=null;
+      state.pinchBaseStart=null;
+      state.pinchBaseEnd=null;
+      state.pinchBaseCount=null;
+      state.pinchCenterRatio=null;
     }
   };
-  chart.addEventListener('pointerup',clearPointer); chart.addEventListener('pointercancel',clearPointer); chart.addEventListener('pointerleave',clearPointer);
+  chart.addEventListener('pointerup',clearPointer);
+  chart.addEventListener('pointercancel',clearPointer);
 
   // Ekle drawer
   const openDrawer=()=>{$('drawer').classList.add('show');$('overlay').classList.add('show');setTimeout(()=>$('fName').focus(),220)};
