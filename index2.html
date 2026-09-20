@@ -51,7 +51,8 @@
   .icon-btn.active{border-color:rgba(255,122,0,.45);background:rgba(255,122,0,.1);color:var(--orange2)}
   .icon-btn svg{width:17px;height:17px;stroke:currentColor}
   .chart-wrap{position:relative;height:520px;padding:8px 10px 12px}
-  .chart-svg{width:100%;height:100%;display:block;touch-action:none;user-select:none}
+  .chart-svg{width:100%;height:100%;display:block;touch-action:none;user-select:none;cursor:grab}
+  .chart-svg.is-dragging{cursor:grabbing}
   .chart-grid{stroke:rgba(255,255,255,.055);stroke-width:1}
   .axis-text{fill:#737373;font-size:10px}
   .axis-label{fill:#555;font-size:10px}
@@ -70,7 +71,9 @@
   .tooltip-name{font-size:13px;font-weight:700;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .tooltip-row{display:flex;justify-content:space-between;gap:14px;font-size:11px;padding:3px 0;color:#bdbdbd}.tooltip-row b{color:#fff;font-weight:600}
   .tooltip-row strong{color:var(--orange2);font-size:12px}
-  .zoom-hint{position:absolute;left:18px;top:17px;padding:7px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.2);color:#676767;font-size:10px;pointer-events:none}
+  .zoom-hint{position:absolute;left:18px;top:17px;padding:7px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.2);color:#676767;font-size:10px;pointer-events:none;transition:.18s ease}
+  .pan-hint{position:absolute;right:18px;bottom:15px;padding:6px 9px;border-radius:9px;border:1px solid rgba(255,255,255,.05);background:rgba(0,0,0,.23);color:#5f5f5f;font-size:9px;pointer-events:none;opacity:0;transform:translateY(4px);transition:.18s ease}
+  .pan-hint.show{opacity:1;transform:translateY(0)}
 
   .below{display:grid;gap:14px;margin-top:14px}
   .panel{background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:16px}
@@ -188,7 +191,8 @@
     </div>
 
     <div id="chartWrap" class="chart-wrap">
-      <div class="zoom-hint">Masaüstü: grafik üzerinde sol tık + tekerlek • Telefon: iki parmak pinch</div>
+      <div class="zoom-hint">Zoom: sol tık + tekerlek • Telefon: iki parmak pinch</div>
+      <div id="panHint" class="pan-hint">Zoom sonrası: grafiği sağa / sola sürükleyerek gez</div>
       <svg id="chart" class="chart-svg" viewBox="0 0 1000 500" preserveAspectRatio="none" aria-label="YKS performans grafiği">
         <defs>
           <linearGradient id="areaFill" x1="0" x2="0" y1="0" y2="1">
@@ -321,7 +325,15 @@
     mouseZoomArmed: false,
     touchPointers: new Map(),
     pinchDistance: null,
-    lastHoverIndex: null
+    lastHoverIndex: null,
+    mouseDragging: false,
+    dragStartX: 0,
+    dragStartViewStart: 0,
+    dragStartViewEnd: 0,
+    touchDragActive: false,
+    touchDragStartX: 0,
+    touchDragStartViewStart: 0,
+    touchDragStartViewEnd: 0
   };
 
   const $ = (id) => document.getElementById(id);
@@ -484,6 +496,48 @@
 
   function resetZoom(){ resetView(); drawChart(true); }
 
+  function clampView(start, end, n){
+    const count = Math.max(1, Math.min(n, end - start + 1));
+    const maxStart = Math.max(0, n - count);
+    start = Math.max(0, Math.min(maxStart, start));
+    end = start + count - 1;
+    return {start, end, count};
+  }
+
+  function panByPixels(deltaX, startOverride=null, endOverride=null){
+    const data = filteredExams();
+    const n = data.length;
+    if(n <= 1) return false;
+    let start = Number.isInteger(startOverride) ? startOverride : state.viewStart;
+    let end = Number.isInteger(endOverride) ? endOverride : state.viewEnd;
+    if(!Number.isInteger(start) || !Number.isInteger(end)) return false;
+    const count = Math.max(1, end - start + 1);
+    if(count >= n) return false;
+
+    // Pointer hareketini SVG koordinatına çevirip veri indeksine dönüştür.
+    const svgWidth = chart.getBoundingClientRect().width || 1;
+    const svgDelta = deltaX * (1000 / svgWidth);
+    const pixelsPerIndex = (plot.right - plot.left) / Math.max(1, count - 1);
+    const shift = Math.round(-svgDelta / pixelsPerIndex);
+    if(shift === 0) return false;
+
+    const next = clampView(start + shift, start + shift + count - 1, n);
+    if(next.start === start && next.end === end) return false;
+    state.viewStart = next.start;
+    state.viewEnd = next.end;
+    state.visibleCount = next.count;
+    state.lastHoverIndex = null;
+    drawChart(false);
+    return true;
+  }
+
+  function updatePanHint(){
+    const data = filteredExams();
+    const count = data.length;
+    const zoomed = count > 1 && (state.viewEnd - state.viewStart + 1) < count;
+    $('panHint').classList.toggle('show', zoomed);
+  }
+
   function activeView(){
     const data = filteredExams();
     if(!data.length) return [];
@@ -533,6 +587,7 @@
     $('recordCountText').textContent = `${data.length} kayıt`;
     $('filterInfo').textContent = state.currentType==='BRANCH' ? state.currentBranch : TYPE_LABELS[state.currentType];
     $('statsScope').textContent = `${state.currentType==='BRANCH'?state.currentBranch:TYPE_LABELS[state.currentType]} • ${data.length} kayıt`;
+    updatePanHint();
 
     if(!data.length){
       $('emptyState').style.display='grid';
@@ -689,8 +744,29 @@
   document.querySelectorAll('#branchButtons .branch-btn').forEach(btn=>btn.addEventListener('click',()=>{state.currentBranch=btn.dataset.branch;state.currentType='BRANCH';resetZoom();renderAll();}));
   document.querySelectorAll('.metric-btn').forEach(btn=>btn.addEventListener('click',()=>{state.metric=btn.dataset.metric;renderAll();}));
 
-  chart.addEventListener('mousedown',()=>{state.mouseZoomArmed=true;});
-  window.addEventListener('mouseup',()=>{state.mouseZoomArmed=false;});
+  chart.addEventListener('mousedown',e=>{
+    state.mouseZoomArmed = e.button===0;
+    if(e.button!==0) return;
+    const data=filteredExams();
+    const count=Number.isInteger(state.viewEnd)&&Number.isInteger(state.viewStart) ? state.viewEnd-state.viewStart+1 : data.length;
+    if(data.length>1 && count < data.length){
+      state.mouseDragging=true;
+      state.dragStartX=e.clientX;
+      state.dragStartViewStart=state.viewStart;
+      state.dragStartViewEnd=state.viewEnd;
+      state.lastHoverIndex=null;
+      chart.classList.add('is-dragging');
+      chart.setPointerCapture?.(e.pointerId);
+    }
+  });
+  window.addEventListener('mouseup',()=>{
+    state.mouseZoomArmed=false;
+    if(state.mouseDragging){state.mouseDragging=false;chart.classList.remove('is-dragging');}
+  });
+  chart.addEventListener('mousemove',e=>{
+    if(!state.mouseDragging) return;
+    panByPixels(e.clientX-state.dragStartX,state.dragStartViewStart,state.dragStartViewEnd);
+  });
   chart.addEventListener('wheel',e=>{
     if(!state.mouseZoomArmed) return;
     e.preventDefault();
@@ -705,8 +781,19 @@
     if(e.pointerType==='touch'){
       chart.setPointerCapture?.(e.pointerId);
       state.touchPointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
-      if(state.touchPointers.size===2){
-        const pts=[...state.touchPointers.values()]; state.pinchDistance=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y);
+      if(state.touchPointers.size===1){
+        const data=filteredExams();
+        const count=Number.isInteger(state.viewEnd)&&Number.isInteger(state.viewStart) ? state.viewEnd-state.viewStart+1 : data.length;
+        if(data.length>1 && count < data.length){
+          state.touchDragActive=true;
+          state.touchDragStartX=e.clientX;
+          state.touchDragStartViewStart=state.viewStart;
+          state.touchDragStartViewEnd=state.viewEnd;
+        }
+      }else if(state.touchPointers.size===2){
+        state.touchDragActive=false;
+        const pts=[...state.touchPointers.values()];
+        state.pinchDistance=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y);
       }
     }
   });
@@ -723,9 +810,19 @@
         else if(ratio<.94) zoomBy(-1,.5);
       }
       state.pinchDistance=dist;
+      return;
+    }
+    if(state.touchDragActive && state.touchPointers.size===1){
+      panByPixels(e.clientX-state.touchDragStartX,state.touchDragStartViewStart,state.touchDragStartViewEnd);
     }
   });
-  const clearPointer=e=>{if(e.pointerType==='touch'){state.touchPointers.delete(e.pointerId);if(state.touchPointers.size<2)state.pinchDistance=null;}};
+  const clearPointer=e=>{
+    if(e.pointerType==='touch'){
+      state.touchPointers.delete(e.pointerId);
+      if(state.touchPointers.size<2)state.pinchDistance=null;
+      if(state.touchPointers.size===0)state.touchDragActive=false;
+    }
+  };
   chart.addEventListener('pointerup',clearPointer); chart.addEventListener('pointercancel',clearPointer); chart.addEventListener('pointerleave',clearPointer);
 
   // Ekle drawer
