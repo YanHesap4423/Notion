@@ -1,0 +1,5361 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    Deneme İstatistikleri
+</title>
+
+
+<style>
+
+/* ==================================================
+   RESET
+================================================== */
+
+* {
+
+    box-sizing:
+        border-box;
+
+    margin:
+        0;
+
+    padding:
+        0;
+
+}
+
+
+/* ==================================================
+   BODY
+================================================== */
+
+body {
+
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    background:
+
+        radial-gradient(
+            circle at 20% 0%,
+            rgba(
+                255,
+                132,
+                0,
+                0.10
+            ),
+            transparent 35%
+        ),
+
+        radial-gradient(
+            circle at 85% 20%,
+            rgba(
+                255,
+                132,
+                0,
+                0.05
+            ),
+            transparent 30%
+        ),
+
+        #090909;
+
+    color:
+        #f5f5f5;
+
+    min-height:
+        100vh;
+
+    padding:
+        28px;
+
+}
+
+
+body.panel-open {
+
+    overflow:
+        hidden;
+
+}
+
+
+/* ==================================================
+   CONTAINER
+================================================== */
+
+.container {
+
+    width:
+        min(
+            1250px,
+            100%
+        );
+
+    margin:
+        0 auto;
+
+}
+
+
+/* ==================================================
+   MAIN CARD
+================================================== */
+
+.card {
+
+    background:
+        rgba(
+            17,
+            17,
+            17,
+            0.92
+        );
+
+    border:
+        1px solid rgba(
+            255,
+            255,
+            255,
+            0.07
+        );
+
+    border-radius:
+        24px;
+
+    box-shadow:
+
+        0 25px 70px
+        rgba(
+            0,
+            0,
+            0,
+            0.45
+        ),
+
+        0 0 0 1px
+        rgba(
+            255,
+            255,
+            255,
+            0.015
+        )
+        inset;
+
+    overflow:
+        hidden;
+
+    backdrop-filter:
+        blur(14px);
+
+}
+
+
+/* ==================================================
+   HEADER
+================================================== */
+
+.header {
+
+    display:
+        flex;
+
+    align-items:
+        flex-start;
+
+    justify-content:
+        space-between;
+
+    gap:
+        24px;
+
+    padding:
+        28px 30px 22px;
+
+}
+
+
+.title-row {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        12px;
+
+}
+
+
+.title {
+
+    font-size:
+        28px;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        -0.03em;
+
+}
+
+
+.subtitle {
+
+    color:
+        #8c8c8c;
+
+    margin-top:
+        7px;
+
+    font-size:
+        14px;
+
+}
+
+
+.status {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        8px;
+
+    margin-top:
+        14px;
+
+    color:
+        #a4a4a4;
+
+    font-size:
+        12px;
+
+    font-weight:
+        600;
+
+}
+
+
+.status-dot {
+
+    width:
+        7px;
+
+    height:
+        7px;
+
+    border-radius:
+        50%;
+
+    background:
+        #ff8500;
+
+    box-shadow:
+        0 0 0
+        rgba(
+            255,
+            133,
+            0,
+            0.65
+        );
+
+    animation:
+        pulse
+        2s infinite;
+
+}
+
+
+@keyframes pulse {
+
+    0% {
+
+        box-shadow:
+            0 0 0 0
+            rgba(
+                255,
+                133,
+                0,
+                0.55
+            );
+
+    }
+
+    70% {
+
+        box-shadow:
+            0 0 0 7px
+            rgba(
+                255,
+                133,
+                0,
+                0
+            );
+
+    }
+
+    100% {
+
+        box-shadow:
+            0 0 0 0
+            rgba(
+                255,
+                133,
+                0,
+                0
+            );
+
+    }
+
+}
+
+
+/* ==================================================
+   ADD BUTTON
+================================================== */
+
+.add-button {
+
+    border:
+        1px solid rgba(
+            255,
+            133,
+            0,
+            0.35
+        );
+
+    background:
+
+        linear-gradient(
+            180deg,
+            rgba(
+                255,
+                133,
+                0,
+                0.16
+            ),
+            rgba(
+                255,
+                133,
+                0,
+                0.07
+            )
+        );
+
+    color:
+        #ff9d38;
+
+    height:
+        44px;
+
+    padding:
+        0 17px;
+
+    border-radius:
+        13px;
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        9px;
+
+    font-size:
+        14px;
+
+    font-weight:
+        750;
+
+    cursor:
+        pointer;
+
+    transition:
+        transform
+        0.18s ease,
+        background
+        0.18s ease,
+        border-color
+        0.18s ease,
+        box-shadow
+        0.18s ease;
+
+}
+
+
+.add-button:hover {
+
+    transform:
+        translateY(
+            -1px
+        );
+
+    background:
+
+        linear-gradient(
+            180deg,
+            rgba(
+                255,
+                133,
+                0,
+                0.23
+            ),
+            rgba(
+                255,
+                133,
+                0,
+                0.10
+            )
+        );
+
+    border-color:
+        rgba(
+            255,
+            133,
+            0,
+            0.6
+        );
+
+    box-shadow:
+        0 10px 30px
+        rgba(
+            255,
+            133,
+            0,
+            0.10
+        );
+
+}
+
+
+.plus-icon {
+
+    width:
+        19px;
+
+    height:
+        19px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    border-radius:
+        6px;
+
+    background:
+        #ff8500;
+
+    color:
+        #111;
+
+    font-size:
+        16px;
+
+    font-weight:
+        900;
+
+    line-height:
+        1;
+
+}
+
+
+/* ==================================================
+   FILTERS
+================================================== */
+
+.filters-section {
+
+    padding:
+        0 30px 22px;
+
+}
+
+
+.filter-label {
+
+    color:
+        #8e8e8e;
+
+    font-size:
+        11px;
+
+    text-transform:
+        uppercase;
+
+    letter-spacing:
+        0.10em;
+
+    margin-bottom:
+        10px;
+
+    font-weight:
+        700;
+
+}
+
+
+.filter-row {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        9px;
+
+    flex-wrap:
+        wrap;
+
+}
+
+
+.filter-button,
+.metric-button,
+.branch-button {
+
+    border:
+        1px solid rgba(
+            255,
+            255,
+            255,
+            0.07
+        );
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.03
+        );
+
+    color:
+        #9d9d9d;
+
+    cursor:
+        pointer;
+
+    transition:
+        0.2s ease;
+
+    font-weight:
+        650;
+
+}
+
+
+.filter-button {
+
+    height:
+        38px;
+
+    padding:
+        0 15px;
+
+    border-radius:
+        11px;
+
+    font-size:
+        13px;
+
+}
+
+
+.filter-button:hover,
+.metric-button:hover,
+.branch-button:hover {
+
+    border-color:
+        rgba(
+            255,
+            133,
+            0,
+            0.22
+        );
+
+    color:
+        #d8d8d8;
+
+    background:
+        rgba(
+            255,
+            133,
+            0,
+            0.05
+        );
+
+}
+
+
+.filter-button.active,
+.metric-button.active,
+.branch-button.active {
+
+    color:
+        #ff9a2f;
+
+    border-color:
+        rgba(
+            255,
+            133,
+            0,
+            0.40
+        );
+
+    background:
+
+        linear-gradient(
+            180deg,
+            rgba(
+                255,
+                133,
+                0,
+                0.15
+            ),
+            rgba(
+                255,
+                133,
+                0,
+                0.07
+            )
+        );
+
+}
+
+
+/* ==================================================
+   BRANCH PANEL
+================================================== */
+
+.branch-panel {
+
+    max-height:
+        0;
+
+    opacity:
+        0;
+
+    overflow:
+        hidden;
+
+    transition:
+        max-height
+        0.34s ease,
+        opacity
+        0.25s ease,
+        margin-top
+        0.3s ease;
+
+}
+
+
+.branch-panel.show {
+
+    max-height:
+        300px;
+
+    opacity:
+        1;
+
+    margin-top:
+        18px;
+
+}
+
+
+.branch-grid {
+
+    display:
+        flex;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        8px;
+
+}
+
+
+.branch-button {
+
+    height:
+        34px;
+
+    padding:
+        0 12px;
+
+    border-radius:
+        10px;
+
+    font-size:
+        12px;
+
+}
+
+
+/* ==================================================
+   METRIC
+================================================== */
+
+.metric-section {
+
+    padding:
+        0 30px 20px;
+
+}
+
+
+.metric-row {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        15px;
+
+    flex-wrap:
+        wrap;
+
+}
+
+
+.metric-buttons {
+
+    display:
+        flex;
+
+    gap:
+        8px;
+
+    flex-wrap:
+        wrap;
+
+}
+
+
+.metric-button {
+
+    height:
+        36px;
+
+    padding:
+        0 14px;
+
+    border-radius:
+        10px;
+
+    font-size:
+        12px;
+
+}
+
+
+.zoom-indicator {
+
+    color:
+        #707070;
+
+    font-size:
+        12px;
+
+    font-weight:
+        650;
+
+}
+
+
+/* ==================================================
+   CHART
+================================================== */
+
+.chart-area {
+
+    padding:
+        0 18px 20px;
+
+}
+
+
+.chart-wrap {
+
+    position:
+        relative;
+
+    width:
+        100%;
+
+    height:
+        470px;
+
+    border-radius:
+        18px;
+
+    background:
+
+        linear-gradient(
+            180deg,
+            rgba(
+                255,
+                255,
+                255,
+                0.018
+            ),
+            rgba(
+                255,
+                255,
+                255,
+                0.006
+            )
+        );
+
+    overflow:
+        hidden;
+
+    user-select:
+        none;
+
+    -webkit-user-select:
+        none;
+
+}
+
+
+.chart-svg {
+
+    display:
+        block;
+
+    width:
+        100%;
+
+    height:
+        100%;
+
+}
+
+
+.grid-line {
+
+    stroke:
+        rgba(
+            255,
+            255,
+            255,
+            0.075
+        );
+
+    stroke-width:
+        1;
+
+}
+
+
+.axis-label {
+
+    fill:
+        #616161;
+
+    font-size:
+        11px;
+
+}
+
+
+.x-label {
+
+    fill:
+        #777777;
+
+    font-size:
+        10px;
+
+}
+
+
+.area {
+
+    fill:
+        url(
+            #areaGradient
+        );
+
+    opacity:
+        0.9;
+
+}
+
+
+.line {
+
+    fill:
+        none;
+
+    stroke:
+        #ff8500;
+
+    stroke-width:
+        3;
+
+    stroke-linecap:
+        round;
+
+    stroke-linejoin:
+        round;
+
+    filter:
+
+        drop-shadow(
+            0 0 8px
+            rgba(
+                255,
+                133,
+                0,
+                0.17
+            )
+        );
+
+}
+
+
+.point {
+
+    fill:
+        #ff8500;
+
+    stroke:
+        #111111;
+
+    stroke-width:
+        2.5;
+
+    cursor:
+        pointer;
+
+}
+
+
+.point:hover {
+
+    fill:
+        #ffad54;
+
+}
+
+
+/* ==================================================
+   TOOLTIP
+================================================== */
+
+.tooltip {
+
+    position:
+        absolute;
+
+    min-width:
+        170px;
+
+    padding:
+        12px 14px;
+
+    border-radius:
+        12px;
+
+    background:
+        rgba(
+            18,
+            18,
+            18,
+            0.96
+        );
+
+    border:
+        1px solid rgba(
+            255,
+            255,
+            255,
+            0.08
+        );
+
+    box-shadow:
+        0 15px 40px
+        rgba(
+            0,
+            0,
+            0,
+            0.4
+        );
+
+    pointer-events:
+        none;
+
+    opacity:
+        0;
+
+    transform:
+        translateY(
+            5px
+        )
+        scale(
+            0.98
+        );
+
+    transition:
+        opacity
+        0.14s ease,
+        transform
+        0.14s ease;
+
+    z-index:
+        15;
+
+}
+
+
+.tooltip.show {
+
+    opacity:
+        1;
+
+    transform:
+        translateY(
+            0
+        )
+        scale(
+            1
+        );
+
+}
+
+
+.tooltip-name {
+
+    font-weight:
+        800;
+
+    font-size:
+        13px;
+
+    color:
+        #f5f5f5;
+
+    margin-bottom:
+        5px;
+
+}
+
+
+.tooltip-date {
+
+    font-size:
+        11px;
+
+    color:
+        #777;
+
+    margin-bottom:
+        8px;
+
+}
+
+
+.tooltip-value {
+
+    display:
+        flex;
+
+    align-items:
+        baseline;
+
+    gap:
+        6px;
+
+}
+
+
+.tooltip-value strong {
+
+    font-size:
+        22px;
+
+    line-height:
+        1;
+
+    color:
+        #ff9a2f;
+
+}
+
+
+.tooltip-value span {
+
+    font-size:
+        11px;
+
+    color:
+        #8d8d8d;
+
+}
+
+
+/* ==================================================
+   FOOTER
+================================================== */
+
+.chart-footer {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        15px;
+
+    padding:
+        4px 5px 0;
+
+}
+
+
+.zoom-hint {
+
+    color:
+        #505050;
+
+    font-size:
+        11px;
+
+}
+
+
+/* ==================================================
+   LOADING
+================================================== */
+
+.loading-state {
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    flex-direction:
+        column;
+
+    gap:
+        12px;
+
+    color:
+        #696969;
+
+    font-size:
+        12px;
+
+}
+
+
+.loader {
+
+    width:
+        26px;
+
+    height:
+        26px;
+
+    border:
+        2px solid rgba(
+            255,
+            255,
+            255,
+            0.06
+        );
+
+    border-top-color:
+        #ff8500;
+
+    border-radius:
+        50%;
+
+    animation:
+        spin
+        0.8s linear infinite;
+
+}
+
+
+@keyframes spin {
+
+    to {
+
+        transform:
+            rotate(
+                360deg
+            );
+
+    }
+
+}
+
+
+/* ==================================================
+   EMPTY
+================================================== */
+
+.empty-state {
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    display:
+        none;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    flex-direction:
+        column;
+
+    gap:
+        8px;
+
+    color:
+        #666;
+
+}
+
+
+.empty-state strong {
+
+    color:
+        #8a8a8a;
+
+}
+
+
+/* ==================================================
+   ADD PANEL OVERLAY
+================================================== */
+
+.panel-overlay {
+
+    position:
+        fixed;
+
+    inset:
+        0;
+
+    background:
+        rgba(
+            0,
+            0,
+            0,
+            0.60
+        );
+
+    backdrop-filter:
+        blur(5px);
+
+    opacity:
+        0;
+
+    visibility:
+        hidden;
+
+    transition:
+        opacity
+        0.25s ease,
+        visibility
+        0.25s ease;
+
+    z-index:
+        100;
+
+}
+
+
+.panel-overlay.show {
+
+    opacity:
+        1;
+
+    visibility:
+        visible;
+
+}
+
+
+/* ==================================================
+   ADD PANEL
+================================================== */
+
+.add-panel {
+
+    position:
+        fixed;
+
+    top:
+        0;
+
+    right:
+        0;
+
+    width:
+        min(
+            470px,
+            100vw
+        );
+
+    height:
+        100vh;
+
+    padding:
+        25px;
+
+    background:
+
+        linear-gradient(
+            180deg,
+            #151515 0%,
+            #101010 100%
+        );
+
+    border-left:
+        1px solid rgba(
+            255,
+            255,
+            255,
+            0.08
+        );
+
+    box-shadow:
+        -30px 0 90px
+        rgba(
+            0,
+            0,
+            0,
+            0.45
+        );
+
+    transform:
+        translateX(
+            100%
+        );
+
+    transition:
+        transform
+        0.36s
+        cubic-bezier(
+            0.22,
+            1,
+            0.36,
+            1
+        );
+
+    z-index:
+        101;
+
+    overflow-y:
+        auto;
+
+}
+
+
+.add-panel.show {
+
+    transform:
+        translateX(
+            0
+        );
+
+}
+
+
+.panel-header {
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        flex-start;
+
+    gap:
+        20px;
+
+    padding-bottom:
+        24px;
+
+    border-bottom:
+        1px solid rgba(
+            255,
+            255,
+            255,
+            0.07
+        );
+
+}
+
+
+.panel-title {
+
+    font-size:
+        21px;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        -0.02em;
+
+}
+
+
+.panel-subtitle {
+
+    color:
+        #777;
+
+    font-size:
+        12px;
+
+    line-height:
+        1.5;
+
+    margin-top:
+        5px;
+
+}
+
+
+.close-panel {
+
+    width:
+        36px;
+
+    height:
+        36px;
+
+    border-radius:
+        10px;
+
+    border:
+        1px solid rgba(
+            255,
+            255,
+            255,
+            0.07
+        );
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.025
+        );
+
+    color:
+        #888;
+
+    cursor:
+        pointer;
+
+    font-size:
+        19px;
+
+}
+
+
+.close-panel:hover {
+
+    color:
+        #ddd;
+
+}
+
+
+/* ==================================================
+   FORM
+================================================== */
+
+.form {
+
+    padding-top:
+        24px;
+
+}
+
+
+.form-group {
+
+    margin-bottom:
+        18px;
+
+}
+
+
+.form-label {
+
+    display:
+        block;
+
+    color:
+        #979797;
+
+    font-size:
+        11px;
+
+    font-weight:
+        700;
+
+    margin-bottom:
+        8px;
+
+    text-transform:
+        uppercase;
+
+    letter-spacing:
+        0.08em;
+
+}
+
+
+.input,
+.select {
+
+    width:
+        100%;
+
+    height:
+        46px;
+
+    padding:
+        0 13px;
+
+    border-radius:
+        11px;
+
+    border:
+        1px solid rgba(
+            255,
+            255,
+            255,
+            0.08
+        );
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.035
+        );
+
+    color:
+        #f4f4f4;
+
+    outline:
+        none;
+
+    font-size:
+        13px;
+
+    transition:
+        border-color
+        0.18s ease,
+        background
+        0.18s ease,
+        box-shadow
+        0.18s ease;
+
+}
+
+
+.input:focus,
+.select:focus {
+
+    border-color:
+        rgba(
+            255,
+            133,
+            0,
+            0.45
+        );
+
+    background:
+        rgba(
+            255,
+            133,
+            0,
+            0.035
+        );
+
+    box-shadow:
+        0 0 0 3px
+        rgba(
+            255,
+            133,
+            0,
+            0.07
+        );
+
+}
+
+
+.input::placeholder {
+
+    color:
+        #5e5e5e;
+
+}
+
+
+.select option {
+
+    background:
+        #151515;
+
+    color:
+        #fff;
+
+}
+
+
+.two-column {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:
+        12px;
+
+}
+
+
+.calculated-box {
+
+    min-height:
+        46px;
+
+    padding:
+        0 13px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    border-radius:
+        11px;
+
+    border:
+        1px solid rgba(
+            255,
+            133,
+            0,
+            0.20
+        );
+
+    background:
+
+        linear-gradient(
+            180deg,
+            rgba(
+                255,
+                133,
+                0,
+                0.08
+            ),
+            rgba(
+                255,
+                133,
+                0,
+                0.035
+            )
+        );
+
+}
+
+
+.calculated-name {
+
+    color:
+        #858585;
+
+    font-size:
+        12px;
+
+}
+
+
+.calculated-value {
+
+    color:
+        #ff9a2f;
+
+    font-size:
+        17px;
+
+    font-weight:
+        800;
+
+}
+
+
+.panel-info {
+
+    display:
+        flex;
+
+    gap:
+        9px;
+
+    padding:
+        12px 13px;
+
+    border-radius:
+        12px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.025
+        );
+
+    border:
+        1px solid rgba(
+            255,
+            255,
+            255,
+            0.055
+        );
+
+    color:
+        #737373;
+
+    font-size:
+        11px;
+
+    line-height:
+        1.55;
+
+    margin-bottom:
+        22px;
+
+}
+
+
+.panel-info-icon {
+
+    color:
+        #ff8500;
+
+    font-weight:
+        900;
+
+}
+
+
+.submit-button {
+
+    width:
+        100%;
+
+    height:
+        48px;
+
+    border:
+        none;
+
+    border-radius:
+        12px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #ff8b12,
+            #ff7300
+        );
+
+    color:
+        #17110a;
+
+    font-size:
+        14px;
+
+    font-weight:
+        850;
+
+    cursor:
+        pointer;
+
+    transition:
+        transform
+        0.18s ease,
+        box-shadow
+        0.18s ease;
+
+}
+
+
+.submit-button:hover {
+
+    transform:
+        translateY(
+            -1px
+        );
+
+    box-shadow:
+        0 15px 35px
+        rgba(
+            255,
+            133,
+            0,
+            0.18
+        );
+
+}
+
+
+.success-message,
+.error-message {
+
+    margin-top:
+        13px;
+
+    padding:
+        11px 13px;
+
+    border-radius:
+        10px;
+
+    font-size:
+        12px;
+
+    opacity:
+        0;
+
+    transform:
+        translateY(
+            4px
+        );
+
+    pointer-events:
+        none;
+
+    transition:
+        0.2s ease;
+
+}
+
+
+.success-message {
+
+    background:
+        rgba(
+            52,
+            168,
+            83,
+            0.08
+        );
+
+    border:
+        1px solid rgba(
+            52,
+            168,
+            83,
+            0.16
+        );
+
+    color:
+        #83c995;
+
+}
+
+
+.error-message {
+
+    background:
+        rgba(
+            255,
+            90,
+            90,
+            0.07
+        );
+
+    border:
+        1px solid rgba(
+            255,
+            90,
+            90,
+            0.13
+        );
+
+    color:
+        #e98c8c;
+
+}
+
+
+.success-message.show,
+.error-message.show {
+
+    opacity:
+        1;
+
+    transform:
+        translateY(
+            0
+        );
+
+}
+
+
+/* ==================================================
+   RESPONSIVE
+================================================== */
+
+@media (
+    max-width: 720px
+) {
+
+    body {
+
+        padding:
+            12px;
+
+    }
+
+
+    .header {
+
+        padding:
+            22px 18px 18px;
+
+        flex-direction:
+            column;
+
+    }
+
+
+    .add-button {
+
+        width:
+            100%;
+
+    }
+
+
+    .filters-section,
+    .metric-section {
+
+        padding-left:
+            18px;
+
+        padding-right:
+            18px;
+
+    }
+
+
+    .chart-area {
+
+        padding-left:
+            10px;
+
+        padding-right:
+            10px;
+
+    }
+
+
+    .chart-wrap {
+
+        height:
+            400px;
+
+    }
+
+
+    .title {
+
+        font-size:
+            24px;
+
+    }
+
+}
+
+
+@media (
+    max-width: 450px
+) {
+
+    .two-column {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .chart-wrap {
+
+        height:
+            350px;
+
+    }
+
+
+    .add-panel {
+
+        padding:
+            20px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+<div class="card">
+
+
+<!-- ==================================================
+     HEADER
+================================================== -->
+
+<div class="header">
+
+    <div>
+
+        <div class="title-row">
+
+            <h1 class="title">
+                Deneme İstatistikleri
+            </h1>
+
+        </div>
+
+
+        <div class="subtitle">
+            Denemelerindeki gelişimini tek grafik üzerinden takip et.
+        </div>
+
+
+        <div class="status">
+
+            <span
+                class="status-dot"
+                id="statusDot"
+            ></span>
+
+            <span id="statusText">
+                Notion bağlantısı hazırlanıyor
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <button
+        class="add-button"
+        id="openAddPanel"
+    >
+
+        <span class="plus-icon">
+            +
+        </span>
+
+        Ekle
+
+    </button>
+
+</div>
+
+
+<!-- ==================================================
+     FILTERS
+================================================== -->
+
+<div class="filters-section">
+
+    <div class="filter-label">
+        Veri Türü
+    </div>
+
+
+    <div class="filter-row">
+
+        <button
+            class="filter-button active"
+            data-type="TYT"
+        >
+            TYT Genel
+        </button>
+
+
+        <button
+            class="filter-button"
+            data-type="AYT"
+        >
+            AYT Genel
+        </button>
+
+
+        <button
+            class="filter-button"
+            data-type="BRANCH"
+        >
+            Branş
+        </button>
+
+    </div>
+
+
+    <div
+        class="branch-panel"
+        id="branchPanel"
+    >
+
+        <div class="branch-grid">
+
+
+            <button
+                class="branch-button active"
+                data-branch="TYT Matematik"
+            >
+                TYT Matematik
+            </button>
+
+
+            <button
+                class="branch-button"
+                data-branch="TYT Türkçe"
+            >
+                TYT Türkçe
+            </button>
+
+
+            <button
+                class="branch-button"
+                data-branch="TYT SOSYAL"
+            >
+                TYT SOSYAL
+            </button>
+
+
+            <button
+                class="branch-button"
+                data-branch="TYT FEN"
+            >
+                TYT FEN
+            </button>
+
+
+            <button
+                class="branch-button"
+                data-branch="TYT Fizik"
+            >
+                TYT Fizik
+            </button>
+
+
+            <button
+                class="branch-button"
+                data-branch="TYT Kimya"
+            >
+                TYT Kimya
+            </button>
+
+
+            <button
+                class="branch-button"
+                data-branch="TYT Biyoloji"
+            >
+                TYT Biyoloji
+            </button>
+
+
+            <button
+                class="branch-button"
+                data-branch="AYT Matematik"
+            >
+                AYT Matematik
+            </button>
+
+
+            <button
+                class="branch-button"
+                data-branch="AYT FEN"
+            >
+                AYT FEN
+            </button>
+
+
+            <button
+                class="branch-button"
+                data-branch="AYT Fizik"
+            >
+                AYT Fizik
+            </button>
+
+
+            <button
+                class="branch-button"
+                data-branch="AYT Kimya"
+            >
+                AYT Kimya
+            </button>
+
+
+            <button
+                class="branch-button"
+                data-branch="AYT Biyoloji"
+            >
+                AYT Biyoloji
+            </button>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     METRICS
+================================================== -->
+
+<div class="metric-section">
+
+    <div class="metric-row">
+
+        <div class="metric-buttons">
+
+            <button
+                class="metric-button"
+                data-metric="dogru"
+            >
+                Doğru
+            </button>
+
+
+            <button
+                class="metric-button"
+                data-metric="yanlis"
+            >
+                Yanlış
+            </button>
+
+
+            <button
+                class="metric-button"
+                data-metric="bos"
+            >
+                Boş
+            </button>
+
+
+            <button
+                class="metric-button active"
+                data-metric="net"
+            >
+                Net
+            </button>
+
+
+            <button
+                class="metric-button"
+                data-metric="puan"
+            >
+                Puan
+            </button>
+
+        </div>
+
+
+        <div
+            class="zoom-indicator"
+            id="zoomIndicator"
+        >
+            Zoom: 1.0x
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     CHART
+================================================== -->
+
+<div class="chart-area">
+
+    <div
+        class="chart-wrap"
+        id="chartWrap"
+    >
+
+
+        <div
+            class="loading-state"
+            id="loadingState"
+        >
+
+            <div class="loader"></div>
+
+            <span>
+                Denemeler yükleniyor...
+            </span>
+
+        </div>
+
+
+        <div
+            class="empty-state"
+            id="emptyState"
+        >
+
+            <strong>
+                Bu filtrede henüz deneme bulunmuyor.
+            </strong>
+
+            <span>
+                Ekle butonuyla ilk denemeni ekleyebilirsin.
+            </span>
+
+        </div>
+
+
+        <svg
+            class="chart-svg"
+            id="chartSvg"
+            viewBox="0 0 1000 470"
+            preserveAspectRatio="none"
+        >
+
+            <defs>
+
+                <linearGradient
+                    id="areaGradient"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                >
+
+                    <stop
+                        offset="0%"
+                        stop-color="#ff8500"
+                        stop-opacity="0.22"
+                    />
+
+                    <stop
+                        offset="100%"
+                        stop-color="#ff8500"
+                        stop-opacity="0"
+                    />
+
+                </linearGradient>
+
+            </defs>
+
+
+            <g id="grid"></g>
+
+            <path
+                id="areaPath"
+                class="area"
+            ></path>
+
+            <path
+                id="linePath"
+                class="line"
+            ></path>
+
+            <g id="points"></g>
+
+            <g id="axisLabels"></g>
+
+        </svg>
+
+
+        <div
+            class="tooltip"
+            id="tooltip"
+        >
+
+            <div
+                class="tooltip-name"
+                id="tooltipName"
+            ></div>
+
+            <div
+                class="tooltip-date"
+                id="tooltipDate"
+            ></div>
+
+            <div class="tooltip-value">
+
+                <strong
+                    id="tooltipValue"
+                >
+                    0
+                </strong>
+
+                <span
+                    id="tooltipMetric"
+                >
+                    Net
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="chart-footer">
+
+        <span class="zoom-hint">
+            Sol tık + Scroll · Zoom
+        </span>
+
+        <span class="zoom-hint">
+            Dokunmatik cihazlarda iki parmakla yakınlaştır
+        </span>
+
+    </div>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<!-- ==================================================
+     OVERLAY
+================================================== -->
+
+<div
+    class="panel-overlay"
+    id="panelOverlay"
+></div>
+
+
+<!-- ==================================================
+     ADD PANEL
+================================================== -->
+
+<aside
+    class="add-panel"
+    id="addPanel"
+>
+
+
+<div class="panel-header">
+
+    <div>
+
+        <div class="panel-title">
+            Yeni Deneme Ekle
+        </div>
+
+        <div class="panel-subtitle">
+            Deneme bilgilerini gir ve Notion'a kaydet.
+        </div>
+
+    </div>
+
+
+    <button
+        class="close-panel"
+        id="closeAddPanel"
+    >
+        ×
+    </button>
+
+</div>
+
+
+<form
+    class="form"
+    id="addForm"
+>
+
+
+<div class="form-group">
+
+    <label
+        class="form-label"
+        for="examName"
+    >
+        Deneme Adı
+    </label>
+
+    <input
+        class="input"
+        id="examName"
+        type="text"
+        placeholder="Örn. TYT Deneme 12"
+        maxlength="80"
+        required
+    >
+
+</div>
+
+
+<div class="form-group">
+
+    <label
+        class="form-label"
+        for="examType"
+    >
+        Sınav Türü
+    </label>
+
+
+    <select
+        class="select"
+        id="examType"
+    >
+
+        <option value="TYT">
+            TYT
+        </option>
+
+        <option value="AYT">
+            AYT
+        </option>
+
+        <option value="TYT Matematik">
+            TYT Matematik
+        </option>
+
+        <option value="TYT Türkçe">
+            TYT Türkçe
+        </option>
+
+        <option value="TYT SOSYAL">
+            TYT SOSYAL
+        </option>
+
+        <option value="TYT FEN">
+            TYT FEN
+        </option>
+
+        <option value="TYT Fizik">
+            TYT Fizik
+        </option>
+
+        <option value="TYT Kimya">
+            TYT Kimya
+        </option>
+
+        <option value="TYT Biyoloji">
+            TYT Biyoloji
+        </option>
+
+        <option value="AYT Matematik">
+            AYT Matematik
+        </option>
+
+        <option value="AYT FEN">
+            AYT FEN
+        </option>
+
+        <option value="AYT Fizik">
+            AYT Fizik
+        </option>
+
+        <option value="AYT Kimya">
+            AYT Kimya
+        </option>
+
+        <option value="AYT Biyoloji">
+            AYT Biyoloji
+        </option>
+
+    </select>
+
+</div>
+
+
+<div class="form-group">
+
+    <label
+        class="form-label"
+        for="examDate"
+    >
+        Tarih
+    </label>
+
+    <input
+        class="input"
+        id="examDate"
+        type="date"
+        required
+    >
+
+</div>
+
+
+<div class="form-group">
+
+    <div class="two-column">
+
+
+        <div>
+
+            <label
+                class="form-label"
+                for="correct"
+            >
+                Doğru
+            </label>
+
+            <input
+                class="input"
+                id="correct"
+                type="number"
+                min="0"
+                step="1"
+                value="0"
+            >
+
+        </div>
+
+
+        <div>
+
+            <label
+                class="form-label"
+                for="wrong"
+            >
+                Yanlış
+            </label>
+
+            <input
+                class="input"
+                id="wrong"
+                type="number"
+                min="0"
+                step="1"
+                value="0"
+            >
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<div class="form-group">
+
+    <div class="two-column">
+
+
+        <div>
+
+            <label
+                class="form-label"
+                for="empty"
+            >
+                Boş
+            </label>
+
+            <input
+                class="input"
+                id="empty"
+                type="number"
+                min="0"
+                step="1"
+                value="0"
+            >
+
+        </div>
+
+
+        <div>
+
+            <label
+                class="form-label"
+                for="duration"
+            >
+                Süre (dk)
+            </label>
+
+            <input
+                class="input"
+                id="duration"
+                type="number"
+                min="0"
+                step="1"
+                value="165"
+            >
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<div class="form-group">
+
+    <label class="form-label">
+        Net
+    </label>
+
+    <div class="calculated-box">
+
+        <span class="calculated-name">
+            Doğru − Yanlış / 4
+        </span>
+
+        <strong
+            class="calculated-value"
+            id="calculatedNet"
+        >
+            0
+        </strong>
+
+    </div>
+
+</div>
+
+
+<div class="form-group">
+
+    <label class="form-label">
+        Puan
+    </label>
+
+    <div class="calculated-box">
+
+        <span class="calculated-name">
+            Net / Süre × 1000
+        </span>
+
+        <strong
+            class="calculated-value"
+            id="calculatedPoint"
+        >
+            0.0
+        </strong>
+
+    </div>
+
+</div>
+
+
+<div class="panel-info">
+
+    <span class="panel-info-icon">
+        ●
+    </span>
+
+    <span>
+        Net otomatik hesaplanır. Puan ise
+        Notion'daki mevcut formula alanından hesaplanır.
+    </span>
+
+</div>
+
+
+<button
+    class="submit-button"
+    type="submit"
+    id="submitButton"
+>
+    Denemeyi Ekle
+</button>
+
+
+<div
+    class="success-message"
+    id="successMessage"
+>
+    Deneme Notion'a başarıyla eklendi.
+</div>
+
+
+<div
+    class="error-message"
+    id="errorMessage"
+>
+    Bir hata oluştu. Lütfen bilgileri kontrol et.
+</div>
+
+
+</form>
+
+</aside>
+
+
+<script>
+
+/* ==================================================
+   WORKER
+================================================== */
+
+/*
+   BURAYA KENDİ WORKER URL'İNİ YAZ.
+*/
+
+const API_BASE =
+    "https://yks-bilgi-api.yanhesap100yh.workers.dev";
+
+
+/* ==================================================
+   STATE
+================================================== */
+
+let exams = [];
+
+let currentType =
+    "TYT";
+
+let currentBranch =
+    "TYT Matematik";
+
+let currentMetric =
+    "net";
+
+let currentZoom =
+    1;
+
+let targetZoom =
+    1;
+
+const MIN_ZOOM =
+    1;
+
+const MAX_ZOOM =
+    4;
+
+
+/* ==================================================
+   ELEMENTS
+================================================== */
+
+const chartWrap =
+    document.getElementById(
+        "chartWrap"
+    );
+
+const chartSvg =
+    document.getElementById(
+        "chartSvg"
+    );
+
+const grid =
+    document.getElementById(
+        "grid"
+    );
+
+const areaPath =
+    document.getElementById(
+        "areaPath"
+    );
+
+const linePath =
+    document.getElementById(
+        "linePath"
+    );
+
+const pointsGroup =
+    document.getElementById(
+        "points"
+    );
+
+const axisLabels =
+    document.getElementById(
+        "axisLabels"
+    );
+
+const tooltip =
+    document.getElementById(
+        "tooltip"
+    );
+
+const tooltipName =
+    document.getElementById(
+        "tooltipName"
+    );
+
+const tooltipDate =
+    document.getElementById(
+        "tooltipDate"
+    );
+
+const tooltipValue =
+    document.getElementById(
+        "tooltipValue"
+    );
+
+const tooltipMetric =
+    document.getElementById(
+        "tooltipMetric"
+    );
+
+const zoomIndicator =
+    document.getElementById(
+        "zoomIndicator"
+    );
+
+const loadingState =
+    document.getElementById(
+        "loadingState"
+    );
+
+const emptyState =
+    document.getElementById(
+        "emptyState"
+    );
+
+const statusText =
+    document.getElementById(
+        "statusText"
+    );
+
+
+/* ==================================================
+   API
+================================================== */
+
+async function api(
+    endpoint,
+    options = {}
+) {
+
+    const response =
+        await fetch(
+            `${API_BASE}${endpoint}`,
+            {
+
+                ...options,
+
+                headers: {
+
+                    "Content-Type":
+                        "application/json",
+
+                    ...(options.headers || {})
+
+                }
+
+            }
+        );
+
+
+    const data =
+        await response.json()
+            .catch(
+                () => ({})
+            );
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            data.error ||
+            "API isteği başarısız."
+        );
+
+    }
+
+
+    if (
+        data.success === false
+    ) {
+
+        throw new Error(
+            data.error ||
+            "API işlemi başarısız."
+        );
+
+    }
+
+
+    return data;
+
+}
+
+
+/* ==================================================
+   LOAD EXAMS
+================================================== */
+
+async function loadExams() {
+
+    loadingState.style.display =
+        "flex";
+
+    emptyState.style.display =
+        "none";
+
+
+    try {
+
+        statusText.textContent =
+            "Notion verileri yükleniyor";
+
+
+        const response =
+            await api(
+                "/denemeler"
+            );
+
+
+        exams =
+            Array.isArray(
+                response.data
+            )
+                ? response.data
+                : [];
+
+
+        statusText.textContent =
+            "Notion bağlantısı aktif";
+
+
+        drawChart();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        exams = [];
+
+        statusText.textContent =
+            "Notion bağlantısı kurulamadı";
+
+
+        emptyState.style.display =
+            "flex";
+
+    }
+
+    finally {
+
+        loadingState.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* ==================================================
+   FILTER
+================================================== */
+
+function getCurrentData() {
+
+    let result;
+
+
+    if (
+        currentType === "TYT"
+    ) {
+
+        result =
+            exams.filter(
+                exam =>
+                    exam.sinav === "TYT"
+            );
+
+    }
+
+    else if (
+        currentType === "AYT"
+    ) {
+
+        result =
+            exams.filter(
+                exam =>
+                    exam.sinav === "AYT"
+            );
+
+    }
+
+    else {
+
+        result =
+            exams.filter(
+                exam =>
+                    exam.sinav ===
+                    currentBranch
+            );
+
+    }
+
+
+    return result.sort(
+        (a, b) => {
+
+            const dateA =
+                a.date
+                    ? new Date(
+                        a.date
+                    ).getTime()
+                    : 0;
+
+            const dateB =
+                b.date
+                    ? new Date(
+                        b.date
+                    ).getTime()
+                    : 0;
+
+
+            return dateA - dateB;
+
+        }
+    );
+
+}
+
+
+/* ==================================================
+   ZOOM DATA DENSITY
+================================================== */
+
+function getVisibleCount(
+    zoom
+) {
+
+    const data =
+        getCurrentData();
+
+
+    if (
+        data.length <= 12
+    ) {
+
+        return data.length;
+
+    }
+
+
+    return Math.min(
+
+        data.length,
+
+        Math.round(
+
+            12 +
+
+            (zoom - 1) *
+
+            (
+                (
+                    data.length -
+                    12
+                ) / 3
+            )
+
+        )
+
+    );
+
+}
+
+
+function getVisibleEntries(
+    allData,
+    count
+) {
+
+    if (
+        count <= 0
+    ) {
+
+        return [];
+
+    }
+
+
+    if (
+        count >= allData.length
+    ) {
+
+        return allData.map(
+            (
+                item,
+                index
+            ) => ({
+
+                item,
+
+                index
+
+            })
+        );
+
+    }
+
+
+    const result = [];
+
+    const step =
+        (
+            allData.length - 1
+        ) /
+        (
+            count - 1
+        );
+
+
+    for (
+        let i = 0;
+        i < count;
+        i++
+    ) {
+
+        const index =
+            Math.round(
+                i * step
+            );
+
+
+        result.push({
+
+            item:
+                allData[index],
+
+            index
+
+        });
+
+    }
+
+
+    return result;
+
+}
+
+
+/* ==================================================
+   METRIC
+================================================== */
+
+function metricName() {
+
+    switch (
+        currentMetric
+    ) {
+
+        case "dogru":
+            return "Doğru";
+
+        case "yanlis":
+            return "Yanlış";
+
+        case "bos":
+            return "Boş";
+
+        case "puan":
+            return "Puan";
+
+        default:
+            return "Net";
+
+    }
+
+}
+
+
+function metricValue(
+    item
+) {
+
+    switch (
+        currentMetric
+    ) {
+
+        case "dogru":
+            return item.dogru;
+
+        case "yanlis":
+            return item.yanlis;
+
+        case "bos":
+            return item.bos;
+
+        case "puan":
+            return item.puan;
+
+        default:
+            return item.net;
+
+    }
+
+}
+
+
+/* ==================================================
+   DATE
+================================================== */
+
+function formatDate(
+    date
+) {
+
+    if (!date) {
+
+        return "Tarih belirtilmemiş";
+
+    }
+
+
+    const d =
+        new Date(
+            date
+        );
+
+
+    if (
+        Number.isNaN(
+            d.getTime()
+        )
+    ) {
+
+        return "Tarih belirtilmemiş";
+
+    }
+
+
+    return d.toLocaleDateString(
+        "tr-TR",
+        {
+
+            day:
+                "2-digit",
+
+            month:
+                "2-digit",
+
+            year:
+                "numeric"
+
+        }
+    );
+
+}
+
+
+/* ==================================================
+   FORMAT
+================================================== */
+
+function formatValue(
+    value
+) {
+
+    if (
+        currentMetric ===
+        "puan"
+    ) {
+
+        return Number(
+            value
+        ).toFixed(
+            1
+        );
+
+    }
+
+
+    const number =
+        Number(
+            value
+        );
+
+
+    if (
+        Number.isInteger(
+            number
+        )
+    ) {
+
+        return String(
+            number
+        );
+
+    }
+
+
+    return number
+        .toFixed(
+            2
+        )
+        .replace(
+            /\.00$/,
+            ""
+        );
+
+}
+
+
+/* ==================================================
+   SVG
+================================================== */
+
+function createSvgElement(
+    type
+) {
+
+    return document.createElementNS(
+
+        "http://www.w3.org/2000/svg",
+
+        type
+
+    );
+
+}
+
+
+/* ==================================================
+   GRID
+================================================== */
+
+function drawGrid(
+    minValue,
+    maxValue
+) {
+
+    grid.innerHTML =
+        "";
+
+
+    const chartLeft =
+        45;
+
+    const chartRight =
+        980;
+
+    const chartTop =
+        25;
+
+    const chartBottom =
+        415;
+
+
+    const gridCount =
+        5;
+
+
+    for (
+        let i = 0;
+        i <= gridCount;
+        i++
+    ) {
+
+        const y =
+            chartBottom -
+
+            (
+                i /
+                gridCount
+            ) *
+
+            (
+                chartBottom -
+                chartTop
+            );
+
+
+        const line =
+            createSvgElement(
+                "line"
+            );
+
+
+        line.setAttribute(
+            "x1",
+            chartLeft
+        );
+
+        line.setAttribute(
+            "x2",
+            chartRight
+        );
+
+        line.setAttribute(
+            "y1",
+            y
+        );
+
+        line.setAttribute(
+            "y2",
+            y
+        );
+
+        line.setAttribute(
+            "class",
+            "grid-line"
+        );
+
+
+        grid.appendChild(
+            line
+        );
+
+
+        const label =
+            createSvgElement(
+                "text"
+            );
+
+
+        label.setAttribute(
+            "x",
+            5
+        );
+
+        label.setAttribute(
+            "y",
+            y + 4
+        );
+
+        label.setAttribute(
+            "class",
+            "axis-label"
+        );
+
+
+        const value =
+            minValue +
+
+            (
+                i /
+                gridCount
+            ) *
+
+            (
+                maxValue -
+                minValue
+            );
+
+
+        label.textContent =
+
+            currentMetric ===
+            "puan"
+
+                ? Math.round(
+                    value
+                )
+
+                : Number(
+                    value
+                ).toFixed(
+                    0
+                );
+
+
+        grid.appendChild(
+            label
+        );
+
+    }
+
+}
+
+
+/* ==================================================
+   DRAW CHART
+================================================== */
+
+function drawChart() {
+
+    const allData =
+        getCurrentData();
+
+
+    if (
+        allData.length === 0
+    ) {
+
+        linePath.setAttribute(
+            "d",
+            ""
+        );
+
+        areaPath.setAttribute(
+            "d",
+            ""
+        );
+
+        pointsGroup.innerHTML =
+            "";
+
+        axisLabels.innerHTML =
+            "";
+
+        grid.innerHTML =
+            "";
+
+        emptyState.style.display =
+            "flex";
+
+        zoomIndicator.textContent =
+            "Zoom: 1.0x";
+
+        return;
+
+    }
+
+
+    emptyState.style.display =
+        "none";
+
+
+    const visibleCount =
+        getVisibleCount(
+            currentZoom
+        );
+
+
+    const visible =
+        getVisibleEntries(
+            allData,
+            visibleCount
+        );
+
+
+    const values =
+        allData.map(
+            item =>
+                Number(
+                    metricValue(
+                        item
+                    )
+                )
+        );
+
+
+    let minValue =
+        Math.min(
+            ...values
+        );
+
+
+    let maxValue =
+        Math.max(
+            ...values
+        );
+
+
+    if (
+        minValue ===
+        maxValue
+    ) {
+
+        minValue -=
+            1;
+
+        maxValue +=
+            1;
+
+    }
+
+
+    const padding =
+        (
+            maxValue -
+            minValue
+        ) * 0.16;
+
+
+    minValue -=
+        padding;
+
+    maxValue +=
+        padding;
+
+
+    drawGrid(
+        minValue,
+        maxValue
+    );
+
+
+    const left =
+        45;
+
+    const right =
+        980;
+
+    const top =
+        25;
+
+    const bottom =
+        415;
+
+
+    const width =
+        right - left;
+
+    const height =
+        bottom - top;
+
+
+    const coords =
+        visible.map(
+            (
+                entry,
+                i
+            ) => {
+
+                const value =
+                    Number(
+                        metricValue(
+                            entry.item
+                        )
+                    );
+
+
+                const x =
+                    visible.length === 1
+
+                        ? left +
+                          width / 2
+
+                        :
+
+                        left +
+
+                        (
+                            i /
+                            (
+                                visible.length -
+                                1
+                            )
+                        ) *
+                        width;
+
+
+                const normalized =
+                    (
+                        value -
+                        minValue
+                    ) /
+                    (
+                        maxValue -
+                        minValue
+                    );
+
+
+                const y =
+                    bottom -
+                    normalized *
+                    height;
+
+
+                return {
+
+                    x,
+
+                    y,
+
+                    entry
+
+                };
+
+            }
+        );
+
+
+    let lineD =
+        "";
+
+
+    coords.forEach(
+        (
+            point,
+            index
+        ) => {
+
+            lineD +=
+
+                index === 0
+
+                    ? `M ${point.x} ${point.y}`
+
+                    : ` L ${point.x} ${point.y}`;
+
+        }
+    );
+
+
+    linePath.setAttribute(
+        "d",
+        lineD
+    );
+
+
+    let areaD =
+        lineD;
+
+
+    if (
+        coords.length
+    ) {
+
+        const last =
+            coords[
+                coords.length - 1
+            ];
+
+        const first =
+            coords[0];
+
+
+        areaD +=
+
+            ` L ${last.x} ${bottom}` +
+
+            ` L ${first.x} ${bottom}` +
+
+            " Z";
+
+    }
+
+
+    areaPath.setAttribute(
+        "d",
+        areaD
+    );
+
+
+    pointsGroup.innerHTML =
+        "";
+
+
+    coords.forEach(
+        point => {
+
+            const circle =
+                createSvgElement(
+                    "circle"
+                );
+
+
+            circle.setAttribute(
+                "cx",
+                point.x
+            );
+
+            circle.setAttribute(
+                "cy",
+                point.y
+            );
+
+            circle.setAttribute(
+                "r",
+                currentZoom >= 3
+                    ? 5
+                    : 4
+            );
+
+            circle.setAttribute(
+                "class",
+                "point"
+            );
+
+
+            circle.addEventListener(
+                "mouseenter",
+                () => {
+
+                    showTooltip(
+                        circle,
+                        point.entry.item
+                    );
+
+                }
+            );
+
+
+            circle.addEventListener(
+                "mouseleave",
+                hideTooltip
+            );
+
+
+            circle.addEventListener(
+                "touchstart",
+                event => {
+
+                    if (
+                        event.touches.length ===
+                        1
+                    ) {
+
+                        showTooltip(
+                            circle,
+                            point.entry.item
+                        );
+
+                    }
+
+                },
+                {
+                    passive:
+                        true
+                }
+            );
+
+
+            pointsGroup.appendChild(
+                circle
+            );
+
+        }
+    );
+
+
+    axisLabels.innerHTML =
+        "";
+
+
+    const labelCount =
+        Math.min(
+            visible.length,
+            7
+        );
+
+
+    if (
+        labelCount > 0
+    ) {
+
+        for (
+            let i = 0;
+            i < labelCount;
+            i++
+        ) {
+
+            const realIndex =
+                labelCount === 1
+
+                    ? 0
+
+                    : Math.round(
+
+                        i *
+
+                        (
+                            visible.length -
+                            1
+                        ) /
+
+                        (
+                            labelCount -
+                            1
+                        )
+
+                    );
+
+
+            const point =
+                coords[
+                    realIndex
+                ];
+
+
+            const label =
+                createSvgElement(
+                    "text"
+                );
+
+
+            label.setAttribute(
+                "x",
+                point.x
+            );
+
+            label.setAttribute(
+                "y",
+                447
+            );
+
+            label.setAttribute(
+                "text-anchor",
+                "middle"
+            );
+
+            label.setAttribute(
+                "class",
+                "x-label"
+            );
+
+
+            label.textContent =
+                point.entry.item.name;
+
+
+            axisLabels.appendChild(
+                label
+            );
+
+        }
+
+    }
+
+
+    zoomIndicator.textContent =
+        `Zoom: ${currentZoom.toFixed(1)}x`;
+
+}
+
+
+/* ==================================================
+   TOOLTIP
+================================================== */
+
+function showTooltip(
+    point,
+    item
+) {
+
+    tooltipName.textContent =
+        item.name;
+
+
+    tooltipDate.textContent =
+        formatDate(
+            item.date
+        );
+
+
+    tooltipValue.textContent =
+        formatValue(
+            metricValue(
+                item
+            )
+        );
+
+
+    tooltipMetric.textContent =
+        metricName();
+
+
+    const wrapRect =
+        chartWrap.getBoundingClientRect();
+
+    const svgRect =
+        chartSvg.getBoundingClientRect();
+
+
+    const cx =
+        Number(
+            point.getAttribute(
+                "cx"
+            )
+        );
+
+
+    const cy =
+        Number(
+            point.getAttribute(
+                "cy"
+            )
+        );
+
+
+    const xRatio =
+        cx / 1000;
+
+    const yRatio =
+        cy / 470;
+
+
+    let left =
+
+        (
+            svgRect.left -
+            wrapRect.left
+        ) +
+
+        xRatio *
+        svgRect.width;
+
+
+    let top =
+
+        (
+            svgRect.top -
+            wrapRect.top
+        ) +
+
+        yRatio *
+        svgRect.height;
+
+
+    left -=
+        85;
+
+    top -=
+        98;
+
+
+    left =
+        Math.max(
+            8,
+            Math.min(
+                left,
+                chartWrap.clientWidth -
+                178
+            )
+        );
+
+
+    top =
+        Math.max(
+            8,
+            top
+        );
+
+
+    tooltip.style.left =
+        `${left}px`;
+
+
+    tooltip.style.top =
+        `${top}px`;
+
+
+    tooltip.classList.add(
+        "show"
+    );
+
+}
+
+
+function hideTooltip() {
+
+    tooltip.classList.remove(
+        "show"
+    );
+
+}
+
+
+/* ==================================================
+   ZOOM ANIMATION
+================================================== */
+
+let animationFrame =
+    null;
+
+
+function animateZoom() {
+
+    const difference =
+        targetZoom -
+        currentZoom;
+
+
+    currentZoom +=
+        difference *
+        0.16;
+
+
+    if (
+        Math.abs(
+            difference
+        ) < 0.005
+    ) {
+
+        currentZoom =
+            targetZoom;
+
+    }
+
+
+    drawChart();
+
+
+    if (
+        Math.abs(
+            targetZoom -
+            currentZoom
+        ) >= 0.005
+    ) {
+
+        animationFrame =
+            requestAnimationFrame(
+                animateZoom
+            );
+
+    }
+
+}
+
+
+function setZoom(
+    value
+) {
+
+    targetZoom =
+        Math.max(
+            MIN_ZOOM,
+            Math.min(
+                MAX_ZOOM,
+                value
+            )
+        );
+
+
+    if (
+        animationFrame
+    ) {
+
+        cancelAnimationFrame(
+            animationFrame
+        );
+
+    }
+
+
+    animationFrame =
+        requestAnimationFrame(
+            animateZoom
+        );
+
+}
+
+
+/* ==================================================
+   MOUSE ZOOM
+================================================== */
+
+let leftMouseDown =
+    false;
+
+
+chartWrap.addEventListener(
+    "pointerdown",
+    event => {
+
+        if (
+            event.pointerType ===
+                "mouse" &&
+            event.button === 0
+        ) {
+
+            leftMouseDown =
+                true;
+
+        }
+
+    }
+);
+
+
+window.addEventListener(
+    "pointerup",
+    () => {
+
+        leftMouseDown =
+            false;
+
+    }
+);
+
+
+chartWrap.addEventListener(
+    "wheel",
+    event => {
+
+        const usingMouse =
+            leftMouseDown ||
+            Boolean(
+                event.buttons & 1
+            );
+
+
+        if (
+            !usingMouse
+        ) {
+
+            return;
+
+        }
+
+
+        event.preventDefault();
+
+
+        if (
+            event.deltaY < 0
+        ) {
+
+            setZoom(
+                targetZoom +
+                0.35
+            );
+
+        }
+
+        else {
+
+            setZoom(
+                targetZoom -
+                0.35
+            );
+
+        }
+
+    },
+    {
+        passive:
+            false
+    }
+);
+
+
+/* ==================================================
+   TOUCH PINCH
+================================================== */
+
+let pinchStartDistance =
+    null;
+
+let pinchStartZoom =
+    1;
+
+
+function getTouchDistance(
+    touches
+) {
+
+    const dx =
+        touches[0].clientX -
+        touches[1].clientX;
+
+    const dy =
+        touches[0].clientY -
+        touches[1].clientY;
+
+
+    return Math.sqrt(
+        dx * dx +
+        dy * dy
+    );
+
+}
+
+
+chartWrap.addEventListener(
+    "touchstart",
+    event => {
+
+        if (
+            event.touches.length === 2
+        ) {
+
+            pinchStartDistance =
+                getTouchDistance(
+                    event.touches
+                );
+
+            pinchStartZoom =
+                targetZoom;
+
+        }
+
+    },
+    {
+        passive:
+            false
+    }
+);
+
+
+chartWrap.addEventListener(
+    "touchmove",
+    event => {
+
+        if (
+            event.touches.length !== 2 ||
+            pinchStartDistance === null
+        ) {
+
+            return;
+
+        }
+
+
+        event.preventDefault();
+
+
+        const currentDistance =
+            getTouchDistance(
+                event.touches
+            );
+
+
+        const ratio =
+            currentDistance /
+            pinchStartDistance;
+
+
+        setZoom(
+            pinchStartZoom *
+            ratio
+        );
+
+    },
+    {
+        passive:
+            false
+    }
+);
+
+
+chartWrap.addEventListener(
+    "touchend",
+    event => {
+
+        if (
+            event.touches.length < 2
+        ) {
+
+            pinchStartDistance =
+                null;
+
+        }
+
+    }
+);
+
+
+/* ==================================================
+   FILTER BUTTONS
+================================================== */
+
+document
+    .querySelectorAll(
+        ".filter-button"
+    )
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    document
+                        .querySelectorAll(
+                            ".filter-button"
+                        )
+                        .forEach(
+                            item =>
+                                item.classList.remove(
+                                    "active"
+                                )
+                        );
+
+
+                    button.classList.add(
+                        "active"
+                    );
+
+
+                    currentType =
+                        button.dataset.type;
+
+
+                    document
+                        .getElementById(
+                            "branchPanel"
+                        )
+                        .classList.toggle(
+                            "show",
+                            currentType ===
+                            "BRANCH"
+                        );
+
+
+                    currentZoom =
+                        1;
+
+                    targetZoom =
+                        1;
+
+
+                    drawChart();
+
+                }
+            );
+
+        }
+    );
+
+
+/* ==================================================
+   BRANCH BUTTONS
+================================================== */
+
+document
+    .querySelectorAll(
+        ".branch-button"
+    )
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    document
+                        .querySelectorAll(
+                            ".branch-button"
+                        )
+                        .forEach(
+                            item =>
+                                item.classList.remove(
+                                    "active"
+                                )
+                        );
+
+
+                    button.classList.add(
+                        "active"
+                    );
+
+
+                    currentBranch =
+                        button.dataset.branch;
+
+
+                    currentZoom =
+                        1;
+
+                    targetZoom =
+                        1;
+
+
+                    drawChart();
+
+                }
+            );
+
+        }
+    );
+
+
+/* ==================================================
+   METRIC BUTTONS
+================================================== */
+
+document
+    .querySelectorAll(
+        ".metric-button"
+    )
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    document
+                        .querySelectorAll(
+                            ".metric-button"
+                        )
+                        .forEach(
+                            item =>
+                                item.classList.remove(
+                                    "active"
+                                )
+                        );
+
+
+                    button.classList.add(
+                        "active"
+                    );
+
+
+                    currentMetric =
+                        button.dataset.metric;
+
+
+                    currentZoom =
+                        1;
+
+                    targetZoom =
+                        1;
+
+
+                    drawChart();
+
+                }
+            );
+
+        }
+    );
+
+
+/* ==================================================
+   PANEL
+================================================== */
+
+const openAddPanel =
+    document.getElementById(
+        "openAddPanel"
+    );
+
+const closeAddPanel =
+    document.getElementById(
+        "closeAddPanel"
+    );
+
+const panelOverlay =
+    document.getElementById(
+        "panelOverlay"
+    );
+
+const addPanel =
+    document.getElementById(
+        "addPanel"
+    );
+
+
+function syncAddType() {
+
+    const select =
+        document.getElementById(
+            "examType"
+        );
+
+
+    if (
+        currentType === "TYT"
+    ) {
+
+        select.value =
+            "TYT";
+
+    }
+
+    else if (
+        currentType === "AYT"
+    ) {
+
+        select.value =
+            "AYT";
+
+    }
+
+    else {
+
+        select.value =
+            currentBranch;
+
+    }
+
+}
+
+
+function openPanel() {
+
+    syncAddType();
+
+    hideMessages();
+
+    addPanel.classList.add(
+        "show"
+    );
+
+    panelOverlay.classList.add(
+        "show"
+    );
+
+    document.body.classList.add(
+        "panel-open"
+    );
+
+
+    setTimeout(
+        () => {
+
+            document
+                .getElementById(
+                    "examName"
+                )
+                .focus();
+
+        },
+        250
+    );
+
+}
+
+
+function closePanel() {
+
+    addPanel.classList.remove(
+        "show"
+    );
+
+    panelOverlay.classList.remove(
+        "show"
+    );
+
+    document.body.classList.remove(
+        "panel-open"
+    );
+
+}
+
+
+openAddPanel.addEventListener(
+    "click",
+    openPanel
+);
+
+
+closeAddPanel.addEventListener(
+    "click",
+    closePanel
+);
+
+
+panelOverlay.addEventListener(
+    "click",
+    closePanel
+);
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key ===
+                "Escape" &&
+            addPanel.classList.contains(
+                "show"
+            )
+        ) {
+
+            closePanel();
+
+        }
+
+    }
+);
+
+
+/* ==================================================
+   FORM CALCULATION
+================================================== */
+
+const correctInput =
+    document.getElementById(
+        "correct"
+    );
+
+const wrongInput =
+    document.getElementById(
+        "wrong"
+    );
+
+const emptyInput =
+    document.getElementById(
+        "empty"
+    );
+
+const durationInput =
+    document.getElementById(
+        "duration"
+    );
+
+const calculatedNet =
+    document.getElementById(
+        "calculatedNet"
+    );
+
+const calculatedPoint =
+    document.getElementById(
+        "calculatedPoint"
+    );
+
+
+function getNumber(
+    input
+) {
+
+    const value =
+        Number(
+            input.value
+        );
+
+
+    if (
+        !Number.isFinite(
+            value
+        )
+    ) {
+
+        return 0;
+
+    }
+
+
+    return Math.max(
+        0,
+        value
+    );
+
+}
+
+
+function calculateForm() {
+
+    const correct =
+        getNumber(
+            correctInput
+        );
+
+    const wrong =
+        getNumber(
+            wrongInput
+        );
+
+    const duration =
+        getNumber(
+            durationInput
+        );
+
+
+    const net =
+        correct -
+        wrong / 4;
+
+
+    const point =
+        duration > 0
+
+            ? (
+                net /
+                duration
+              ) *
+              1000
+
+            : 0;
+
+
+    calculatedNet.textContent =
+        Number(
+            net
+        )
+        .toFixed(
+            2
+        )
+        .replace(
+            /\.00$/,
+            ""
+        );
+
+
+    calculatedPoint.textContent =
+        Number(
+            point
+        )
+        .toFixed(
+            1
+        );
+
+
+    return {
+
+        correct,
+
+        wrong,
+
+        empty:
+            getNumber(
+                emptyInput
+            ),
+
+        duration,
+
+        net,
+
+        point
+
+    };
+
+}
+
+
+[
+    correctInput,
+    wrongInput,
+    emptyInput,
+    durationInput
+]
+.forEach(
+    input => {
+
+        input.addEventListener(
+            "input",
+            calculateForm
+        );
+
+    }
+);
+
+
+/* ==================================================
+   MESSAGES
+================================================== */
+
+const successMessage =
+    document.getElementById(
+        "successMessage"
+    );
+
+const errorMessage =
+    document.getElementById(
+        "errorMessage"
+    );
+
+const submitButton =
+    document.getElementById(
+        "submitButton"
+    );
+
+
+function hideMessages() {
+
+    successMessage.classList.remove(
+        "show"
+    );
+
+    errorMessage.classList.remove(
+        "show"
+    );
+
+}
+
+
+function showError(
+    message
+) {
+
+    errorMessage.textContent =
+        message;
+
+    errorMessage.classList.add(
+        "show"
+    );
+
+}
+
+
+/* ==================================================
+   ADD EXAM
+================================================== */
+
+document
+    .getElementById(
+        "addForm"
+    )
+    .addEventListener(
+        "submit",
+        async event => {
+
+            event.preventDefault();
+
+            hideMessages();
+
+
+            const name =
+                document
+                    .getElementById(
+                        "examName"
+                    )
+                    .value
+                    .trim();
+
+
+            const sinav =
+                document
+                    .getElementById(
+                        "examType"
+                    )
+                    .value;
+
+
+            const date =
+                document
+                    .getElementById(
+                        "examDate"
+                    )
+                    .value;
+
+
+            const values =
+                calculateForm();
+
+
+            if (
+                !name
+            ) {
+
+                showError(
+                    "Deneme adı zorunludur."
+                );
+
+                return;
+
+            }
+
+
+            if (
+                !date
+            ) {
+
+                showError(
+                    "Tarih zorunludur."
+                );
+
+                return;
+
+            }
+
+
+            submitButton.disabled =
+                true;
+
+            submitButton.textContent =
+                "Notion'a kaydediliyor...";
+
+
+            try {
+
+                const response =
+                    await api(
+                        "/deneme-ekle",
+                        {
+
+                            method:
+                                "POST",
+
+                            body:
+                                JSON.stringify({
+
+                                    name,
+
+                                    sinav,
+
+                                    date,
+
+                                    dogru:
+                                        values.correct,
+
+                                    yanlis:
+                                        values.wrong,
+
+                                    bos:
+                                        values.empty,
+
+                                    sure:
+                                        values.duration
+
+                                })
+
+                        }
+                    );
+
+
+                if (
+                    response.data
+                ) {
+
+                    exams.push(
+                        response.data
+                    );
+
+                }
+
+
+                successMessage.classList.add(
+                    "show"
+                );
+
+
+                /* ---------------------------------------
+                   YENİ EKLENEN SINAVA GEÇ
+                --------------------------------------- */
+
+                if (
+                    sinav ===
+                    "TYT"
+                ) {
+
+                    currentType =
+                        "TYT";
+
+                }
+
+                else if (
+                    sinav ===
+                    "AYT"
+                ) {
+
+                    currentType =
+                        "AYT";
+
+                }
+
+                else {
+
+                    currentType =
+                        "BRANCH";
+
+                    currentBranch =
+                        sinav;
+
+                    document
+                        .querySelectorAll(
+                            ".branch-button"
+                        )
+                        .forEach(
+                            button => {
+
+                                button.classList.toggle(
+                                    "active",
+                                    button.dataset.branch ===
+                                    sinav
+                                );
+
+                            }
+                        );
+
+                }
+
+
+                document
+                    .querySelectorAll(
+                        ".filter-button"
+                    )
+                    .forEach(
+                        button => {
+
+                            button.classList.toggle(
+                                "active",
+                                button.dataset.type ===
+                                currentType
+                            );
+
+                        }
+                    );
+
+
+                document
+                    .getElementById(
+                        "branchPanel"
+                    )
+                    .classList.toggle(
+                        "show",
+                        currentType ===
+                        "BRANCH"
+                    );
+
+
+                currentZoom =
+                    1;
+
+                targetZoom =
+                    1;
+
+
+                drawChart();
+
+
+                /* ---------------------------------------
+                   TEMİZLE
+                --------------------------------------- */
+
+                document
+                    .getElementById(
+                        "examName"
+                    )
+                    .value =
+                    "";
+
+
+                setTimeout(
+                    () => {
+
+                        closePanel();
+
+                    },
+                    700
+                );
+
+            }
+
+            catch (
+                error
+            ) {
+
+                console.error(
+                    error
+                );
+
+
+                showError(
+                    error.message ||
+                    "Deneme eklenemedi."
+                );
+
+            }
+
+            finally {
+
+                submitButton.disabled =
+                    false;
+
+                submitButton.textContent =
+                    "Denemeyi Ekle";
+
+            }
+
+        }
+    );
+
+
+/* ==================================================
+   INITIAL DATE
+================================================== */
+
+document
+    .getElementById(
+        "examDate"
+    )
+    .value =
+    new Date()
+        .toISOString()
+        .split("T")[0];
+
+
+/* ==================================================
+   INITIAL
+================================================== */
+
+calculateForm();
+
+loadExams();
+
+</script>
+
+</body>
+
+</html>
