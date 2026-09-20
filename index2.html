@@ -10,9 +10,7 @@
     content="width=device-width, initial-scale=1.0"
 >
 
-<title>
-    Deneme İstatistikleri
-</title>
+<title>Deneme İstatistikleri</title>
 
 
 <style>
@@ -22,16 +20,9 @@
 ================================================== */
 
 * {
-
-    box-sizing:
-        border-box;
-
-    margin:
-        0;
-
-    padding:
-        0;
-
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 
@@ -54,23 +45,13 @@ body {
 
         radial-gradient(
             circle at 20% 0%,
-            rgba(
-                255,
-                132,
-                0,
-                0.10
-            ),
+            rgba(255, 132, 0, 0.10),
             transparent 35%
         ),
 
         radial-gradient(
             circle at 85% 20%,
-            rgba(
-                255,
-                132,
-                0,
-                0.05
-            ),
+            rgba(255, 132, 0, 0.05),
             transparent 30%
         ),
 
@@ -84,15 +65,12 @@ body {
 
     padding:
         28px;
-
 }
 
 
 body.panel-open {
-
     overflow:
         hidden;
-
 }
 
 
@@ -103,30 +81,21 @@ body.panel-open {
 .container {
 
     width:
-        min(
-            1250px,
-            100%
-        );
+        min(1250px, 100%);
 
     margin:
         0 auto;
-
 }
 
 
 /* ==================================================
-   MAIN CARD
+   CARD
 ================================================== */
 
 .card {
 
     background:
-        rgba(
-            17,
-            17,
-            17,
-            0.92
-        );
+        rgba(17, 17, 17, 0.92);
 
     border:
         1px solid rgba(
@@ -163,7 +132,6 @@ body.panel-open {
 
     backdrop-filter:
         blur(14px);
-
 }
 
 
@@ -187,21 +155,6 @@ body.panel-open {
 
     padding:
         28px 30px 22px;
-
-}
-
-
-.title-row {
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    gap:
-        12px;
-
 }
 
 
@@ -215,7 +168,6 @@ body.panel-open {
 
     letter-spacing:
         -0.03em;
-
 }
 
 
@@ -229,7 +181,6 @@ body.panel-open {
 
     font-size:
         14px;
-
 }
 
 
@@ -255,7 +206,6 @@ body.panel-open {
 
     font-weight:
         600;
-
 }
 
 
@@ -273,19 +223,25 @@ body.panel-open {
     background:
         #ff8500;
 
-    box-shadow:
-        0 0 0
-        rgba(
-            255,
-            133,
-            0,
-            0.65
-        );
+    animation:
+        pulse 2s infinite;
+}
+
+
+.status-dot.loading {
+
+    background:
+        #ff8500;
+}
+
+
+.status-dot.error {
+
+    background:
+        #ef6b6b;
 
     animation:
-        pulse
-        2s infinite;
-
+        none;
 }
 
 
@@ -399,24 +355,17 @@ body.panel-open {
         pointer;
 
     transition:
-        transform
-        0.18s ease,
-        background
-        0.18s ease,
-        border-color
-        0.18s ease,
-        box-shadow
-        0.18s ease;
-
+        transform 0.18s ease,
+        background 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease;
 }
 
 
 .add-button:hover {
 
     transform:
-        translateY(
-            -1px
-        );
+        translateY(-1px);
 
     background:
 
@@ -441,7 +390,7 @@ body.panel-open {
             255,
             133,
             0,
-            0.6
+            0.60
         );
 
     box-shadow:
@@ -452,7 +401,13 @@ body.panel-open {
             0,
             0.10
         );
+}
 
+
+.add-button:active {
+
+    transform:
+        translateY(0);
 }
 
 
@@ -487,7 +442,6 @@ body.panel-open {
 
     line-height:
         1;
-
 }
 
 
@@ -499,7 +453,6 @@ body.panel-open {
 
     padding:
         0 30px 22px;
-
 }
 
 
@@ -522,7 +475,6 @@ body.panel-open {
 
     font-weight:
         700;
-
 }
 
 
@@ -539,7 +491,6 @@ body.panel-open {
 
     flex-wrap:
         wrap;
-
 }
 
 
@@ -574,7 +525,6 @@ body.panel-open {
 
     font-weight:
         650;
-
 }
 
 
@@ -591,7 +541,6 @@ body.panel-open {
 
     font-size:
         13px;
-
 }
 
 
@@ -617,7 +566,6 @@ body.panel-open {
             0,
             0.05
         );
-
 }
 
 
@@ -653,12 +601,11 @@ body.panel-open {
                 0.07
             )
         );
-
 }
 
 
 /* ==================================================
-   BRANCH PANEL
+   BRANCH
 ================================================== */
 
 .branch-panel {
@@ -673,13 +620,9 @@ body.panel-open {
         hidden;
 
     transition:
-        max-height
-        0.34s ease,
-        opacity
-        0.25s ease,
-        margin-top
-        0.3s ease;
-
+        max-height 0.34s ease,
+        opacity 0.25s ease,
+        margin-top 0.3s ease;
 }
 
 
@@ -693,7 +636,6 @@ body.panel-open {
 
     margin-top:
         18px;
-
 }
 
 
@@ -707,7 +649,6 @@ body.panel-open {
 
     gap:
         8px;
-
 }
 
 
@@ -724,7 +665,6 @@ body.panel-open {
 
     font-size:
         12px;
-
 }
 
 
@@ -736,7 +676,6 @@ body.panel-open {
 
     padding:
         0 30px 20px;
-
 }
 
 
@@ -756,7 +695,6 @@ body.panel-open {
 
     flex-wrap:
         wrap;
-
 }
 
 
@@ -770,7 +708,6 @@ body.panel-open {
 
     flex-wrap:
         wrap;
-
 }
 
 
@@ -787,7 +724,6 @@ body.panel-open {
 
     font-size:
         12px;
-
 }
 
 
@@ -801,7 +737,6 @@ body.panel-open {
 
     font-weight:
         650;
-
 }
 
 
@@ -813,7 +748,6 @@ body.panel-open {
 
     padding:
         0 18px 20px;
-
 }
 
 
@@ -858,6 +792,8 @@ body.panel-open {
     -webkit-user-select:
         none;
 
+    touch-action:
+        none;
 }
 
 
@@ -871,7 +807,6 @@ body.panel-open {
 
     height:
         100%;
-
 }
 
 
@@ -887,7 +822,6 @@ body.panel-open {
 
     stroke-width:
         1;
-
 }
 
 
@@ -898,7 +832,6 @@ body.panel-open {
 
     font-size:
         11px;
-
 }
 
 
@@ -909,20 +842,16 @@ body.panel-open {
 
     font-size:
         10px;
-
 }
 
 
 .area {
 
     fill:
-        url(
-            #areaGradient
-        );
+        url(#areaGradient);
 
     opacity:
         0.9;
-
 }
 
 
@@ -944,7 +873,6 @@ body.panel-open {
         round;
 
     filter:
-
         drop-shadow(
             0 0 8px
             rgba(
@@ -954,7 +882,6 @@ body.panel-open {
                 0.17
             )
         );
-
 }
 
 
@@ -993,7 +920,7 @@ body.panel-open {
         absolute;
 
     min-width:
-        170px;
+        175px;
 
     padding:
         12px 14px;
@@ -1023,7 +950,7 @@ body.panel-open {
             0,
             0,
             0,
-            0.4
+            0.40
         );
 
     pointer-events:
@@ -1033,22 +960,15 @@ body.panel-open {
         0;
 
     transform:
-        translateY(
-            5px
-        )
-        scale(
-            0.98
-        );
+        translateY(5px)
+        scale(0.98);
 
     transition:
-        opacity
-        0.14s ease,
-        transform
-        0.14s ease;
+        opacity 0.14s ease,
+        transform 0.14s ease;
 
     z-index:
-        15;
-
+        30;
 }
 
 
@@ -1058,13 +978,8 @@ body.panel-open {
         1;
 
     transform:
-        translateY(
-            0
-        )
-        scale(
-            1
-        );
-
+        translateY(0)
+        scale(1);
 }
 
 
@@ -1081,7 +996,6 @@ body.panel-open {
 
     margin-bottom:
         5px;
-
 }
 
 
@@ -1095,7 +1009,6 @@ body.panel-open {
 
     margin-bottom:
         8px;
-
 }
 
 
@@ -1109,7 +1022,6 @@ body.panel-open {
 
     gap:
         6px;
-
 }
 
 
@@ -1123,7 +1035,6 @@ body.panel-open {
 
     color:
         #ff9a2f;
-
 }
 
 
@@ -1134,42 +1045,6 @@ body.panel-open {
 
     color:
         #8d8d8d;
-
-}
-
-
-/* ==================================================
-   FOOTER
-================================================== */
-
-.chart-footer {
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        space-between;
-
-    gap:
-        15px;
-
-    padding:
-        4px 5px 0;
-
-}
-
-
-.zoom-hint {
-
-    color:
-        #505050;
-
-    font-size:
-        11px;
-
 }
 
 
@@ -1206,6 +1081,11 @@ body.panel-open {
     font-size:
         12px;
 
+    z-index:
+        20;
+
+    pointer-events:
+        none;
 }
 
 
@@ -1232,28 +1112,22 @@ body.panel-open {
         50%;
 
     animation:
-        spin
-        0.8s linear infinite;
-
+        spin 0.8s linear infinite;
 }
 
 
 @keyframes spin {
 
     to {
-
         transform:
-            rotate(
-                360deg
-            );
-
+            rotate(360deg);
     }
 
 }
 
 
 /* ==================================================
-   EMPTY
+   EMPTY / ERROR
 ================================================== */
 
 .empty-state {
@@ -1279,9 +1153,17 @@ body.panel-open {
     gap:
         8px;
 
+    padding:
+        30px;
+
     color:
         #666;
 
+    text-align:
+        center;
+
+    z-index:
+        25;
 }
 
 
@@ -1289,12 +1171,57 @@ body.panel-open {
 
     color:
         #8a8a8a;
+}
 
+
+.empty-state span {
+
+    max-width:
+        700px;
+
+    line-height:
+        1.6;
+
+    word-break:
+        break-word;
 }
 
 
 /* ==================================================
-   ADD PANEL OVERLAY
+   FOOTER
+================================================== */
+
+.chart-footer {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        15px;
+
+    padding:
+        4px 5px 0;
+}
+
+
+.zoom-hint {
+
+    color:
+        #505050;
+
+    font-size:
+        11px;
+}
+
+
+/* ==================================================
+   OVERLAY
 ================================================== */
 
 .panel-overlay {
@@ -1323,14 +1250,11 @@ body.panel-open {
         hidden;
 
     transition:
-        opacity
-        0.25s ease,
-        visibility
-        0.25s ease;
+        opacity 0.25s ease,
+        visibility 0.25s ease;
 
     z-index:
         100;
-
 }
 
 
@@ -1341,7 +1265,6 @@ body.panel-open {
 
     visibility:
         visible;
-
 }
 
 
@@ -1398,13 +1321,10 @@ body.panel-open {
         );
 
     transform:
-        translateX(
-            100%
-        );
+        translateX(100%);
 
     transition:
-        transform
-        0.36s
+        transform 0.36s
         cubic-bezier(
             0.22,
             1,
@@ -1417,17 +1337,13 @@ body.panel-open {
 
     overflow-y:
         auto;
-
 }
 
 
 .add-panel.show {
 
     transform:
-        translateX(
-            0
-        );
-
+        translateX(0);
 }
 
 
@@ -1455,7 +1371,6 @@ body.panel-open {
             255,
             0.07
         );
-
 }
 
 
@@ -1469,7 +1384,6 @@ body.panel-open {
 
     letter-spacing:
         -0.02em;
-
 }
 
 
@@ -1486,7 +1400,6 @@ body.panel-open {
 
     margin-top:
         5px;
-
 }
 
 
@@ -1525,15 +1438,12 @@ body.panel-open {
 
     font-size:
         19px;
-
 }
 
 
 .close-panel:hover {
-
     color:
         #ddd;
-
 }
 
 
@@ -1545,15 +1455,12 @@ body.panel-open {
 
     padding-top:
         24px;
-
 }
 
 
 .form-group {
-
     margin-bottom:
         18px;
-
 }
 
 
@@ -1579,7 +1486,6 @@ body.panel-open {
 
     letter-spacing:
         0.08em;
-
 }
 
 
@@ -1624,13 +1530,15 @@ body.panel-open {
         13px;
 
     transition:
-        border-color
-        0.18s ease,
-        background
-        0.18s ease,
-        box-shadow
-        0.18s ease;
+        border-color 0.18s ease,
+        background 0.18s ease,
+        box-shadow 0.18s ease;
+}
 
+
+.input::placeholder {
+    color:
+        #5e5e5e;
 }
 
 
@@ -1661,15 +1569,6 @@ body.panel-open {
             0,
             0.07
         );
-
-}
-
-
-.input::placeholder {
-
-    color:
-        #5e5e5e;
-
 }
 
 
@@ -1680,7 +1579,6 @@ body.panel-open {
 
     color:
         #fff;
-
 }
 
 
@@ -1694,7 +1592,6 @@ body.panel-open {
 
     gap:
         12px;
-
 }
 
 
@@ -1743,7 +1640,6 @@ body.panel-open {
                 0.035
             )
         );
-
 }
 
 
@@ -1754,7 +1650,6 @@ body.panel-open {
 
     font-size:
         12px;
-
 }
 
 
@@ -1768,7 +1663,6 @@ body.panel-open {
 
     font-weight:
         800;
-
 }
 
 
@@ -1813,7 +1707,6 @@ body.panel-open {
 
     margin-bottom:
         22px;
-
 }
 
 
@@ -1824,7 +1717,6 @@ body.panel-open {
 
     font-weight:
         900;
-
 }
 
 
@@ -1863,20 +1755,15 @@ body.panel-open {
         pointer;
 
     transition:
-        transform
-        0.18s ease,
-        box-shadow
-        0.18s ease;
-
+        transform 0.18s ease,
+        box-shadow 0.18s ease;
 }
 
 
 .submit-button:hover {
 
     transform:
-        translateY(
-            -1px
-        );
+        translateY(-1px);
 
     box-shadow:
         0 15px 35px
@@ -1886,7 +1773,19 @@ body.panel-open {
             0,
             0.18
         );
+}
 
+
+.submit-button:disabled {
+
+    opacity:
+        0.65;
+
+    cursor:
+        wait;
+
+    transform:
+        none;
 }
 
 
@@ -1909,16 +1808,13 @@ body.panel-open {
         0;
 
     transform:
-        translateY(
-            4px
-        );
+        translateY(4px);
 
     pointer-events:
         none;
 
     transition:
         0.2s ease;
-
 }
 
 
@@ -1942,7 +1838,6 @@ body.panel-open {
 
     color:
         #83c995;
-
 }
 
 
@@ -1966,7 +1861,6 @@ body.panel-open {
 
     color:
         #e98c8c;
-
 }
 
 
@@ -1977,10 +1871,7 @@ body.panel-open {
         1;
 
     transform:
-        translateY(
-            0
-        );
-
+        translateY(0);
 }
 
 
@@ -1988,15 +1879,12 @@ body.panel-open {
    RESPONSIVE
 ================================================== */
 
-@media (
-    max-width: 720px
-) {
+@media (max-width: 720px) {
 
     body {
 
         padding:
             12px;
-
     }
 
 
@@ -2007,7 +1895,6 @@ body.panel-open {
 
         flex-direction:
             column;
-
     }
 
 
@@ -2015,7 +1902,6 @@ body.panel-open {
 
         width:
             100%;
-
     }
 
 
@@ -2027,7 +1913,6 @@ body.panel-open {
 
         padding-right:
             18px;
-
     }
 
 
@@ -2038,7 +1923,6 @@ body.panel-open {
 
         padding-right:
             10px;
-
     }
 
 
@@ -2046,7 +1930,6 @@ body.panel-open {
 
         height:
             400px;
-
     }
 
 
@@ -2054,21 +1937,27 @@ body.panel-open {
 
         font-size:
             24px;
+    }
 
+
+    .chart-footer {
+
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
     }
 
 }
 
 
-@media (
-    max-width: 450px
-) {
+@media (max-width: 450px) {
 
     .two-column {
 
         grid-template-columns:
             1fr;
-
     }
 
 
@@ -2076,7 +1965,6 @@ body.panel-open {
 
         height:
             350px;
-
     }
 
 
@@ -2084,7 +1972,6 @@ body.panel-open {
 
         padding:
             20px;
-
     }
 
 }
@@ -2108,15 +1995,12 @@ body.panel-open {
 
 <div class="header">
 
+
     <div>
 
-        <div class="title-row">
-
-            <h1 class="title">
-                Deneme İstatistikleri
-            </h1>
-
-        </div>
+        <h1 class="title">
+            Deneme İstatistikleri
+        </h1>
 
 
         <div class="subtitle">
@@ -2127,12 +2011,13 @@ body.panel-open {
         <div class="status">
 
             <span
-                class="status-dot"
+                class="status-dot loading"
                 id="statusDot"
             ></span>
 
+
             <span id="statusText">
-                Notion bağlantısı hazırlanıyor
+                Notion verileri yükleniyor...
             </span>
 
         </div>
@@ -2143,6 +2028,7 @@ body.panel-open {
     <button
         class="add-button"
         id="openAddPanel"
+        type="button"
     >
 
         <span class="plus-icon">
@@ -2153,6 +2039,7 @@ body.panel-open {
 
     </button>
 
+
 </div>
 
 
@@ -2162,6 +2049,7 @@ body.panel-open {
 
 <div class="filters-section">
 
+
     <div class="filter-label">
         Veri Türü
     </div>
@@ -2169,9 +2057,11 @@ body.panel-open {
 
     <div class="filter-row">
 
+
         <button
-            class="filter-button active"
+            class="filter-button"
             data-type="TYT"
+            type="button"
         >
             TYT Genel
         </button>
@@ -2180,6 +2070,7 @@ body.panel-open {
         <button
             class="filter-button"
             data-type="AYT"
+            type="button"
         >
             AYT Genel
         </button>
@@ -2188,9 +2079,11 @@ body.panel-open {
         <button
             class="filter-button"
             data-type="BRANCH"
+            type="button"
         >
             Branş
         </button>
+
 
     </div>
 
@@ -2204,8 +2097,9 @@ body.panel-open {
 
 
             <button
-                class="branch-button active"
+                class="branch-button"
                 data-branch="TYT Matematik"
+                type="button"
             >
                 TYT Matematik
             </button>
@@ -2214,6 +2108,7 @@ body.panel-open {
             <button
                 class="branch-button"
                 data-branch="TYT Türkçe"
+                type="button"
             >
                 TYT Türkçe
             </button>
@@ -2222,6 +2117,7 @@ body.panel-open {
             <button
                 class="branch-button"
                 data-branch="TYT SOSYAL"
+                type="button"
             >
                 TYT SOSYAL
             </button>
@@ -2230,6 +2126,7 @@ body.panel-open {
             <button
                 class="branch-button"
                 data-branch="TYT FEN"
+                type="button"
             >
                 TYT FEN
             </button>
@@ -2238,6 +2135,7 @@ body.panel-open {
             <button
                 class="branch-button"
                 data-branch="TYT Fizik"
+                type="button"
             >
                 TYT Fizik
             </button>
@@ -2246,6 +2144,7 @@ body.panel-open {
             <button
                 class="branch-button"
                 data-branch="TYT Kimya"
+                type="button"
             >
                 TYT Kimya
             </button>
@@ -2254,6 +2153,7 @@ body.panel-open {
             <button
                 class="branch-button"
                 data-branch="TYT Biyoloji"
+                type="button"
             >
                 TYT Biyoloji
             </button>
@@ -2262,6 +2162,7 @@ body.panel-open {
             <button
                 class="branch-button"
                 data-branch="AYT Matematik"
+                type="button"
             >
                 AYT Matematik
             </button>
@@ -2270,6 +2171,7 @@ body.panel-open {
             <button
                 class="branch-button"
                 data-branch="AYT FEN"
+                type="button"
             >
                 AYT FEN
             </button>
@@ -2278,6 +2180,7 @@ body.panel-open {
             <button
                 class="branch-button"
                 data-branch="AYT Fizik"
+                type="button"
             >
                 AYT Fizik
             </button>
@@ -2286,6 +2189,7 @@ body.panel-open {
             <button
                 class="branch-button"
                 data-branch="AYT Kimya"
+                type="button"
             >
                 AYT Kimya
             </button>
@@ -2294,6 +2198,7 @@ body.panel-open {
             <button
                 class="branch-button"
                 data-branch="AYT Biyoloji"
+                type="button"
             >
                 AYT Biyoloji
             </button>
@@ -2312,13 +2217,17 @@ body.panel-open {
 
 <div class="metric-section">
 
+
     <div class="metric-row">
 
+
         <div class="metric-buttons">
+
 
             <button
                 class="metric-button"
                 data-metric="dogru"
+                type="button"
             >
                 Doğru
             </button>
@@ -2327,6 +2236,7 @@ body.panel-open {
             <button
                 class="metric-button"
                 data-metric="yanlis"
+                type="button"
             >
                 Yanlış
             </button>
@@ -2335,6 +2245,7 @@ body.panel-open {
             <button
                 class="metric-button"
                 data-metric="bos"
+                type="button"
             >
                 Boş
             </button>
@@ -2343,6 +2254,7 @@ body.panel-open {
             <button
                 class="metric-button active"
                 data-metric="net"
+                type="button"
             >
                 Net
             </button>
@@ -2351,9 +2263,11 @@ body.panel-open {
             <button
                 class="metric-button"
                 data-metric="puan"
+                type="button"
             >
                 Puan
             </button>
+
 
         </div>
 
@@ -2365,6 +2279,7 @@ body.panel-open {
             Zoom: 1.0x
         </div>
 
+
     </div>
 
 </div>
@@ -2375,6 +2290,7 @@ body.panel-open {
 ================================================== -->
 
 <div class="chart-area">
+
 
     <div
         class="chart-wrap"
@@ -2401,11 +2317,12 @@ body.panel-open {
             id="emptyState"
         >
 
-            <strong>
+            <strong id="emptyTitle">
                 Bu filtrede henüz deneme bulunmuyor.
             </strong>
 
-            <span>
+
+            <span id="emptyText">
                 Ekle butonuyla ilk denemeni ekleyebilirsin.
             </span>
 
@@ -2418,6 +2335,7 @@ body.panel-open {
             viewBox="0 0 1000 470"
             preserveAspectRatio="none"
         >
+
 
             <defs>
 
@@ -2435,6 +2353,7 @@ body.panel-open {
                         stop-opacity="0.22"
                     />
 
+
                     <stop
                         offset="100%"
                         stop-color="#ff8500"
@@ -2448,19 +2367,24 @@ body.panel-open {
 
             <g id="grid"></g>
 
+
             <path
                 id="areaPath"
                 class="area"
             ></path>
+
 
             <path
                 id="linePath"
                 class="line"
             ></path>
 
+
             <g id="points"></g>
 
+
             <g id="axisLabels"></g>
+
 
         </svg>
 
@@ -2475,12 +2399,15 @@ body.panel-open {
                 id="tooltipName"
             ></div>
 
+
             <div
                 class="tooltip-date"
                 id="tooltipDate"
             ></div>
 
+
             <div class="tooltip-value">
+
 
                 <strong
                     id="tooltipValue"
@@ -2488,30 +2415,37 @@ body.panel-open {
                     0
                 </strong>
 
+
                 <span
                     id="tooltipMetric"
                 >
                     Net
                 </span>
 
+
             </div>
 
         </div>
+
 
     </div>
 
 
     <div class="chart-footer">
 
+
         <span class="zoom-hint">
             Sol tık + Scroll · Zoom
         </span>
+
 
         <span class="zoom-hint">
             Dokunmatik cihazlarda iki parmakla yakınlaştır
         </span>
 
+
     </div>
+
 
 </div>
 
@@ -2543,11 +2477,13 @@ body.panel-open {
 
 <div class="panel-header">
 
+
     <div>
 
         <div class="panel-title">
             Yeni Deneme Ekle
         </div>
+
 
         <div class="panel-subtitle">
             Deneme bilgilerini gir ve Notion'a kaydet.
@@ -2559,9 +2495,11 @@ body.panel-open {
     <button
         class="close-panel"
         id="closeAddPanel"
+        type="button"
     >
         ×
     </button>
+
 
 </div>
 
@@ -2580,6 +2518,7 @@ body.panel-open {
     >
         Deneme Adı
     </label>
+
 
     <input
         class="input"
@@ -2678,6 +2617,7 @@ body.panel-open {
         Tarih
     </label>
 
+
     <input
         class="input"
         id="examDate"
@@ -2702,6 +2642,7 @@ body.panel-open {
                 Doğru
             </label>
 
+
             <input
                 class="input"
                 id="correct"
@@ -2722,6 +2663,7 @@ body.panel-open {
             >
                 Yanlış
             </label>
+
 
             <input
                 class="input"
@@ -2754,6 +2696,7 @@ body.panel-open {
                 Boş
             </label>
 
+
             <input
                 class="input"
                 id="empty"
@@ -2774,6 +2717,7 @@ body.panel-open {
             >
                 Süre (dk)
             </label>
+
 
             <input
                 class="input"
@@ -2798,11 +2742,14 @@ body.panel-open {
         Net
     </label>
 
+
     <div class="calculated-box">
+
 
         <span class="calculated-name">
             Doğru − Yanlış / 4
         </span>
+
 
         <strong
             class="calculated-value"
@@ -2810,6 +2757,7 @@ body.panel-open {
         >
             0
         </strong>
+
 
     </div>
 
@@ -2822,11 +2770,14 @@ body.panel-open {
         Puan
     </label>
 
+
     <div class="calculated-box">
+
 
         <span class="calculated-name">
             Net / Süre × 1000
         </span>
+
 
         <strong
             class="calculated-value"
@@ -2834,6 +2785,7 @@ body.panel-open {
         >
             0.0
         </strong>
+
 
     </div>
 
@@ -2846,9 +2798,10 @@ body.panel-open {
         ●
     </span>
 
+
     <span>
-        Net otomatik hesaplanır. Puan ise
-        Notion'daki mevcut formula alanından hesaplanır.
+        Net otomatik hesaplanır. Puan Notion'daki
+        formula alanından hesaplanır.
     </span>
 
 </div>
@@ -2856,8 +2809,8 @@ body.panel-open {
 
 <button
     class="submit-button"
-    type="submit"
     id="submitButton"
+    type="submit"
 >
     Denemeyi Ekle
 </button>
@@ -2875,7 +2828,7 @@ body.panel-open {
     class="error-message"
     id="errorMessage"
 >
-    Bir hata oluştu. Lütfen bilgileri kontrol et.
+    Bir hata oluştu.
 </div>
 
 
@@ -2890,12 +2843,8 @@ body.panel-open {
    WORKER
 ================================================== */
 
-/*
-   BURAYA KENDİ WORKER URL'İNİ YAZ.
-*/
-
 const API_BASE =
-    "https://yks-bilgi-api.yanhesap100yh.workers.dev/denemeler";
+    "https://yks-bilgi-api.yanhesap100yh.workers.dev";
 
 
 /* ==================================================
@@ -2919,6 +2868,7 @@ let currentZoom =
 let targetZoom =
     1;
 
+
 const MIN_ZOOM =
     1;
 
@@ -2927,7 +2877,7 @@ const MAX_ZOOM =
 
 
 /* ==================================================
-   ELEMENTS
+   DOM
 ================================================== */
 
 const chartWrap =
@@ -3005,6 +2955,21 @@ const emptyState =
         "emptyState"
     );
 
+const emptyTitle =
+    document.getElementById(
+        "emptyTitle"
+    );
+
+const emptyText =
+    document.getElementById(
+        "emptyText"
+    );
+
+const statusDot =
+    document.getElementById(
+        "statusDot"
+    );
+
 const statusText =
     document.getElementById(
         "statusText"
@@ -3012,58 +2977,191 @@ const statusText =
 
 
 /* ==================================================
-   API
+   API GET
 ================================================== */
 
-async function api(
-    endpoint,
-    options = {}
-) {
+async function getExams() {
+
+    /*
+       GET isteğinde Content-Type göndermiyoruz.
+       Cache'i de devre dışı bırakıyoruz.
+    */
 
     const response =
         await fetch(
-            `${API_BASE}${endpoint}`,
+            `${API_BASE}/denemeler?_=${Date.now()}`,
             {
 
-                ...options,
+                method:
+                    "GET",
 
-                headers: {
+                mode:
+                    "cors",
 
-                    "Content-Type":
-                        "application/json",
-
-                    ...(options.headers || {})
-
-                }
+                cache:
+                    "no-store"
 
             }
         );
 
 
-    const data =
-        await response.json()
-            .catch(
-                () => ({})
+    const text =
+        await response.text();
+
+
+    let data;
+
+
+    try {
+
+        data =
+            JSON.parse(
+                text
             );
 
+    }
 
-    if (!response.ok) {
+    catch (error) {
 
         throw new Error(
+            "Worker JSON döndürmedi."
+        );
+
+    }
+
+
+    console.log(
+        "Worker /denemeler:",
+        data
+    );
+
+
+    if (
+        !response.ok
+    ) {
+
+        throw new Error(
+
             data.error ||
-            "API isteği başarısız."
+            `Worker HTTP ${response.status}`
+
         );
 
     }
 
 
     if (
-        data.success === false
+        data.success !== true
     ) {
 
         throw new Error(
+
             data.error ||
-            "API işlemi başarısız."
+            "Worker başarısız cevap verdi."
+
+        );
+
+    }
+
+
+    return Array.isArray(
+        data.data
+    )
+        ? data.data
+        : [];
+
+}
+
+
+/* ==================================================
+   API POST
+================================================== */
+
+async function postExam(
+    payload
+) {
+
+    const response =
+        await fetch(
+            `${API_BASE}/deneme-ekle`,
+            {
+
+                method:
+                    "POST",
+
+                mode:
+                    "cors",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/json"
+
+                },
+
+                body:
+                    JSON.stringify(
+                        payload
+                    )
+
+            }
+        );
+
+
+    const text =
+        await response.text();
+
+
+    let data;
+
+
+    try {
+
+        data =
+            JSON.parse(
+                text
+            );
+
+    }
+
+    catch (error) {
+
+        throw new Error(
+            "Worker JSON döndürmedi."
+        );
+
+    }
+
+
+    console.log(
+        "Worker /deneme-ekle:",
+        data
+    );
+
+
+    if (
+        !response.ok
+    ) {
+
+        throw new Error(
+
+            data.error ||
+            `Worker HTTP ${response.status}`
+
+        );
+
+    }
+
+
+    if (
+        data.success !== true
+    ) {
+
+        throw new Error(
+
+            data.error ||
+            "Deneme eklenemedi."
+
         );
 
     }
@@ -3075,10 +3173,53 @@ async function api(
 
 
 /* ==================================================
-   LOAD EXAMS
+   STATUS
 ================================================== */
 
-async function loadExams() {
+function setStatus(
+    message,
+    state = "normal"
+) {
+
+    statusText.textContent =
+        message;
+
+
+    statusDot.classList.remove(
+        "loading",
+        "error"
+    );
+
+
+    if (
+        state === "loading"
+    ) {
+
+        statusDot.classList.add(
+            "loading"
+        );
+
+    }
+
+
+    if (
+        state === "error"
+    ) {
+
+        statusDot.classList.add(
+            "error"
+        );
+
+    }
+
+}
+
+
+/* ==================================================
+   INITIAL DATA
+================================================== */
+
+async function initialize() {
 
     loadingState.style.display =
         "flex";
@@ -3087,28 +3228,35 @@ async function loadExams() {
         "none";
 
 
+    setStatus(
+        "Notion verileri yükleniyor...",
+        "loading"
+    );
+
+
     try {
 
-        statusText.textContent =
-            "Notion verileri yükleniyor";
-
-
-        const response =
-            await api(
-                "/denemeler"
-            );
-
-
         exams =
-            Array.isArray(
-                response.data
-            )
-                ? response.data
-                : [];
+            await getExams();
 
 
-        statusText.textContent =
-            "Notion bağlantısı aktif";
+        console.log(
+            "Alınan deneme sayısı:",
+            exams.length
+        );
+
+
+        /*
+           En önemli bölüm:
+           Gerçek veri geldikten sonra filtreyi ayarla.
+        */
+
+        selectInitialFilter();
+
+
+        setStatus(
+            `${exams.length} deneme yüklendi`
+        );
 
 
         drawChart();
@@ -3124,12 +3272,16 @@ async function loadExams() {
 
         exams = [];
 
-        statusText.textContent =
-            "Notion bağlantısı kurulamadı";
+
+        setStatus(
+            "Notion bağlantısı kurulamadı",
+            "error"
+        );
 
 
-        emptyState.style.display =
-            "flex";
+        showErrorState(
+            error.message
+        );
 
     }
 
@@ -3144,34 +3296,237 @@ async function loadExams() {
 
 
 /* ==================================================
-   FILTER
+   INITIAL FILTER
+================================================== */
+
+function selectInitialFilter() {
+
+    if (
+        exams.length === 0
+    ) {
+
+        currentType =
+            "TYT";
+
+        currentBranch =
+            "TYT Matematik";
+
+        updateFilterUI();
+
+        return;
+
+    }
+
+
+    /*
+       Önce TYT varsa TYT.
+       Sonra AYT varsa AYT.
+       İkisi de yoksa ilk kaydın branşı.
+    */
+
+    const hasTYT =
+        exams.some(
+            exam =>
+                exam.sinav ===
+                "TYT"
+        );
+
+
+    const hasAYT =
+        exams.some(
+            exam =>
+                exam.sinav ===
+                "AYT"
+        );
+
+
+    if (
+        hasTYT
+    ) {
+
+        currentType =
+            "TYT";
+
+    }
+
+    else if (
+        hasAYT
+    ) {
+
+        currentType =
+            "AYT";
+
+    }
+
+    else {
+
+        const first =
+            exams.find(
+                exam =>
+                    exam.sinav
+            );
+
+
+        if (
+            first
+        ) {
+
+            currentType =
+                "BRANCH";
+
+            currentBranch =
+                first.sinav;
+
+        }
+
+    }
+
+
+    updateFilterUI();
+
+}
+
+
+/* ==================================================
+   UPDATE FILTER UI
+================================================== */
+
+function updateFilterUI() {
+
+    document
+        .querySelectorAll(
+            ".filter-button"
+        )
+        .forEach(
+            button => {
+
+                button.classList.toggle(
+
+                    "active",
+
+                    button.dataset.type ===
+                    currentType
+
+                );
+
+            }
+        );
+
+
+    document
+        .querySelectorAll(
+            ".branch-button"
+        )
+        .forEach(
+            button => {
+
+                button.classList.toggle(
+
+                    "active",
+
+                    button.dataset.branch ===
+                    currentBranch
+
+                );
+
+            }
+        );
+
+
+    document
+        .getElementById(
+            "branchPanel"
+        )
+        .classList.toggle(
+            "show",
+            currentType ===
+            "BRANCH"
+        );
+
+}
+
+
+/* ==================================================
+   ERROR STATE
+================================================== */
+
+function showErrorState(
+    message
+) {
+
+    grid.innerHTML =
+        "";
+
+    linePath.setAttribute(
+        "d",
+        ""
+    );
+
+    areaPath.setAttribute(
+        "d",
+        ""
+    );
+
+    pointsGroup.innerHTML =
+        "";
+
+    axisLabels.innerHTML =
+        "";
+
+
+    emptyTitle.textContent =
+        "Notion verileri alınamadı.";
+
+
+    emptyText.textContent =
+        message ||
+        "Worker ile bağlantı kurulamadı.";
+
+
+    emptyState.style.display =
+        "flex";
+
+}
+
+
+/* ==================================================
+   CURRENT DATA
 ================================================== */
 
 function getCurrentData() {
 
-    let result;
+    let result =
+        [];
 
 
     if (
-        currentType === "TYT"
+        currentType ===
+        "TYT"
     ) {
 
         result =
             exams.filter(
                 exam =>
-                    exam.sinav === "TYT"
+                    String(
+                        exam.sinav || ""
+                    ).trim() ===
+                    "TYT"
             );
 
     }
 
     else if (
-        currentType === "AYT"
+        currentType ===
+        "AYT"
     ) {
 
         result =
             exams.filter(
                 exam =>
-                    exam.sinav === "AYT"
+                    String(
+                        exam.sinav || ""
+                    ).trim() ===
+                    "AYT"
             );
 
     }
@@ -3181,75 +3536,108 @@ function getCurrentData() {
         result =
             exams.filter(
                 exam =>
-                    exam.sinav ===
-                    currentBranch
+                    String(
+                        exam.sinav || ""
+                    ).trim() ===
+                    String(
+                        currentBranch
+                    ).trim()
             );
 
     }
 
 
-    return result.sort(
-        (a, b) => {
+    result.sort(
+        (
+            a,
+            b
+        ) => {
 
-            const dateA =
+            const aDate =
                 a.date
                     ? new Date(
                         a.date
                     ).getTime()
-                    : 0;
+                    : Infinity;
 
-            const dateB =
+
+            const bDate =
                 b.date
                     ? new Date(
                         b.date
                     ).getTime()
-                    : 0;
+                    : Infinity;
 
 
-            return dateA - dateB;
+            if (
+                aDate !== bDate
+            ) {
+
+                return (
+                    aDate -
+                    bDate
+                );
+
+            }
+
+
+            return String(
+                a.createdTime || ""
+            ).localeCompare(
+                String(
+                    b.createdTime || ""
+                )
+            );
 
         }
     );
+
+
+    return result;
 
 }
 
 
 /* ==================================================
-   ZOOM DATA DENSITY
+   ZOOM
 ================================================== */
 
 function getVisibleCount(
-    zoom
+    zoom,
+    length
 ) {
 
-    const data =
-        getCurrentData();
-
-
     if (
-        data.length <= 12
+        length <= 12
     ) {
 
-        return data.length;
+        return length;
 
     }
 
 
     return Math.min(
 
-        data.length,
+        length,
 
-        Math.round(
+        Math.max(
 
-            12 +
+            12,
 
-            (zoom - 1) *
+            Math.round(
 
-            (
+                12 +
+
                 (
-                    data.length -
+                    zoom - 1
+                ) *
+
+                (
+                    length -
                     12
-                ) / 3
+                ) /
+                3
+
             )
 
         )
@@ -3284,7 +3672,6 @@ function getVisibleEntries(
             ) => ({
 
                 item,
-
                 index
 
             })
@@ -3293,14 +3680,18 @@ function getVisibleEntries(
     }
 
 
-    const result = [];
+    const result =
+        [];
+
 
     const step =
         (
-            allData.length - 1
+            allData.length -
+            1
         ) /
         (
-            count - 1
+            count -
+            1
         );
 
 
@@ -3372,19 +3763,38 @@ function metricValue(
     ) {
 
         case "dogru":
-            return item.dogru;
+
+            return Number(
+                item.dogru || 0
+            );
+
 
         case "yanlis":
-            return item.yanlis;
+
+            return Number(
+                item.yanlis || 0
+            );
+
 
         case "bos":
-            return item.bos;
+
+            return Number(
+                item.bos || 0
+            );
+
 
         case "puan":
-            return item.puan;
+
+            return Number(
+                item.puan || 0
+            );
+
 
         default:
-            return item.net;
+
+            return Number(
+                item.net || 0
+            );
 
     }
 
@@ -3399,7 +3809,9 @@ function formatDate(
     date
 ) {
 
-    if (!date) {
+    if (
+        !date
+    ) {
 
         return "Tarih belirtilmemiş";
 
@@ -3443,31 +3855,29 @@ function formatDate(
 
 
 /* ==================================================
-   FORMAT
+   NUMBER
 ================================================== */
 
 function formatValue(
     value
 ) {
 
+    const number =
+        Number(
+            value || 0
+        );
+
+
     if (
         currentMetric ===
         "puan"
     ) {
 
-        return Number(
-            value
-        ).toFixed(
+        return number.toFixed(
             1
         );
 
     }
-
-
-    const number =
-        Number(
-            value
-        );
 
 
     if (
@@ -3484,9 +3894,7 @@ function formatValue(
 
 
     return number
-        .toFixed(
-            2
-        )
+        .toFixed(2)
         .replace(
             /\.00$/,
             ""
@@ -3504,11 +3912,8 @@ function createSvgElement(
 ) {
 
     return document.createElementNS(
-
         "http://www.w3.org/2000/svg",
-
         type
-
     );
 
 }
@@ -3527,40 +3932,39 @@ function drawGrid(
         "";
 
 
-    const chartLeft =
+    const left =
         45;
 
-    const chartRight =
+    const right =
         980;
 
-    const chartTop =
+    const top =
         25;
 
-    const chartBottom =
+    const bottom =
         415;
 
-
-    const gridCount =
+    const count =
         5;
 
 
     for (
         let i = 0;
-        i <= gridCount;
+        i <= count;
         i++
     ) {
 
         const y =
-            chartBottom -
+            bottom -
 
             (
                 i /
-                gridCount
+                count
             ) *
 
             (
-                chartBottom -
-                chartTop
+                bottom -
+                top
             );
 
 
@@ -3572,12 +3976,12 @@ function drawGrid(
 
         line.setAttribute(
             "x1",
-            chartLeft
+            left
         );
 
         line.setAttribute(
             "x2",
-            chartRight
+            right
         );
 
         line.setAttribute(
@@ -3628,7 +4032,7 @@ function drawGrid(
 
             (
                 i /
-                gridCount
+                count
             ) *
 
             (
@@ -3639,8 +4043,7 @@ function drawGrid(
 
         label.textContent =
 
-            currentMetric ===
-            "puan"
+            currentMetric === "puan"
 
                 ? Math.round(
                     value
@@ -3663,7 +4066,7 @@ function drawGrid(
 
 
 /* ==================================================
-   DRAW CHART
+   DRAW
 ================================================== */
 
 function drawChart() {
@@ -3675,6 +4078,9 @@ function drawChart() {
     if (
         allData.length === 0
     ) {
+
+        grid.innerHTML =
+            "";
 
         linePath.setAttribute(
             "d",
@@ -3692,14 +4098,22 @@ function drawChart() {
         axisLabels.innerHTML =
             "";
 
-        grid.innerHTML =
-            "";
+
+        emptyTitle.textContent =
+            "Bu filtrede henüz deneme bulunmuyor.";
+
+
+        emptyText.textContent =
+            "Ekle butonuyla ilk denemeni ekleyebilirsin.";
+
 
         emptyState.style.display =
             "flex";
 
+
         zoomIndicator.textContent =
             "Zoom: 1.0x";
+
 
         return;
 
@@ -3710,26 +4124,25 @@ function drawChart() {
         "none";
 
 
-    const visibleCount =
+    const count =
         getVisibleCount(
-            currentZoom
+            currentZoom,
+            allData.length
         );
 
 
     const visible =
         getVisibleEntries(
             allData,
-            visibleCount
+            count
         );
 
 
     const values =
         allData.map(
             item =>
-                Number(
-                    metricValue(
-                        item
-                    )
+                metricValue(
+                    item
                 )
         );
 
@@ -3764,7 +4177,8 @@ function drawChart() {
         (
             maxValue -
             minValue
-        ) * 0.16;
+        ) *
+        0.16;
 
 
     minValue -=
@@ -3794,29 +4208,31 @@ function drawChart() {
 
 
     const width =
-        right - left;
+        right -
+        left;
 
     const height =
-        bottom - top;
+        bottom -
+        top;
 
 
     const coords =
         visible.map(
             (
                 entry,
-                i
+                index
             ) => {
 
                 const value =
-                    Number(
-                        metricValue(
-                            entry.item
-                        )
+                    metricValue(
+                        entry.item
                     );
 
 
                 const x =
-                    visible.length === 1
+
+                    visible.length ===
+                    1
 
                         ? left +
                           width / 2
@@ -3826,12 +4242,13 @@ function drawChart() {
                         left +
 
                         (
-                            i /
+                            index /
                             (
                                 visible.length -
                                 1
                             )
                         ) *
+
                         width;
 
 
@@ -3866,6 +4283,10 @@ function drawChart() {
         );
 
 
+    /* ==================================================
+       LINE
+    ================================================== */
+
     let lineD =
         "";
 
@@ -3894,6 +4315,10 @@ function drawChart() {
     );
 
 
+    /* ==================================================
+       AREA
+    ================================================== */
+
     let areaD =
         lineD;
 
@@ -3902,13 +4327,13 @@ function drawChart() {
         coords.length
     ) {
 
+        const first =
+            coords[0];
+
         const last =
             coords[
                 coords.length - 1
             ];
-
-        const first =
-            coords[0];
 
 
         areaD +=
@@ -3927,6 +4352,10 @@ function drawChart() {
         areaD
     );
 
+
+    /* ==================================================
+       POINTS
+    ================================================== */
 
     pointsGroup.innerHTML =
         "";
@@ -3988,8 +4417,7 @@ function drawChart() {
                 event => {
 
                     if (
-                        event.touches.length ===
-                        1
+                        event.touches.length === 1
                     ) {
 
                         showTooltip(
@@ -4015,6 +4443,10 @@ function drawChart() {
     );
 
 
+    /* ==================================================
+       X LABELS
+    ================================================== */
+
     axisLabels.innerHTML =
         "";
 
@@ -4026,80 +4458,76 @@ function drawChart() {
         );
 
 
-    if (
-        labelCount > 0
+    for (
+        let i = 0;
+        i < labelCount;
+        i++
     ) {
 
-        for (
-            let i = 0;
-            i < labelCount;
-            i++
-        ) {
+        const index =
 
-            const realIndex =
-                labelCount === 1
+            labelCount === 1
 
-                    ? 0
+                ? 0
 
-                    : Math.round(
+                : Math.round(
 
-                        i *
+                    i *
 
-                        (
-                            visible.length -
-                            1
-                        ) /
+                    (
+                        visible.length -
+                        1
+                    ) /
 
-                        (
-                            labelCount -
-                            1
-                        )
+                    (
+                        labelCount -
+                        1
+                    )
 
-                    );
-
-
-            const point =
-                coords[
-                    realIndex
-                ];
-
-
-            const label =
-                createSvgElement(
-                    "text"
                 );
 
 
-            label.setAttribute(
-                "x",
-                point.x
-            );
+        const point =
+            coords[
+                index
+            ];
 
-            label.setAttribute(
-                "y",
-                447
-            );
 
-            label.setAttribute(
-                "text-anchor",
-                "middle"
-            );
-
-            label.setAttribute(
-                "class",
-                "x-label"
+        const label =
+            createSvgElement(
+                "text"
             );
 
 
-            label.textContent =
-                point.entry.item.name;
+        label.setAttribute(
+            "x",
+            point.x
+        );
+
+        label.setAttribute(
+            "y",
+            447
+        );
+
+        label.setAttribute(
+            "text-anchor",
+            "middle"
+        );
+
+        label.setAttribute(
+            "class",
+            "x-label"
+        );
 
 
-            axisLabels.appendChild(
-                label
-            );
+        label.textContent =
+            point.entry.item.name ||
+            "Deneme";
 
-        }
+
+        axisLabels.appendChild(
+            label
+        );
 
     }
 
@@ -4120,7 +4548,8 @@ function showTooltip(
 ) {
 
     tooltipName.textContent =
-        item.name;
+        item.name ||
+        "İsimsiz deneme";
 
 
     tooltipDate.textContent =
@@ -4144,6 +4573,7 @@ function showTooltip(
     const wrapRect =
         chartWrap.getBoundingClientRect();
 
+
     const svgRect =
         chartSvg.getBoundingClientRect();
 
@@ -4165,10 +4595,13 @@ function showTooltip(
 
 
     const xRatio =
-        cx / 1000;
+        cx /
+        1000;
+
 
     const yRatio =
-        cy / 470;
+        cy /
+        470;
 
 
     let left =
@@ -4196,6 +4629,7 @@ function showTooltip(
     left -=
         85;
 
+
     top -=
         98;
 
@@ -4206,7 +4640,7 @@ function showTooltip(
             Math.min(
                 left,
                 chartWrap.clientWidth -
-                178
+                185
             )
         );
 
@@ -4265,7 +4699,8 @@ function animateZoom() {
     if (
         Math.abs(
             difference
-        ) < 0.005
+        ) <
+        0.005
     ) {
 
         currentZoom =
@@ -4281,7 +4716,8 @@ function animateZoom() {
         Math.abs(
             targetZoom -
             currentZoom
-        ) >= 0.005
+        ) >=
+        0.005
     ) {
 
         animationFrame =
@@ -4369,7 +4805,7 @@ chartWrap.addEventListener(
     "wheel",
     event => {
 
-        const usingMouse =
+        const leftHeld =
             leftMouseDown ||
             Boolean(
                 event.buttons & 1
@@ -4377,7 +4813,7 @@ chartWrap.addEventListener(
 
 
         if (
-            !usingMouse
+            !leftHeld
         ) {
 
             return;
@@ -4435,6 +4871,7 @@ function getTouchDistance(
         touches[0].clientX -
         touches[1].clientX;
 
+
     const dy =
         touches[0].clientY -
         touches[1].clientY;
@@ -4453,13 +4890,15 @@ chartWrap.addEventListener(
     event => {
 
         if (
-            event.touches.length === 2
+            event.touches.length ===
+            2
         ) {
 
             pinchStartDistance =
                 getTouchDistance(
                     event.touches
                 );
+
 
             pinchStartZoom =
                 targetZoom;
@@ -4491,14 +4930,14 @@ chartWrap.addEventListener(
         event.preventDefault();
 
 
-        const currentDistance =
+        const distance =
             getTouchDistance(
                 event.touches
             );
 
 
         const ratio =
-            currentDistance /
+            distance /
             pinchStartDistance;
 
 
@@ -4520,7 +4959,8 @@ chartWrap.addEventListener(
     event => {
 
         if (
-            event.touches.length < 2
+            event.touches.length <
+            2
         ) {
 
             pinchStartDistance =
@@ -4547,36 +4987,11 @@ document
                 "click",
                 () => {
 
-                    document
-                        .querySelectorAll(
-                            ".filter-button"
-                        )
-                        .forEach(
-                            item =>
-                                item.classList.remove(
-                                    "active"
-                                )
-                        );
-
-
-                    button.classList.add(
-                        "active"
-                    );
-
-
                     currentType =
                         button.dataset.type;
 
 
-                    document
-                        .getElementById(
-                            "branchPanel"
-                        )
-                        .classList.toggle(
-                            "show",
-                            currentType ===
-                            "BRANCH"
-                        );
+                    updateFilterUI();
 
 
                     currentZoom =
@@ -4610,25 +5025,15 @@ document
                 "click",
                 () => {
 
-                    document
-                        .querySelectorAll(
-                            ".branch-button"
-                        )
-                        .forEach(
-                            item =>
-                                item.classList.remove(
-                                    "active"
-                                )
-                        );
-
-
-                    button.classList.add(
-                        "active"
-                    );
-
-
                     currentBranch =
                         button.dataset.branch;
+
+
+                    currentType =
+                        "BRANCH";
+
+
+                    updateFilterUI();
 
 
                     currentZoom =
@@ -4703,24 +5108,14 @@ document
    PANEL
 ================================================== */
 
-const openAddPanel =
+const addPanel =
     document.getElementById(
-        "openAddPanel"
-    );
-
-const closeAddPanel =
-    document.getElementById(
-        "closeAddPanel"
+        "addPanel"
     );
 
 const panelOverlay =
     document.getElementById(
         "panelOverlay"
-    );
-
-const addPanel =
-    document.getElementById(
-        "addPanel"
     );
 
 
@@ -4733,7 +5128,8 @@ function syncAddType() {
 
 
     if (
-        currentType === "TYT"
+        currentType ===
+        "TYT"
     ) {
 
         select.value =
@@ -4742,7 +5138,8 @@ function syncAddType() {
     }
 
     else if (
-        currentType === "AYT"
+        currentType ===
+        "AYT"
     ) {
 
         select.value =
@@ -4764,15 +5161,19 @@ function openPanel() {
 
     syncAddType();
 
+
     hideMessages();
+
 
     addPanel.classList.add(
         "show"
     );
 
+
     panelOverlay.classList.add(
         "show"
     );
+
 
     document.body.classList.add(
         "panel-open"
@@ -4801,9 +5202,11 @@ function closePanel() {
         "show"
     );
 
+
     panelOverlay.classList.remove(
         "show"
     );
+
 
     document.body.classList.remove(
         "panel-open"
@@ -4812,16 +5215,24 @@ function closePanel() {
 }
 
 
-openAddPanel.addEventListener(
-    "click",
-    openPanel
-);
+document
+    .getElementById(
+        "openAddPanel"
+    )
+    .addEventListener(
+        "click",
+        openPanel
+    );
 
 
-closeAddPanel.addEventListener(
-    "click",
-    closePanel
-);
+document
+    .getElementById(
+        "closeAddPanel"
+    )
+    .addEventListener(
+        "click",
+        closePanel
+    );
 
 
 panelOverlay.addEventListener(
@@ -4851,8 +5262,28 @@ document.addEventListener(
 
 
 /* ==================================================
-   FORM CALCULATION
+   FORM
 ================================================== */
+
+const addForm =
+    document.getElementById(
+        "addForm"
+    );
+
+const examName =
+    document.getElementById(
+        "examName"
+    );
+
+const examType =
+    document.getElementById(
+        "examType"
+    );
+
+const examDate =
+    document.getElementById(
+        "examDate"
+    );
 
 const correctInput =
     document.getElementById(
@@ -4884,8 +5315,27 @@ const calculatedPoint =
         "calculatedPoint"
     );
 
+const submitButton =
+    document.getElementById(
+        "submitButton"
+    );
 
-function getNumber(
+const successMessage =
+    document.getElementById(
+        "successMessage"
+    );
+
+const errorMessage =
+    document.getElementById(
+        "errorMessage"
+    );
+
+
+/* ==================================================
+   FORM CALCULATION
+================================================== */
+
+function inputNumber(
     input
 ) {
 
@@ -4895,65 +5345,66 @@ function getNumber(
         );
 
 
-    if (
-        !Number.isFinite(
+    return Number.isFinite(
+        value
+    )
+        ? Math.max(
+            0,
             value
         )
-    ) {
-
-        return 0;
-
-    }
-
-
-    return Math.max(
-        0,
-        value
-    );
+        : 0;
 
 }
 
 
 function calculateForm() {
 
-    const correct =
-        getNumber(
+    const dogru =
+        inputNumber(
             correctInput
         );
 
-    const wrong =
-        getNumber(
+
+    const yanlis =
+        inputNumber(
             wrongInput
         );
 
-    const duration =
-        getNumber(
+
+    const bos =
+        inputNumber(
+            emptyInput
+        );
+
+
+    const sure =
+        inputNumber(
             durationInput
         );
 
 
     const net =
-        correct -
-        wrong / 4;
+        dogru -
+        (
+            yanlis /
+            4
+        );
 
 
-    const point =
-        duration > 0
+    const puan =
+        sure > 0
 
             ? (
                 net /
-                duration
-              ) *
-              1000
+                sure
+            ) *
+            1000
 
             : 0;
 
 
     calculatedNet.textContent =
-        Number(
-            net
-        )
-        .toFixed(
+        net.toFixed(
             2
         )
         .replace(
@@ -4963,30 +5414,24 @@ function calculateForm() {
 
 
     calculatedPoint.textContent =
-        Number(
-            point
-        )
-        .toFixed(
+        puan.toFixed(
             1
         );
 
 
     return {
 
-        correct,
+        dogru,
 
-        wrong,
+        yanlis,
 
-        empty:
-            getNumber(
-                emptyInput
-            ),
+        bos,
 
-        duration,
+        sure,
 
         net,
 
-        point
+        puan
 
     };
 
@@ -5015,22 +5460,6 @@ function calculateForm() {
    MESSAGES
 ================================================== */
 
-const successMessage =
-    document.getElementById(
-        "successMessage"
-    );
-
-const errorMessage =
-    document.getElementById(
-        "errorMessage"
-    );
-
-const submitButton =
-    document.getElementById(
-        "submitButton"
-    );
-
-
 function hideMessages() {
 
     successMessage.classList.remove(
@@ -5051,6 +5480,7 @@ function showError(
     errorMessage.textContent =
         message;
 
+
     errorMessage.classList.add(
         "show"
     );
@@ -5059,300 +5489,278 @@ function showError(
 
 
 /* ==================================================
-   ADD EXAM
+   ADD
 ================================================== */
 
-document
-    .getElementById(
-        "addForm"
-    )
-    .addEventListener(
-        "submit",
-        async event => {
+addForm.addEventListener(
+    "submit",
+    async event => {
 
-            event.preventDefault();
+        event.preventDefault();
 
-            hideMessages();
 
+        hideMessages();
 
-            const name =
-                document
-                    .getElementById(
-                        "examName"
-                    )
-                    .value
-                    .trim();
 
+        const name =
+            examName.value.trim();
 
-            const sinav =
-                document
-                    .getElementById(
-                        "examType"
-                    )
-                    .value;
 
+        const sinav =
+            examType.value;
 
-            const date =
-                document
-                    .getElementById(
-                        "examDate"
-                    )
-                    .value;
 
+        const date =
+            examDate.value;
 
-            const values =
-                calculateForm();
 
+        const values =
+            calculateForm();
 
-            if (
-                !name
-            ) {
 
-                showError(
-                    "Deneme adı zorunludur."
-                );
+        if (
+            !name
+        ) {
 
-                return;
+            showError(
+                "Deneme adı zorunludur."
+            );
 
-            }
-
-
-            if (
-                !date
-            ) {
-
-                showError(
-                    "Tarih zorunludur."
-                );
-
-                return;
-
-            }
-
-
-            submitButton.disabled =
-                true;
-
-            submitButton.textContent =
-                "Notion'a kaydediliyor...";
-
-
-            try {
-
-                const response =
-                    await api(
-                        "/deneme-ekle",
-                        {
-
-                            method:
-                                "POST",
-
-                            body:
-                                JSON.stringify({
-
-                                    name,
-
-                                    sinav,
-
-                                    date,
-
-                                    dogru:
-                                        values.correct,
-
-                                    yanlis:
-                                        values.wrong,
-
-                                    bos:
-                                        values.empty,
-
-                                    sure:
-                                        values.duration
-
-                                })
-
-                        }
-                    );
-
-
-                if (
-                    response.data
-                ) {
-
-                    exams.push(
-                        response.data
-                    );
-
-                }
-
-
-                successMessage.classList.add(
-                    "show"
-                );
-
-
-                /* ---------------------------------------
-                   YENİ EKLENEN SINAVA GEÇ
-                --------------------------------------- */
-
-                if (
-                    sinav ===
-                    "TYT"
-                ) {
-
-                    currentType =
-                        "TYT";
-
-                }
-
-                else if (
-                    sinav ===
-                    "AYT"
-                ) {
-
-                    currentType =
-                        "AYT";
-
-                }
-
-                else {
-
-                    currentType =
-                        "BRANCH";
-
-                    currentBranch =
-                        sinav;
-
-                    document
-                        .querySelectorAll(
-                            ".branch-button"
-                        )
-                        .forEach(
-                            button => {
-
-                                button.classList.toggle(
-                                    "active",
-                                    button.dataset.branch ===
-                                    sinav
-                                );
-
-                            }
-                        );
-
-                }
-
-
-                document
-                    .querySelectorAll(
-                        ".filter-button"
-                    )
-                    .forEach(
-                        button => {
-
-                            button.classList.toggle(
-                                "active",
-                                button.dataset.type ===
-                                currentType
-                            );
-
-                        }
-                    );
-
-
-                document
-                    .getElementById(
-                        "branchPanel"
-                    )
-                    .classList.toggle(
-                        "show",
-                        currentType ===
-                        "BRANCH"
-                    );
-
-
-                currentZoom =
-                    1;
-
-                targetZoom =
-                    1;
-
-
-                drawChart();
-
-
-                /* ---------------------------------------
-                   TEMİZLE
-                --------------------------------------- */
-
-                document
-                    .getElementById(
-                        "examName"
-                    )
-                    .value =
-                    "";
-
-
-                setTimeout(
-                    () => {
-
-                        closePanel();
-
-                    },
-                    700
-                );
-
-            }
-
-            catch (
-                error
-            ) {
-
-                console.error(
-                    error
-                );
-
-
-                showError(
-                    error.message ||
-                    "Deneme eklenemedi."
-                );
-
-            }
-
-            finally {
-
-                submitButton.disabled =
-                    false;
-
-                submitButton.textContent =
-                    "Denemeyi Ekle";
-
-            }
+            return;
 
         }
-    );
+
+
+        if (
+            !date
+        ) {
+
+            showError(
+                "Tarih zorunludur."
+            );
+
+            return;
+
+        }
+
+
+        submitButton.disabled =
+            true;
+
+
+        submitButton.textContent =
+            "Notion'a kaydediliyor...";
+
+
+        try {
+
+            await postExam({
+
+                name,
+
+                sinav,
+
+                date,
+
+                dogru:
+                    values.dogru,
+
+                yanlis:
+                    values.yanlis,
+
+                bos:
+                    values.bos,
+
+                sure:
+                    values.sure
+
+            });
+
+
+            /*
+               Yeni kaydın formula alanı dahil
+               kesin verisini Notion'dan tekrar çek.
+            */
+
+            exams =
+                await getExams();
+
+
+            /*
+               Eklenen kayda geç.
+            */
+
+            if (
+                sinav === "TYT"
+            ) {
+
+                currentType =
+                    "TYT";
+
+            }
+
+            else if (
+                sinav === "AYT"
+            ) {
+
+                currentType =
+                    "AYT";
+
+            }
+
+            else {
+
+                currentType =
+                    "BRANCH";
+
+                currentBranch =
+                    sinav;
+
+            }
+
+
+            updateFilterUI();
+
+
+            currentZoom =
+                1;
+
+            targetZoom =
+                1;
+
+
+            drawChart();
+
+
+            setStatus(
+                `${exams.length} deneme yüklendi`
+            );
+
+
+            successMessage.classList.add(
+                "show"
+            );
+
+
+            setTimeout(
+                () => {
+
+                    examName.value =
+                        "";
+
+                    correctInput.value =
+                        0;
+
+                    wrongInput.value =
+                        0;
+
+                    emptyInput.value =
+                        0;
+
+                    durationInput.value =
+                        165;
+
+                    examDate.value =
+                        getTodayString();
+
+                    calculateForm();
+
+                },
+                300
+            );
+
+
+            setTimeout(
+                () => {
+
+                    closePanel();
+
+                },
+                750
+            );
+
+        }
+
+        catch (
+            error
+        ) {
+
+            console.error(
+                "Deneme ekleme hatası:",
+                error
+            );
+
+
+            showError(
+                error.message ||
+                "Deneme eklenemedi."
+            );
+
+        }
+
+        finally {
+
+            submitButton.disabled =
+                false;
+
+            submitButton.textContent =
+                "Denemeyi Ekle";
+
+        }
+
+    }
+);
 
 
 /* ==================================================
-   INITIAL DATE
+   TODAY
 ================================================== */
 
-document
-    .getElementById(
-        "examDate"
-    )
-    .value =
-    new Date()
-        .toISOString()
-        .split("T")[0];
+function getTodayString() {
+
+    const now =
+        new Date();
+
+
+    return [
+
+        now.getFullYear(),
+
+        String(
+            now.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        ),
+
+        String(
+            now.getDate()
+        ).padStart(
+            2,
+            "0"
+        )
+
+    ].join("-");
+
+}
+
+
+examDate.value =
+    getTodayString();
 
 
 /* ==================================================
-   INITIAL
+   INITIAL CALCULATION
 ================================================== */
 
 calculateForm();
 
-loadExams();
+
+/* ==================================================
+   START
+================================================== */
+
+initialize();
 
 </script>
 
