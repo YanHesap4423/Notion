@@ -1,5769 +1,776 @@
 <!DOCTYPE html>
 <html lang="tr">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>Deneme İstatistikleri</title>
-
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>YKS İstatistikleri</title>
 <style>
-
-/* ==================================================
-   RESET
-================================================== */
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-
-/* ==================================================
-   BODY
-================================================== */
-
-body {
-
-    font-family:
-        Inter,
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
-    background:
-
-        radial-gradient(
-            circle at 20% 0%,
-            rgba(255, 132, 0, 0.10),
-            transparent 35%
-        ),
-
-        radial-gradient(
-            circle at 85% 20%,
-            rgba(255, 132, 0, 0.05),
-            transparent 30%
-        ),
-
-        #090909;
-
-    color:
-        #f5f5f5;
-
-    min-height:
-        100vh;
-
-    padding:
-        28px;
-}
-
-
-body.panel-open {
-    overflow:
-        hidden;
-}
-
-
-/* ==================================================
-   CONTAINER
-================================================== */
-
-.container {
-
-    width:
-        min(1250px, 100%);
-
-    margin:
-        0 auto;
-}
-
-
-/* ==================================================
-   CARD
-================================================== */
-
-.card {
-
-    background:
-        rgba(17, 17, 17, 0.92);
-
-    border:
-        1px solid rgba(
-            255,
-            255,
-            255,
-            0.07
-        );
-
-    border-radius:
-        24px;
-
-    box-shadow:
-
-        0 25px 70px
-        rgba(
-            0,
-            0,
-            0,
-            0.45
-        ),
-
-        0 0 0 1px
-        rgba(
-            255,
-            255,
-            255,
-            0.015
-        )
-        inset;
-
-    overflow:
-        hidden;
-
-    backdrop-filter:
-        blur(14px);
-}
-
-
-/* ==================================================
-   HEADER
-================================================== */
-
-.header {
-
-    display:
-        flex;
-
-    align-items:
-        flex-start;
-
-    justify-content:
-        space-between;
-
-    gap:
-        24px;
-
-    padding:
-        28px 30px 22px;
-}
-
-
-.title {
-
-    font-size:
-        28px;
-
-    font-weight:
-        800;
-
-    letter-spacing:
-        -0.03em;
-}
-
-
-.subtitle {
-
-    color:
-        #8c8c8c;
-
-    margin-top:
-        7px;
-
-    font-size:
-        14px;
-}
-
-
-.status {
-
-    display:
-        inline-flex;
-
-    align-items:
-        center;
-
-    gap:
-        8px;
-
-    margin-top:
-        14px;
-
-    color:
-        #a4a4a4;
-
-    font-size:
-        12px;
-
-    font-weight:
-        600;
-}
-
-
-.status-dot {
-
-    width:
-        7px;
-
-    height:
-        7px;
-
-    border-radius:
-        50%;
-
-    background:
-        #ff8500;
-
-    animation:
-        pulse 2s infinite;
-}
-
-
-.status-dot.loading {
-
-    background:
-        #ff8500;
-}
-
-
-.status-dot.error {
-
-    background:
-        #ef6b6b;
-
-    animation:
-        none;
-}
-
-
-@keyframes pulse {
-
-    0% {
-
-        box-shadow:
-            0 0 0 0
-            rgba(
-                255,
-                133,
-                0,
-                0.55
-            );
-
-    }
-
-    70% {
-
-        box-shadow:
-            0 0 0 7px
-            rgba(
-                255,
-                133,
-                0,
-                0
-            );
-
-    }
-
-    100% {
-
-        box-shadow:
-            0 0 0 0
-            rgba(
-                255,
-                133,
-                0,
-                0
-            );
-
-    }
-
-}
-
-
-/* ==================================================
-   ADD BUTTON
-================================================== */
-
-.add-button {
-
-    border:
-        1px solid rgba(
-            255,
-            133,
-            0,
-            0.35
-        );
-
-    background:
-
-        linear-gradient(
-            180deg,
-            rgba(
-                255,
-                133,
-                0,
-                0.16
-            ),
-            rgba(
-                255,
-                133,
-                0,
-                0.07
-            )
-        );
-
-    color:
-        #ff9d38;
-
-    height:
-        44px;
-
-    padding:
-        0 17px;
-
-    border-radius:
-        13px;
-
-    display:
-        inline-flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    gap:
-        9px;
-
-    font-size:
-        14px;
-
-    font-weight:
-        750;
-
-    cursor:
-        pointer;
-
-    transition:
-        transform 0.18s ease,
-        background 0.18s ease,
-        border-color 0.18s ease,
-        box-shadow 0.18s ease;
-}
-
-
-.add-button:hover {
-
-    transform:
-        translateY(-1px);
-
-    background:
-
-        linear-gradient(
-            180deg,
-            rgba(
-                255,
-                133,
-                0,
-                0.23
-            ),
-            rgba(
-                255,
-                133,
-                0,
-                0.10
-            )
-        );
-
-    border-color:
-        rgba(
-            255,
-            133,
-            0,
-            0.60
-        );
-
-    box-shadow:
-        0 10px 30px
-        rgba(
-            255,
-            133,
-            0,
-            0.10
-        );
-}
-
-
-.add-button:active {
-
-    transform:
-        translateY(0);
-}
-
-
-.plus-icon {
-
-    width:
-        19px;
-
-    height:
-        19px;
-
-    display:
-        grid;
-
-    place-items:
-        center;
-
-    border-radius:
-        6px;
-
-    background:
-        #ff8500;
-
-    color:
-        #111;
-
-    font-size:
-        16px;
-
-    font-weight:
-        900;
-
-    line-height:
-        1;
-}
-
-
-/* ==================================================
-   FILTERS
-================================================== */
-
-.filters-section {
-
-    padding:
-        0 30px 22px;
-}
-
-
-.filter-label {
-
-    color:
-        #8e8e8e;
-
-    font-size:
-        11px;
-
-    text-transform:
-        uppercase;
-
-    letter-spacing:
-        0.10em;
-
-    margin-bottom:
-        10px;
-
-    font-weight:
-        700;
-}
-
-
-.filter-row {
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    gap:
-        9px;
-
-    flex-wrap:
-        wrap;
-}
-
-
-.filter-button,
-.metric-button,
-.branch-button {
-
-    border:
-        1px solid rgba(
-            255,
-            255,
-            255,
-            0.07
-        );
-
-    background:
-        rgba(
-            255,
-            255,
-            255,
-            0.03
-        );
-
-    color:
-        #9d9d9d;
-
-    cursor:
-        pointer;
-
-    transition:
-        0.2s ease;
-
-    font-weight:
-        650;
-}
-
-
-.filter-button {
-
-    height:
-        38px;
-
-    padding:
-        0 15px;
-
-    border-radius:
-        11px;
-
-    font-size:
-        13px;
-}
-
-
-.filter-button:hover,
-.metric-button:hover,
-.branch-button:hover {
-
-    border-color:
-        rgba(
-            255,
-            133,
-            0,
-            0.22
-        );
-
-    color:
-        #d8d8d8;
-
-    background:
-        rgba(
-            255,
-            133,
-            0,
-            0.05
-        );
-}
-
-
-.filter-button.active,
-.metric-button.active,
-.branch-button.active {
-
-    color:
-        #ff9a2f;
-
-    border-color:
-        rgba(
-            255,
-            133,
-            0,
-            0.40
-        );
-
-    background:
-
-        linear-gradient(
-            180deg,
-            rgba(
-                255,
-                133,
-                0,
-                0.15
-            ),
-            rgba(
-                255,
-                133,
-                0,
-                0.07
-            )
-        );
-}
-
-
-/* ==================================================
-   BRANCH
-================================================== */
-
-.branch-panel {
-
-    max-height:
-        0;
-
-    opacity:
-        0;
-
-    overflow:
-        hidden;
-
-    transition:
-        max-height 0.34s ease,
-        opacity 0.25s ease,
-        margin-top 0.3s ease;
-}
-
-
-.branch-panel.show {
-
-    max-height:
-        300px;
-
-    opacity:
-        1;
-
-    margin-top:
-        18px;
-}
-
-
-.branch-grid {
-
-    display:
-        flex;
-
-    flex-wrap:
-        wrap;
-
-    gap:
-        8px;
-}
-
-
-.branch-button {
-
-    height:
-        34px;
-
-    padding:
-        0 12px;
-
-    border-radius:
-        10px;
-
-    font-size:
-        12px;
-}
-
-
-/* ==================================================
-   METRIC
-================================================== */
-
-.metric-section {
-
-    padding:
-        0 30px 20px;
-}
-
-
-.metric-row {
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        space-between;
-
-    gap:
-        15px;
-
-    flex-wrap:
-        wrap;
-}
-
-
-.metric-buttons {
-
-    display:
-        flex;
-
-    gap:
-        8px;
-
-    flex-wrap:
-        wrap;
-}
-
-
-.metric-button {
-
-    height:
-        36px;
-
-    padding:
-        0 14px;
-
-    border-radius:
-        10px;
-
-    font-size:
-        12px;
-}
-
-
-.zoom-indicator {
-
-    color:
-        #707070;
-
-    font-size:
-        12px;
-
-    font-weight:
-        650;
-}
-
-
-/* ==================================================
-   CHART
-================================================== */
-
-.chart-area {
-
-    padding:
-        0 18px 20px;
-}
-
-
-.chart-wrap {
-
-    position:
-        relative;
-
-    width:
-        100%;
-
-    height:
-        470px;
-
-    border-radius:
-        18px;
-
-    background:
-
-        linear-gradient(
-            180deg,
-            rgba(
-                255,
-                255,
-                255,
-                0.018
-            ),
-            rgba(
-                255,
-                255,
-                255,
-                0.006
-            )
-        );
-
-    overflow:
-        hidden;
-
-    user-select:
-        none;
-
-    -webkit-user-select:
-        none;
-
-    touch-action:
-        none;
-}
-
-
-.chart-svg {
-
-    display:
-        block;
-
-    width:
-        100%;
-
-    height:
-        100%;
-}
-
-
-.grid-line {
-
-    stroke:
-        rgba(
-            255,
-            255,
-            255,
-            0.075
-        );
-
-    stroke-width:
-        1;
-}
-
-
-.axis-label {
-
-    fill:
-        #616161;
-
-    font-size:
-        11px;
-}
-
-
-.x-label {
-
-    fill:
-        #777777;
-
-    font-size:
-        10px;
-}
-
-
-.area {
-
-    fill:
-        url(#areaGradient);
-
-    opacity:
-        0.9;
-}
-
-
-.line {
-
-    fill:
-        none;
-
-    stroke:
-        #ff8500;
-
-    stroke-width:
-        3;
-
-    stroke-linecap:
-        round;
-
-    stroke-linejoin:
-        round;
-
-    filter:
-        drop-shadow(
-            0 0 8px
-            rgba(
-                255,
-                133,
-                0,
-                0.17
-            )
-        );
-}
-
-
-.point {
-
-    fill:
-        #ff8500;
-
-    stroke:
-        #111111;
-
-    stroke-width:
-        2.5;
-
-    cursor:
-        pointer;
-
-}
-
-
-.point:hover {
-
-    fill:
-        #ffad54;
-
-}
-
-
-/* ==================================================
-   TOOLTIP
-================================================== */
-
-.tooltip {
-
-    position:
-        absolute;
-
-    min-width:
-        175px;
-
-    padding:
-        12px 14px;
-
-    border-radius:
-        12px;
-
-    background:
-        rgba(
-            18,
-            18,
-            18,
-            0.96
-        );
-
-    border:
-        1px solid rgba(
-            255,
-            255,
-            255,
-            0.08
-        );
-
-    box-shadow:
-        0 15px 40px
-        rgba(
-            0,
-            0,
-            0,
-            0.40
-        );
-
-    pointer-events:
-        none;
-
-    opacity:
-        0;
-
-    transform:
-        translateY(5px)
-        scale(0.98);
-
-    transition:
-        opacity 0.14s ease,
-        transform 0.14s ease;
-
-    z-index:
-        30;
-}
-
-
-.tooltip.show {
-
-    opacity:
-        1;
-
-    transform:
-        translateY(0)
-        scale(1);
-}
-
-
-.tooltip-name {
-
-    font-weight:
-        800;
-
-    font-size:
-        13px;
-
-    color:
-        #f5f5f5;
-
-    margin-bottom:
-        5px;
-}
-
-
-.tooltip-date {
-
-    font-size:
-        11px;
-
-    color:
-        #777;
-
-    margin-bottom:
-        8px;
-}
-
-
-.tooltip-value {
-
-    display:
-        flex;
-
-    align-items:
-        baseline;
-
-    gap:
-        6px;
-}
-
-
-.tooltip-value strong {
-
-    font-size:
-        22px;
-
-    line-height:
-        1;
-
-    color:
-        #ff9a2f;
-}
-
-
-.tooltip-value span {
-
-    font-size:
-        11px;
-
-    color:
-        #8d8d8d;
-}
-
-
-/* ==================================================
-   LOADING
-================================================== */
-
-.loading-state {
-
-    position:
-        absolute;
-
-    inset:
-        0;
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    flex-direction:
-        column;
-
-    gap:
-        12px;
-
-    color:
-        #696969;
-
-    font-size:
-        12px;
-
-    z-index:
-        20;
-
-    pointer-events:
-        none;
-}
-
-
-.loader {
-
-    width:
-        26px;
-
-    height:
-        26px;
-
-    border:
-        2px solid rgba(
-            255,
-            255,
-            255,
-            0.06
-        );
-
-    border-top-color:
-        #ff8500;
-
-    border-radius:
-        50%;
-
-    animation:
-        spin 0.8s linear infinite;
-}
-
-
-@keyframes spin {
-
-    to {
-        transform:
-            rotate(360deg);
-    }
-
-}
-
-
-/* ==================================================
-   EMPTY / ERROR
-================================================== */
-
-.empty-state {
-
-    position:
-        absolute;
-
-    inset:
-        0;
-
-    display:
-        none;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    flex-direction:
-        column;
-
-    gap:
-        8px;
-
-    padding:
-        30px;
-
-    color:
-        #666;
-
-    text-align:
-        center;
-
-    z-index:
-        25;
-}
-
-
-.empty-state strong {
-
-    color:
-        #8a8a8a;
-}
-
-
-.empty-state span {
-
-    max-width:
-        700px;
-
-    line-height:
-        1.6;
-
-    word-break:
-        break-word;
-}
-
-
-/* ==================================================
-   FOOTER
-================================================== */
-
-.chart-footer {
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        space-between;
-
-    gap:
-        15px;
-
-    padding:
-        4px 5px 0;
-}
-
-
-.zoom-hint {
-
-    color:
-        #505050;
-
-    font-size:
-        11px;
-}
-
-
-/* ==================================================
-   OVERLAY
-================================================== */
-
-.panel-overlay {
-
-    position:
-        fixed;
-
-    inset:
-        0;
-
-    background:
-        rgba(
-            0,
-            0,
-            0,
-            0.60
-        );
-
-    backdrop-filter:
-        blur(5px);
-
-    opacity:
-        0;
-
-    visibility:
-        hidden;
-
-    transition:
-        opacity 0.25s ease,
-        visibility 0.25s ease;
-
-    z-index:
-        100;
-}
-
-
-.panel-overlay.show {
-
-    opacity:
-        1;
-
-    visibility:
-        visible;
-}
-
-
-/* ==================================================
-   ADD PANEL
-================================================== */
-
-.add-panel {
-
-    position:
-        fixed;
-
-    top:
-        0;
-
-    right:
-        0;
-
-    width:
-        min(
-            470px,
-            100vw
-        );
-
-    height:
-        100vh;
-
-    padding:
-        25px;
-
-    background:
-
-        linear-gradient(
-            180deg,
-            #151515 0%,
-            #101010 100%
-        );
-
-    border-left:
-        1px solid rgba(
-            255,
-            255,
-            255,
-            0.08
-        );
-
-    box-shadow:
-        -30px 0 90px
-        rgba(
-            0,
-            0,
-            0,
-            0.45
-        );
-
-    transform:
-        translateX(100%);
-
-    transition:
-        transform 0.36s
-        cubic-bezier(
-            0.22,
-            1,
-            0.36,
-            1
-        );
-
-    z-index:
-        101;
-
-    overflow-y:
-        auto;
-}
-
-
-.add-panel.show {
-
-    transform:
-        translateX(0);
-}
-
-
-.panel-header {
-
-    display:
-        flex;
-
-    justify-content:
-        space-between;
-
-    align-items:
-        flex-start;
-
-    gap:
-        20px;
-
-    padding-bottom:
-        24px;
-
-    border-bottom:
-        1px solid rgba(
-            255,
-            255,
-            255,
-            0.07
-        );
-}
-
-
-.panel-title {
-
-    font-size:
-        21px;
-
-    font-weight:
-        800;
-
-    letter-spacing:
-        -0.02em;
-}
-
-
-.panel-subtitle {
-
-    color:
-        #777;
-
-    font-size:
-        12px;
-
-    line-height:
-        1.5;
-
-    margin-top:
-        5px;
-}
-
-
-.close-panel {
-
-    width:
-        36px;
-
-    height:
-        36px;
-
-    border-radius:
-        10px;
-
-    border:
-        1px solid rgba(
-            255,
-            255,
-            255,
-            0.07
-        );
-
-    background:
-        rgba(
-            255,
-            255,
-            255,
-            0.025
-        );
-
-    color:
-        #888;
-
-    cursor:
-        pointer;
-
-    font-size:
-        19px;
-}
-
-
-.close-panel:hover {
-    color:
-        #ddd;
-}
-
-
-/* ==================================================
-   FORM
-================================================== */
-
-.form {
-
-    padding-top:
-        24px;
-}
-
-
-.form-group {
-    margin-bottom:
-        18px;
-}
-
-
-.form-label {
-
-    display:
-        block;
-
-    color:
-        #979797;
-
-    font-size:
-        11px;
-
-    font-weight:
-        700;
-
-    margin-bottom:
-        8px;
-
-    text-transform:
-        uppercase;
-
-    letter-spacing:
-        0.08em;
-}
-
-
-.input,
-.select {
-
-    width:
-        100%;
-
-    height:
-        46px;
-
-    padding:
-        0 13px;
-
-    border-radius:
-        11px;
-
-    border:
-        1px solid rgba(
-            255,
-            255,
-            255,
-            0.08
-        );
-
-    background:
-        rgba(
-            255,
-            255,
-            255,
-            0.035
-        );
-
-    color:
-        #f4f4f4;
-
-    outline:
-        none;
-
-    font-size:
-        13px;
-
-    transition:
-        border-color 0.18s ease,
-        background 0.18s ease,
-        box-shadow 0.18s ease;
-}
-
-
-.input::placeholder {
-    color:
-        #5e5e5e;
-}
-
-
-.input:focus,
-.select:focus {
-
-    border-color:
-        rgba(
-            255,
-            133,
-            0,
-            0.45
-        );
-
-    background:
-        rgba(
-            255,
-            133,
-            0,
-            0.035
-        );
-
-    box-shadow:
-        0 0 0 3px
-        rgba(
-            255,
-            133,
-            0,
-            0.07
-        );
-}
-
-
-.select option {
-
-    background:
-        #151515;
-
-    color:
-        #fff;
-}
-
-
-.two-column {
-
-    display:
-        grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap:
-        12px;
-}
-
-
-.calculated-box {
-
-    min-height:
-        46px;
-
-    padding:
-        0 13px;
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        space-between;
-
-    border-radius:
-        11px;
-
-    border:
-        1px solid rgba(
-            255,
-            133,
-            0,
-            0.20
-        );
-
-    background:
-
-        linear-gradient(
-            180deg,
-            rgba(
-                255,
-                133,
-                0,
-                0.08
-            ),
-            rgba(
-                255,
-                133,
-                0,
-                0.035
-            )
-        );
-}
-
-
-.calculated-name {
-
-    color:
-        #858585;
-
-    font-size:
-        12px;
-}
-
-
-.calculated-value {
-
-    color:
-        #ff9a2f;
-
-    font-size:
-        17px;
-
-    font-weight:
-        800;
-}
-
-
-.panel-info {
-
-    display:
-        flex;
-
-    gap:
-        9px;
-
-    padding:
-        12px 13px;
-
-    border-radius:
-        12px;
-
-    background:
-        rgba(
-            255,
-            255,
-            255,
-            0.025
-        );
-
-    border:
-        1px solid rgba(
-            255,
-            255,
-            255,
-            0.055
-        );
-
-    color:
-        #737373;
-
-    font-size:
-        11px;
-
-    line-height:
-        1.55;
-
-    margin-bottom:
-        22px;
-}
-
-
-.panel-info-icon {
-
-    color:
-        #ff8500;
-
-    font-weight:
-        900;
-}
-
-
-.submit-button {
-
-    width:
-        100%;
-
-    height:
-        48px;
-
-    border:
-        none;
-
-    border-radius:
-        12px;
-
-    background:
-
-        linear-gradient(
-            135deg,
-            #ff8b12,
-            #ff7300
-        );
-
-    color:
-        #17110a;
-
-    font-size:
-        14px;
-
-    font-weight:
-        850;
-
-    cursor:
-        pointer;
-
-    transition:
-        transform 0.18s ease,
-        box-shadow 0.18s ease;
-}
-
-
-.submit-button:hover {
-
-    transform:
-        translateY(-1px);
-
-    box-shadow:
-        0 15px 35px
-        rgba(
-            255,
-            133,
-            0,
-            0.18
-        );
-}
-
-
-.submit-button:disabled {
-
-    opacity:
-        0.65;
-
-    cursor:
-        wait;
-
-    transform:
-        none;
-}
-
-
-.success-message,
-.error-message {
-
-    margin-top:
-        13px;
-
-    padding:
-        11px 13px;
-
-    border-radius:
-        10px;
-
-    font-size:
-        12px;
-
-    opacity:
-        0;
-
-    transform:
-        translateY(4px);
-
-    pointer-events:
-        none;
-
-    transition:
-        0.2s ease;
-}
-
-
-.success-message {
-
-    background:
-        rgba(
-            52,
-            168,
-            83,
-            0.08
-        );
-
-    border:
-        1px solid rgba(
-            52,
-            168,
-            83,
-            0.16
-        );
-
-    color:
-        #83c995;
-}
-
-
-.error-message {
-
-    background:
-        rgba(
-            255,
-            90,
-            90,
-            0.07
-        );
-
-    border:
-        1px solid rgba(
-            255,
-            90,
-            90,
-            0.13
-        );
-
-    color:
-        #e98c8c;
-}
-
-
-.success-message.show,
-.error-message.show {
-
-    opacity:
-        1;
-
-    transform:
-        translateY(0);
-}
-
-
-/* ==================================================
-   RESPONSIVE
-================================================== */
-
-@media (max-width: 720px) {
-
-    body {
-
-        padding:
-            12px;
-    }
-
-
-    .header {
-
-        padding:
-            22px 18px 18px;
-
-        flex-direction:
-            column;
-    }
-
-
-    .add-button {
-
-        width:
-            100%;
-    }
-
-
-    .filters-section,
-    .metric-section {
-
-        padding-left:
-            18px;
-
-        padding-right:
-            18px;
-    }
-
-
-    .chart-area {
-
-        padding-left:
-            10px;
-
-        padding-right:
-            10px;
-    }
-
-
-    .chart-wrap {
-
-        height:
-            400px;
-    }
-
-
-    .title {
-
-        font-size:
-            24px;
-    }
-
-
-    .chart-footer {
-
-        flex-direction:
-            column;
-
-        align-items:
-            flex-start;
-    }
-
-}
-
-
-@media (max-width: 450px) {
-
-    .two-column {
-
-        grid-template-columns:
-            1fr;
-    }
-
-
-    .chart-wrap {
-
-        height:
-            350px;
-    }
-
-
-    .add-panel {
-
-        padding:
-            20px;
-    }
-
-}
-
+  :root{
+    --bg:#070707;
+    --panel:#101010;
+    --panel2:#141414;
+    --panel3:#181818;
+    --border:rgba(255,255,255,.075);
+    --border-strong:rgba(255,255,255,.12);
+    --text:#f5f5f5;
+    --muted:#8d8d8d;
+    --muted2:#666;
+    --orange:#ff7a00;
+    --orange2:#ff9a3d;
+    --orange-soft:rgba(255,122,0,.12);
+    --green:#53d769;
+    --red:#ff5a5f;
+    --shadow:0 22px 60px rgba(0,0,0,.42);
+    --radius:22px;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+  body{min-height:100vh;overflow-x:hidden}
+  button,input,select{font:inherit}
+  button{color:inherit}
+
+  .app{width:min(1460px,100%);margin:0 auto;padding:26px 22px 48px}
+  .header{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:18px}
+  .title-wrap h1{margin:0;font-size:clamp(26px,4vw,42px);letter-spacing:-.035em;line-height:1}
+  .title-wrap p{margin:10px 0 0;color:var(--muted);font-size:14px}
+  .connection{display:inline-flex;align-items:center;gap:9px;padding:9px 13px;border:1px solid var(--border);background:#0d0d0d;border-radius:999px;font-size:12px;color:#cfcfcf;white-space:nowrap}
+  .dot{width:8px;height:8px;border-radius:50%;background:#666;box-shadow:0 0 0 4px rgba(255,255,255,.03)}
+  .connection.ok .dot{background:var(--green);box-shadow:0 0 0 4px rgba(83,215,105,.09)}
+  .connection.warn .dot{background:#ffc257}
+  .connection.err .dot{background:var(--red)}
+
+  .chart-card{position:relative;background:linear-gradient(180deg,#0c0c0c,#0a0a0a);border:1px solid var(--border);border-radius:28px;box-shadow:var(--shadow);overflow:hidden}
+  .chart-head{display:flex;align-items:center;justify-content:space-between;padding:18px 18px 0;gap:10px}
+  .chart-title{display:flex;align-items:center;gap:11px;min-width:0}
+  .chart-title strong{font-size:14px;letter-spacing:.01em}
+  .chart-title span{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .chart-actions{display:flex;align-items:center;gap:8px}
+  .icon-btn{width:38px;height:38px;border-radius:12px;border:1px solid var(--border);background:#121212;display:grid;place-items:center;cursor:pointer;transition:.18s ease;position:relative}
+  .icon-btn:hover{border-color:rgba(255,122,0,.35);background:#171717;transform:translateY(-1px)}
+  .icon-btn.active{border-color:rgba(255,122,0,.45);background:rgba(255,122,0,.1);color:var(--orange2)}
+  .icon-btn svg{width:17px;height:17px;stroke:currentColor}
+  .chart-wrap{position:relative;height:520px;padding:8px 10px 12px}
+  .chart-svg{width:100%;height:100%;display:block;touch-action:none;user-select:none}
+  .chart-grid{stroke:rgba(255,255,255,.055);stroke-width:1}
+  .axis-text{fill:#737373;font-size:10px}
+  .axis-label{fill:#555;font-size:10px}
+  .line-glow{fill:none;stroke:rgba(255,122,0,.11);stroke-width:10;stroke-linecap:round;stroke-linejoin:round}
+  .line{fill:none;stroke:var(--orange);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .area{fill:url(#areaFill);opacity:.75}
+  .point{fill:#0b0b0b;stroke:var(--orange);stroke-width:2.3;cursor:pointer}
+  .point:hover{fill:var(--orange);stroke:#fff;stroke-width:1.7}
+  .point.selected{fill:var(--orange);stroke:#fff;stroke-width:2.4;filter:drop-shadow(0 0 9px rgba(255,122,0,.65))}
+  .chart-empty{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+  .empty-box{padding:18px 20px;border-radius:16px;border:1px dashed rgba(255,255,255,.1);background:rgba(255,255,255,.02);text-align:center}
+  .empty-box strong{display:block;font-size:14px;margin-bottom:5px}.empty-box span{font-size:12px;color:var(--muted)}
+
+  .tooltip{position:absolute;z-index:20;min-width:190px;max-width:250px;padding:12px 13px;border-radius:15px;border:1px solid rgba(255,255,255,.1);background:rgba(15,15,15,.97);box-shadow:0 18px 48px rgba(0,0,0,.5);opacity:0;pointer-events:none;transform:translateY(5px);transition:opacity .12s ease,transform .12s ease}
+  .tooltip.show{opacity:1;transform:translateY(0)}
+  .tooltip-name{font-size:13px;font-weight:700;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tooltip-row{display:flex;justify-content:space-between;gap:14px;font-size:11px;padding:3px 0;color:#bdbdbd}.tooltip-row b{color:#fff;font-weight:600}
+  .tooltip-row strong{color:var(--orange2);font-size:12px}
+  .zoom-hint{position:absolute;left:18px;top:17px;padding:7px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.2);color:#676767;font-size:10px;pointer-events:none}
+
+  .below{display:grid;gap:14px;margin-top:14px}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:16px}
+  .panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:13px}.panel-head strong{font-size:13px}.panel-head span{font-size:11px;color:var(--muted)}
+
+  .control-grid{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:start}
+  .filter-group{display:flex;flex-wrap:wrap;gap:8px}
+  .filter-btn,.branch-btn,.metric-btn{border:1px solid var(--border);background:#121212;color:#bdbdbd;border-radius:12px;padding:10px 13px;cursor:pointer;transition:.18s ease;font-size:12px}
+  .filter-btn:hover,.branch-btn:hover,.metric-btn:hover{border-color:rgba(255,122,0,.28);color:#fff;background:#161616}
+  .filter-btn.active,.branch-btn.active,.metric-btn.active{border-color:rgba(255,122,0,.42);background:linear-gradient(180deg,rgba(255,122,0,.16),rgba(255,122,0,.08));color:#fff;box-shadow:inset 0 0 0 1px rgba(255,122,0,.05)}
+  .metric-btn.active{color:var(--orange2)}
+  .add-btn{height:42px;padding:0 17px;border:none;border-radius:13px;background:linear-gradient(180deg,#ff8a1f,#f16d00);color:#fff;font-weight:700;font-size:12px;cursor:pointer;box-shadow:0 10px 22px rgba(255,122,0,.18);transition:.18s ease}.add-btn:hover{transform:translateY(-1px);box-shadow:0 13px 28px rgba(255,122,0,.23)}
+
+  .branch-wrap{margin-top:12px;display:none;padding-top:12px;border-top:1px solid rgba(255,255,255,.05)}
+  .branch-wrap.show{display:block}.branch-title{font-size:10px;color:#6e6e6e;text-transform:uppercase;letter-spacing:.12em;margin:0 0 8px}
+
+  .metric-strip{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.05)}
+
+  .stats-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+  .stat{padding:15px 14px;border:1px solid var(--border);background:linear-gradient(180deg,#121212,#0f0f0f);border-radius:16px;min-width:0}
+  .stat-label{font-size:10px;text-transform:uppercase;letter-spacing:.11em;color:#666;margin-bottom:8px}
+  .stat-value{font-size:21px;line-height:1;font-weight:750;letter-spacing:-.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stat-sub{margin-top:7px;color:#777;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .orange{color:var(--orange2)}
+
+  .footer-note{margin-top:10px;color:#555;font-size:10px;display:flex;justify-content:space-between;gap:10px;align-items:center}.footer-note .strong{color:#8b8b8b}
+
+  .settings-pop{position:absolute;right:18px;top:64px;width:270px;background:#121212;border:1px solid rgba(255,255,255,.1);border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.55);padding:14px;z-index:30;display:none}.settings-pop.show{display:block}
+  .settings-title{font-size:12px;font-weight:700;margin-bottom:12px}.setting{padding:10px 0;border-top:1px solid rgba(255,255,255,.05)}.setting:first-of-type{border-top:none;padding-top:0}
+  .setting-row{display:flex;justify-content:space-between;align-items:center;gap:12px}.setting-label{font-size:11px;color:#c4c4c4}.setting-note{font-size:9px;color:#676767;margin-top:5px;line-height:1.4}
+  .setting select{background:#0d0d0d;color:#ddd;border:1px solid var(--border);border-radius:9px;padding:7px 9px;font-size:10px;outline:none}
+  .range{width:100%;accent-color:var(--orange)}
+  .switch{position:relative;width:39px;height:23px;display:inline-block}.switch input{display:none}.slider{position:absolute;inset:0;background:#2a2a2a;border:1px solid rgba(255,255,255,.06);border-radius:999px;cursor:pointer}.slider:before{content:"";position:absolute;width:17px;height:17px;left:2px;top:2px;border-radius:50%;background:#7b7b7b;transition:.18s}.switch input:checked+.slider{background:rgba(255,122,0,.23);border-color:rgba(255,122,0,.3)}.switch input:checked+.slider:before{transform:translateX(16px);background:var(--orange)}
+
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.66);backdrop-filter:blur(5px);z-index:80;opacity:0;pointer-events:none;transition:.2s ease}.overlay.show{opacity:1;pointer-events:auto}
+  .drawer{position:fixed;top:0;right:0;width:min(460px,100%);height:100dvh;background:#0d0d0d;border-left:1px solid var(--border-strong);z-index:90;transform:translateX(102%);transition:transform .25s ease;box-shadow:-28px 0 70px rgba(0,0,0,.45);display:flex;flex-direction:column}.drawer.show{transform:translateX(0)}
+  .drawer-head{display:flex;justify-content:space-between;align-items:center;padding:18px 18px 15px;border-bottom:1px solid rgba(255,255,255,.06)}.drawer-head strong{font-size:15px}.drawer-head span{font-size:11px;color:#666;margin-top:4px;display:block}.close-btn{width:36px;height:36px;border-radius:11px;border:1px solid var(--border);background:#131313;cursor:pointer}
+  .drawer-body{padding:18px;overflow:auto;display:grid;gap:12px}.field{display:grid;gap:7px}.field label{font-size:11px;color:#9a9a9a}.field input,.field select{width:100%;height:44px;border-radius:12px;border:1px solid var(--border);background:#111;color:#eee;padding:0 12px;outline:none}.field input:focus,.field select:focus{border-color:rgba(255,122,0,.4);box-shadow:0 0 0 3px rgba(255,122,0,.07)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .calc-box{display:grid;grid-template-columns:1fr 1fr;gap:10px}.calc{padding:13px;border-radius:13px;background:#111;border:1px solid rgba(255,255,255,.055)}.calc span{display:block;font-size:9px;color:#666;text-transform:uppercase;letter-spacing:.1em}.calc strong{display:block;margin-top:7px;font-size:20px;color:#fff}
+  .submit{margin-top:4px;height:46px;border:none;border-radius:13px;background:linear-gradient(180deg,#ff8b23,#f16e00);color:#fff;font-weight:800;cursor:pointer}.submit:disabled{opacity:.55;cursor:default}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);background:#121212;border:1px solid rgba(255,255,255,.1);box-shadow:0 15px 40px rgba(0,0,0,.45);border-radius:13px;padding:11px 14px;font-size:11px;z-index:120;opacity:0;pointer-events:none;transition:.2s ease}.toast.show{opacity:1;transform:translate(-50%,0)}
+
+  .fullscreen-active{background:#050505}
+  body.graph-fullscreen .app{width:100%;max-width:none;padding:10px}
+  body.graph-fullscreen .header, body.graph-fullscreen .below{display:none}
+  body.graph-fullscreen .chart-card{border-radius:18px;height:calc(100dvh - 20px)}
+  body.graph-fullscreen .chart-wrap{height:calc(100dvh - 78px)}
+  body.graph-fullscreen .chart-head{padding-top:12px}
+  body.graph-fullscreen .zoom-hint{display:block}
+  body.graph-fullscreen .chart-title span{display:none}
+  body.graph-fullscreen .chart-title strong:after{content:" • Yatay görünüm";color:#666;font-weight:500}
+
+  @media (max-width:1100px){
+    .stats-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .control-grid{grid-template-columns:1fr}
+    .add-btn{width:max-content}
+  }
+  @media (max-width:700px){
+    .app{padding:14px 10px 30px}.header{align-items:flex-start}.connection{padding:8px 10px}
+    .chart-card{border-radius:20px}.chart-wrap{height:410px;padding:5px 5px 8px}.chart-head{padding:12px 12px 0}.chart-title span{display:none}.icon-btn{width:36px;height:36px}
+    .zoom-hint{left:12px;top:12px;font-size:9px}
+    .panel{padding:13px;border-radius:18px}.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stats-grid .stat:last-child{grid-column:span 2}
+    .filter-group{gap:7px}.filter-btn,.branch-btn,.metric-btn{padding:9px 10px}
+  }
+  @media (max-width:700px) and (orientation:landscape){
+    body:not(.graph-fullscreen) .chart-wrap{height:calc(100svh - 125px)}
+  }
 </style>
-
 </head>
-
-
 <body>
-
-
-<div class="container">
-
-<div class="card">
-
-
-<!-- ==================================================
-     HEADER
-================================================== -->
-
-<div class="header">
-
-
-    <div>
-
-        <h1 class="title">
-            Deneme İstatistikleri
-        </h1>
-
-
-        <div class="subtitle">
-            Denemelerindeki gelişimini tek grafik üzerinden takip et.
-        </div>
-
-
-        <div class="status">
-
-            <span
-                class="status-dot loading"
-                id="statusDot"
-            ></span>
-
-
-            <span id="statusText">
-                Notion verileri yükleniyor...
-            </span>
-
-        </div>
-
+<div class="app">
+  <div class="header">
+    <div class="title-wrap">
+      <h1>YKS İstatistikleri</h1>
+      <p id="headerSub">Denemelerin performansını tek grafik üzerinden takip et.</p>
     </div>
+    <div id="connection" class="connection"><span class="dot"></span><span id="connectionText">Bağlanıyor…</span></div>
+  </div>
 
-
-    <button
-        class="add-button"
-        id="openAddPanel"
-        type="button"
-    >
-
-        <span class="plus-icon">
-            +
-        </span>
-
-        Ekle
-
-    </button>
-
-
-</div>
-
-
-<!-- ==================================================
-     FILTERS
-================================================== -->
-
-<div class="filters-section">
-
-
-    <div class="filter-label">
-        Veri Türü
-    </div>
-
-
-    <div class="filter-row">
-
-
-        <button
-            class="filter-button"
-            data-type="TYT"
-            type="button"
-        >
-            TYT Genel
+  <section id="chartCard" class="chart-card">
+    <div class="chart-head">
+      <div class="chart-title">
+        <strong id="chartTitle">TYT Genel • Net</strong>
+        <span id="chartMeta">Veri bekleniyor</span>
+      </div>
+      <div class="chart-actions">
+        <button id="settingsBtn" class="icon-btn" title="Grafik ayarları" aria-label="Grafik ayarları">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="m19.4 15 .1.1a2 2 0 0 1-2.8 2.8l-.1-.1a2 2 0 0 0-3.4 1.4V19a2 2 0 0 1-4 0v-.1A2 2 0 0 0 5.8 17.5l-.1.1a2 2 0 0 1-2.8-2.8L3 14.7A2 2 0 0 0 1.6 11H1.5a2 2 0 0 1 0-4h.1A2 2 0 0 0 3 3.6L2.9 3.5A2 2 0 0 1 5.7.7l.1.1A2 2 0 0 0 9.2-.6V-.7a2 2 0 0 1 4 0v.1a2 2 0 0 0 3.4 1.4l.1-.1a2 2 0 0 1 2.8 2.8l-.1.1A2 2 0 0 0 20.8 7h.1a2 2 0 0 1 0 4h-.1A2 2 0 0 0 19.4 15Z" transform="translate(1.6 2.6) scale(.82)"/></svg>
         </button>
-
-
-        <button
-            class="filter-button"
-            data-type="AYT"
-            type="button"
-        >
-            AYT Genel
+        <button id="fullscreenBtn" class="icon-btn" title="Grafiği yatay tam ekran aç" aria-label="Grafiği yatay tam ekran aç">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M21 16v5h-5"/></svg>
         </button>
-
-
-        <button
-            class="filter-button"
-            data-type="BRANCH"
-            type="button"
-        >
-            Branş
-        </button>
-
-
+      </div>
     </div>
 
-
-    <div
-        class="branch-panel"
-        id="branchPanel"
-    >
-
-        <div class="branch-grid">
-
-
-            <button
-                class="branch-button"
-                data-branch="TYT Matematik"
-                type="button"
-            >
-                TYT Matematik
-            </button>
-
-
-            <button
-                class="branch-button"
-                data-branch="TYT Türkçe"
-                type="button"
-            >
-                TYT Türkçe
-            </button>
-
-
-            <button
-                class="branch-button"
-                data-branch="TYT SOSYAL"
-                type="button"
-            >
-                TYT SOSYAL
-            </button>
-
-
-            <button
-                class="branch-button"
-                data-branch="TYT FEN"
-                type="button"
-            >
-                TYT FEN
-            </button>
-
-
-            <button
-                class="branch-button"
-                data-branch="TYT Fizik"
-                type="button"
-            >
-                TYT Fizik
-            </button>
-
-
-            <button
-                class="branch-button"
-                data-branch="TYT Kimya"
-                type="button"
-            >
-                TYT Kimya
-            </button>
-
-
-            <button
-                class="branch-button"
-                data-branch="TYT Biyoloji"
-                type="button"
-            >
-                TYT Biyoloji
-            </button>
-
-
-            <button
-                class="branch-button"
-                data-branch="AYT Matematik"
-                type="button"
-            >
-                AYT Matematik
-            </button>
-
-
-            <button
-                class="branch-button"
-                data-branch="AYT FEN"
-                type="button"
-            >
-                AYT FEN
-            </button>
-
-
-            <button
-                class="branch-button"
-                data-branch="AYT Fizik"
-                type="button"
-            >
-                AYT Fizik
-            </button>
-
-
-            <button
-                class="branch-button"
-                data-branch="AYT Kimya"
-                type="button"
-            >
-                AYT Kimya
-            </button>
-
-
-            <button
-                class="branch-button"
-                data-branch="AYT Biyoloji"
-                type="button"
-            >
-                AYT Biyoloji
-            </button>
-
-
-        </div>
-
+    <div id="settingsPop" class="settings-pop">
+      <div class="settings-title">Grafik Ayarları</div>
+      <div class="setting">
+        <div class="setting-row"><span class="setting-label">Başlangıç veri yoğunluğu</span><select id="densitySelect"><option value="10">10 nokta</option><option value="12" selected>12 nokta</option><option value="16">16 nokta</option><option value="20">20 nokta</option></select></div>
+        <div class="setting-note">Normal görünümde kaç veri noktasının gösterileceğini belirler. Zoom yaptıkça gizli noktalar kademeli olarak açılır.</div>
+      </div>
+      <div class="setting">
+        <div class="setting-row"><span class="setting-label">Zoom hassasiyeti</span><select id="zoomSelect"><option value="0.12">Düşük</option><option value="0.18" selected>Orta</option><option value="0.25">Yüksek</option><option value="0.35">Çok yüksek</option></select></div>
+        <div class="setting-note">Mouse tekerleği veya iki parmak pinch hareketinin ne kadar veri açacağını ayarlar.</div>
+      </div>
+      <div class="setting">
+        <div class="setting-row"><span class="setting-label">Izgarayı göster</span><label class="switch"><input id="gridSwitch" type="checkbox" checked><span class="slider"></span></label></div>
+      </div>
+      <div class="setting">
+        <div class="setting-row"><span class="setting-label">Noktaları göster</span><label class="switch"><input id="pointSwitch" type="checkbox" checked><span class="slider"></span></label></div>
+      </div>
+      <div class="setting">
+        <div class="setting-row"><span class="setting-label">Zoom sıfırla</span><button id="resetZoomBtn" class="filter-btn" style="padding:7px 10px">1× Görünüm</button></div>
+      </div>
     </div>
 
-</div>
-
-
-<!-- ==================================================
-     METRICS
-================================================== -->
-
-<div class="metric-section">
-
-
-    <div class="metric-row">
-
-
-        <div class="metric-buttons">
-
-
-            <button
-                class="metric-button"
-                data-metric="dogru"
-                type="button"
-            >
-                Doğru
-            </button>
-
-
-            <button
-                class="metric-button"
-                data-metric="yanlis"
-                type="button"
-            >
-                Yanlış
-            </button>
-
-
-            <button
-                class="metric-button"
-                data-metric="bos"
-                type="button"
-            >
-                Boş
-            </button>
-
-
-            <button
-                class="metric-button active"
-                data-metric="net"
-                type="button"
-            >
-                Net
-            </button>
-
-
-            <button
-                class="metric-button"
-                data-metric="puan"
-                type="button"
-            >
-                Puan
-            </button>
-
-
-        </div>
-
-
-        <div
-            class="zoom-indicator"
-            id="zoomIndicator"
-        >
-            Zoom: 1.0x
-        </div>
-
-
+    <div id="chartWrap" class="chart-wrap">
+      <div class="zoom-hint">Masaüstü: grafik üzerinde sol tık + tekerlek • Telefon: iki parmak pinch</div>
+      <svg id="chart" class="chart-svg" viewBox="0 0 1000 500" preserveAspectRatio="none" aria-label="YKS performans grafiği">
+        <defs>
+          <linearGradient id="areaFill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#ff7a00" stop-opacity=".22"/>
+            <stop offset="100%" stop-color="#ff7a00" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <g id="gridLayer"></g>
+        <path id="areaPath" class="area"></path>
+        <path id="glowPath" class="line-glow"></path>
+        <path id="linePath" class="line"></path>
+        <g id="pointsLayer"></g>
+        <g id="axesLayer"></g>
+      </svg>
+      <div id="emptyState" class="chart-empty" style="display:none"><div class="empty-box"><strong>Bu filtre için veri yok</strong><span>Başka bir veri türü veya branş seçebilirsin.</span></div></div>
+      <div id="tooltip" class="tooltip"></div>
     </div>
+  </section>
 
+  <div class="below">
+    <section class="panel">
+      <div class="panel-head"><div><strong>Veri Türü</strong></div><span id="recordCountText">0 kayıt</span></div>
+      <div class="control-grid">
+        <div class="filter-group" id="typeButtons">
+          <button class="filter-btn" data-type="TYT">TYT Genel</button>
+          <button class="filter-btn" data-type="AYT">AYT Genel</button>
+          <button class="filter-btn" data-type="BRANCH">Branş</button>
+        </div>
+        <button id="openAdd" class="add-btn">＋ Deneme Ekle</button>
+      </div>
+      <div id="branchWrap" class="branch-wrap">
+        <div class="branch-title">Branş Seç</div>
+        <div class="filter-group" id="branchButtons">
+          <button class="branch-btn" data-branch="TYT Matematik">TYT Matematik</button>
+          <button class="branch-btn" data-branch="TYT Türkçe">TYT Türkçe</button>
+          <button class="branch-btn" data-branch="TYT SOSYAL">TYT SOSYAL</button>
+          <button class="branch-btn" data-branch="TYT FEN">TYT FEN</button>
+          <button class="branch-btn" data-branch="TYT Fizik">TYT Fizik</button>
+          <button class="branch-btn" data-branch="TYT Kimya">TYT Kimya</button>
+          <button class="branch-btn" data-branch="TYT Biyoloji">TYT Biyoloji</button>
+          <button class="branch-btn" data-branch="AYT Matematik">AYT Matematik</button>
+          <button class="branch-btn" data-branch="AYT FEN">AYT FEN</button>
+          <button class="branch-btn" data-branch="AYT Fizik">AYT Fizik</button>
+          <button class="branch-btn" data-branch="AYT Kimya">AYT Kimya</button>
+          <button class="branch-btn" data-branch="AYT Biyoloji">AYT Biyoloji</button>
+        </div>
+      </div>
+      <div class="metric-strip">
+        <button class="metric-btn active" data-metric="net">Net</button>
+        <button class="metric-btn" data-metric="dogru">Doğru</button>
+        <button class="metric-btn" data-metric="yanlis">Yanlış</button>
+        <button class="metric-btn" data-metric="bos">Boş</button>
+        <button class="metric-btn" data-metric="puan">Puan</button>
+      </div>
+      <div class="footer-note"><span>Grafikteki x ekseni deneme adı, tarih ise tooltip içinde gösterilir.</span><span class="strong" id="filterInfo">—</span></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><div><strong>Özet İstatistikler</strong></div><span id="statsScope">Seçili veri kümesi</span></div>
+      <div class="stats-grid">
+        <div class="stat"><div class="stat-label">Deneme</div><div class="stat-value orange" id="sCount">0</div><div class="stat-sub">filtrelenmiş kayıt</div></div>
+        <div class="stat"><div class="stat-label">Ortalama Net</div><div class="stat-value" id="sAvgNet">—</div><div class="stat-sub">doğru − yanlış / 4</div></div>
+        <div class="stat"><div class="stat-label">Ortalama Puan</div><div class="stat-value" id="sAvgPuan">—</div><div class="stat-sub">Net / Süre × 1000</div></div>
+        <div class="stat"><div class="stat-label">Ortalama Süre</div><div class="stat-value" id="sAvgSure">—</div><div class="stat-sub">dakika</div></div>
+        <div class="stat"><div class="stat-label">Seçili Metrik Ort.</div><div class="stat-value" id="sAvgMetric">—</div><div class="stat-sub" id="sMetricLabel">Net</div></div>
+        <div class="stat"><div class="stat-label">En Yüksek</div><div class="stat-value" id="sMaxMetric">—</div><div class="stat-sub" id="sBestName">—</div></div>
+      </div>
+    </section>
+  </div>
 </div>
 
-
-<!-- ==================================================
-     CHART
-================================================== -->
-
-<div class="chart-area">
-
-
-    <div
-        class="chart-wrap"
-        id="chartWrap"
-    >
-
-
-        <div
-            class="loading-state"
-            id="loadingState"
-        >
-
-            <div class="loader"></div>
-
-            <span>
-                Denemeler yükleniyor...
-            </span>
-
-        </div>
-
-
-        <div
-            class="empty-state"
-            id="emptyState"
-        >
-
-            <strong id="emptyTitle">
-                Bu filtrede henüz deneme bulunmuyor.
-            </strong>
-
-
-            <span id="emptyText">
-                Ekle butonuyla ilk denemeni ekleyebilirsin.
-            </span>
-
-        </div>
-
-
-        <svg
-            class="chart-svg"
-            id="chartSvg"
-            viewBox="0 0 1000 470"
-            preserveAspectRatio="none"
-        >
-
-
-            <defs>
-
-                <linearGradient
-                    id="areaGradient"
-                    x1="0"
-                    y1="0"
-                    x2="0"
-                    y2="1"
-                >
-
-                    <stop
-                        offset="0%"
-                        stop-color="#ff8500"
-                        stop-opacity="0.22"
-                    />
-
-
-                    <stop
-                        offset="100%"
-                        stop-color="#ff8500"
-                        stop-opacity="0"
-                    />
-
-                </linearGradient>
-
-            </defs>
-
-
-            <g id="grid"></g>
-
-
-            <path
-                id="areaPath"
-                class="area"
-            ></path>
-
-
-            <path
-                id="linePath"
-                class="line"
-            ></path>
-
-
-            <g id="points"></g>
-
-
-            <g id="axisLabels"></g>
-
-
-        </svg>
-
-
-        <div
-            class="tooltip"
-            id="tooltip"
-        >
-
-            <div
-                class="tooltip-name"
-                id="tooltipName"
-            ></div>
-
-
-            <div
-                class="tooltip-date"
-                id="tooltipDate"
-            ></div>
-
-
-            <div class="tooltip-value">
-
-
-                <strong
-                    id="tooltipValue"
-                >
-                    0
-                </strong>
-
-
-                <span
-                    id="tooltipMetric"
-                >
-                    Net
-                </span>
-
-
-            </div>
-
-        </div>
-
-
+<div id="overlay" class="overlay"></div>
+<aside id="drawer" class="drawer">
+  <div class="drawer-head">
+    <div><strong>Yeni Deneme Ekle</strong><span>Notion’daki Deneme Sınavları veritabanına eklenir.</span></div>
+    <button id="closeAdd" class="close-btn">✕</button>
+  </div>
+  <form id="addForm" class="drawer-body">
+    <div class="field"><label>Deneme Adı</label><input id="fName" required placeholder="Örn. TYT Genel 101" /></div>
+    <div class="field"><label>Sınav Türü</label><select id="fSinav" required>
+      <option>TYT</option><option>AYT</option><option>TYT Matematik</option><option>TYT Türkçe</option><option>TYT SOSYAL</option><option>TYT FEN</option><option>TYT Fizik</option><option>TYT Kimya</option><option>TYT Biyoloji</option><option>AYT Matematik</option><option>AYT FEN</option><option>AYT Fizik</option><option>AYT Kimya</option><option>AYT Biyoloji</option>
+    </select></div>
+    <div class="field"><label>Tarih</label><input id="fDate" type="date" required /></div>
+    <div class="two">
+      <div class="field"><label>Doğru</label><input id="fDogru" type="number" min="0" step="1" required /></div>
+      <div class="field"><label>Yanlış</label><input id="fYanlis" type="number" min="0" step="1" required /></div>
     </div>
-
-
-    <div class="chart-footer">
-
-
-        <span class="zoom-hint">
-            Sol tık + Scroll · Zoom
-        </span>
-
-
-        <span class="zoom-hint">
-            Dokunmatik cihazlarda iki parmakla yakınlaştır
-        </span>
-
-
+    <div class="two">
+      <div class="field"><label>Boş</label><input id="fBos" type="number" min="0" step="1" required /></div>
+      <div class="field"><label>Süre (dk)</label><input id="fSure" type="number" min="1" step="1" value="165" required /></div>
     </div>
-
-
-</div>
-
-
-</div>
-
-</div>
-
-
-<!-- ==================================================
-     OVERLAY
-================================================== -->
-
-<div
-    class="panel-overlay"
-    id="panelOverlay"
-></div>
-
-
-<!-- ==================================================
-     ADD PANEL
-================================================== -->
-
-<aside
-    class="add-panel"
-    id="addPanel"
->
-
-
-<div class="panel-header">
-
-
-    <div>
-
-        <div class="panel-title">
-            Yeni Deneme Ekle
-        </div>
-
-
-        <div class="panel-subtitle">
-            Deneme bilgilerini gir ve Notion'a kaydet.
-        </div>
-
+    <div class="calc-box">
+      <div class="calc"><span>Hesaplanan Net</span><strong id="previewNet">0.0</strong></div>
+      <div class="calc"><span>Puan Önizleme</span><strong id="previewPuan">0.0</strong></div>
     </div>
-
-
-    <button
-        class="close-panel"
-        id="closeAddPanel"
-        type="button"
-    >
-        ×
-    </button>
-
-
-</div>
-
-
-<form
-    class="form"
-    id="addForm"
->
-
-
-<div class="form-group">
-
-    <label
-        class="form-label"
-        for="examName"
-    >
-        Deneme Adı
-    </label>
-
-
-    <input
-        class="input"
-        id="examName"
-        type="text"
-        placeholder="Örn. TYT Deneme 12"
-        maxlength="80"
-        required
-    >
-
-</div>
-
-
-<div class="form-group">
-
-    <label
-        class="form-label"
-        for="examType"
-    >
-        Sınav Türü
-    </label>
-
-
-    <select
-        class="select"
-        id="examType"
-    >
-
-        <option value="TYT">
-            TYT
-        </option>
-
-        <option value="AYT">
-            AYT
-        </option>
-
-        <option value="TYT Matematik">
-            TYT Matematik
-        </option>
-
-        <option value="TYT Türkçe">
-            TYT Türkçe
-        </option>
-
-        <option value="TYT SOSYAL">
-            TYT SOSYAL
-        </option>
-
-        <option value="TYT FEN">
-            TYT FEN
-        </option>
-
-        <option value="TYT Fizik">
-            TYT Fizik
-        </option>
-
-        <option value="TYT Kimya">
-            TYT Kimya
-        </option>
-
-        <option value="TYT Biyoloji">
-            TYT Biyoloji
-        </option>
-
-        <option value="AYT Matematik">
-            AYT Matematik
-        </option>
-
-        <option value="AYT FEN">
-            AYT FEN
-        </option>
-
-        <option value="AYT Fizik">
-            AYT Fizik
-        </option>
-
-        <option value="AYT Kimya">
-            AYT Kimya
-        </option>
-
-        <option value="AYT Biyoloji">
-            AYT Biyoloji
-        </option>
-
-    </select>
-
-</div>
-
-
-<div class="form-group">
-
-    <label
-        class="form-label"
-        for="examDate"
-    >
-        Tarih
-    </label>
-
-
-    <input
-        class="input"
-        id="examDate"
-        type="date"
-        required
-    >
-
-</div>
-
-
-<div class="form-group">
-
-    <div class="two-column">
-
-
-        <div>
-
-            <label
-                class="form-label"
-                for="correct"
-            >
-                Doğru
-            </label>
-
-
-            <input
-                class="input"
-                id="correct"
-                type="number"
-                min="0"
-                step="1"
-                value="0"
-            >
-
-        </div>
-
-
-        <div>
-
-            <label
-                class="form-label"
-                for="wrong"
-            >
-                Yanlış
-            </label>
-
-
-            <input
-                class="input"
-                id="wrong"
-                type="number"
-                min="0"
-                step="1"
-                value="0"
-            >
-
-        </div>
-
-
-    </div>
-
-</div>
-
-
-<div class="form-group">
-
-    <div class="two-column">
-
-
-        <div>
-
-            <label
-                class="form-label"
-                for="empty"
-            >
-                Boş
-            </label>
-
-
-            <input
-                class="input"
-                id="empty"
-                type="number"
-                min="0"
-                step="1"
-                value="0"
-            >
-
-        </div>
-
-
-        <div>
-
-            <label
-                class="form-label"
-                for="duration"
-            >
-                Süre (dk)
-            </label>
-
-
-            <input
-                class="input"
-                id="duration"
-                type="number"
-                min="0"
-                step="1"
-                value="165"
-            >
-
-        </div>
-
-
-    </div>
-
-</div>
-
-
-<div class="form-group">
-
-    <label class="form-label">
-        Net
-    </label>
-
-
-    <div class="calculated-box">
-
-
-        <span class="calculated-name">
-            Doğru − Yanlış / 4
-        </span>
-
-
-        <strong
-            class="calculated-value"
-            id="calculatedNet"
-        >
-            0
-        </strong>
-
-
-    </div>
-
-</div>
-
-
-<div class="form-group">
-
-    <label class="form-label">
-        Puan
-    </label>
-
-
-    <div class="calculated-box">
-
-
-        <span class="calculated-name">
-            Net / Süre × 1000
-        </span>
-
-
-        <strong
-            class="calculated-value"
-            id="calculatedPoint"
-        >
-            0.0
-        </strong>
-
-
-    </div>
-
-</div>
-
-
-<div class="panel-info">
-
-    <span class="panel-info-icon">
-        ●
-    </span>
-
-
-    <span>
-        Net otomatik hesaplanır. Puan Notion'daki
-        formula alanından hesaplanır.
-    </span>
-
-</div>
-
-
-<button
-    class="submit-button"
-    id="submitButton"
-    type="submit"
->
-    Denemeyi Ekle
-</button>
-
-
-<div
-    class="success-message"
-    id="successMessage"
->
-    Deneme Notion'a başarıyla eklendi.
-</div>
-
-
-<div
-    class="error-message"
-    id="errorMessage"
->
-    Bir hata oluştu.
-</div>
-
-
-</form>
-
+    <button class="submit" id="submitAdd" type="submit">Denemeyi Kaydet</button>
+  </form>
 </aside>
-
+<div id="toast" class="toast"></div>
 
 <script>
+(() => {
+  'use strict';
 
-/* ==================================================
-   WORKER
-================================================== */
+  const API_BASE = 'https://yks-bilgi-api.yanhesap100yh.workers.dev';
+  const API = {
+    list: `${API_BASE}/denemeler`,
+    add: `${API_BASE}/deneme-ekle`
+  };
 
-const API_BASE =
-    "https://yks-bilgi-api.yanhesap100yh.workers.dev";
+  const BRANCHES = [
+    'TYT Matematik','TYT Türkçe','TYT SOSYAL','TYT FEN','TYT Fizik','TYT Kimya','TYT Biyoloji',
+    'AYT Matematik','AYT FEN','AYT Fizik','AYT Kimya','AYT Biyoloji'
+  ];
+  const TYPE_LABELS = { TYT:'TYT Genel', AYT:'AYT Genel', BRANCH:'Branş' };
+  const METRIC_LABELS = { net:'Net', dogru:'Doğru', yanlis:'Yanlış', bos:'Boş', puan:'Puan' };
 
+  const state = {
+    exams: [],
+    currentType: 'TYT',
+    currentBranch: 'TYT Matematik',
+    metric: 'net',
+    visibleCount: 12,
+    viewStart: null,
+    viewEnd: null,
+    densityStart: 12,
+    zoomSensitivity: 0.18,
+    showGrid: true,
+    showPoints: true,
+    mouseZoomArmed: false,
+    touchPointers: new Map(),
+    pinchDistance: null,
+    lastHoverIndex: null
+  };
 
-/* ==================================================
-   STATE
-================================================== */
+  const $ = (id) => document.getElementById(id);
+  const chart = $('chart');
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const plot = { left: 70, right: 980, top: 36, bottom: 430 };
 
-let exams = [];
+  function safeNum(v, fallback=0){
+    const n = Number(v);
+    return Number.isFinite(n) ? n : fallback;
+  }
 
-let currentType =
-    "TYT";
+  function parseDate(v){
+    if(!v) return null;
+    const d = new Date(v);
+    return Number.isNaN(d.getTime()) ? null : d;
+  }
 
-let currentBranch =
-    "TYT Matematik";
+  function fmtDate(v){
+    const d = parseDate(v);
+    if(!d) return 'Tarih yok';
+    return new Intl.DateTimeFormat('tr-TR', {day:'2-digit', month:'2-digit', year:'numeric'}).format(d);
+  }
 
-let currentMetric =
-    "net";
+  function fmt(v, decimals=1){
+    if(v === null || v === undefined || !Number.isFinite(Number(v))) return '—';
+    return Number(v).toLocaleString('tr-TR',{minimumFractionDigits:decimals, maximumFractionDigits:decimals});
+  }
 
-let currentZoom =
-    1;
+  function avg(arr){
+    const xs = arr.filter(v=>Number.isFinite(Number(v))).map(Number);
+    return xs.length ? xs.reduce((a,b)=>a+b,0)/xs.length : null;
+  }
 
-let targetZoom =
-    1;
+  function metricValue(exam, metric){
+    if(metric === 'puan'){
+      const workerPuan = safeNum(exam.puan, NaN);
+      // Notion formülünü koruyarak, API formula gecikirse burada güvenli fallback kullan.
+      if(Number.isFinite(workerPuan) && workerPuan < 10000) return workerPuan;
+      const net = safeNum(exam.net, safeNum(exam.dogru) - safeNum(exam.yanlis)/4);
+      const sure = safeNum(exam.sure, 0);
+      return sure > 0 ? net / sure * 1000 : null;
+    }
+    return safeNum(exam[metric], 0);
+  }
 
+  function filteredExams(){
+    let out = state.exams.slice();
+    if(state.currentType === 'TYT') out = out.filter(x => x.sinav === 'TYT');
+    else if(state.currentType === 'AYT') out = out.filter(x => x.sinav === 'AYT');
+    else if(state.currentType === 'BRANCH') out = out.filter(x => x.sinav === state.currentBranch);
+    out.sort((a,b)=>{
+      const ad = parseDate(a.date)?.getTime() ?? 0;
+      const bd = parseDate(b.date)?.getTime() ?? 0;
+      if(ad !== bd) return ad - bd;
+      return String(a.name||'').localeCompare(String(b.name||''),'tr');
+    });
+    return out;
+  }
 
-const MIN_ZOOM =
-    1;
+  function setStatus(text, type=''){ 
+    const box = $('connection');
+    box.className = `connection ${type}`;
+    $('connectionText').textContent = text;
+  }
 
-const MAX_ZOOM =
-    4;
+  function toast(msg){
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(()=>t.classList.remove('show'),2300);
+  }
 
+  async function getExams(){
+    const res = await fetch(`${API.list}?_=${Date.now()}`, {method:'GET', mode:'cors', cache:'no-store'});
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if(!json || !Array.isArray(json.data)) throw new Error('Beklenmeyen API yanıtı');
+    return json.data;
+  }
 
-/* ==================================================
-   DOM
-================================================== */
+  async function addExam(body){
+    const res = await fetch(API.add, {
+      method:'POST', mode:'cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
+    const raw = await res.text();
+    let json = null;
+    try{ json = JSON.parse(raw); }catch(_){ }
+    if(!res.ok) throw new Error(json?.error || raw || `HTTP ${res.status}`);
+    return json;
+  }
 
-const chartWrap =
-    document.getElementById(
-        "chartWrap"
-    );
+  function normalizeExam(x){
+    const dogru = safeNum(x.dogru,0);
+    const yanlis = safeNum(x.yanlis,0);
+    const net = x.net !== undefined && x.net !== null ? safeNum(x.net) : dogru - yanlis/4;
+    return {...x, dogru, yanlis, bos:safeNum(x.bos,0), net, sure:safeNum(x.sure,0), puan:safeNum(x.puan,NaN), date:x.date||''};
+  }
 
-const chartSvg =
-    document.getElementById(
-        "chartSvg"
-    );
+  async function reload(){
+    setStatus('Veriler yükleniyor…','warn');
+    try{
+      state.exams = (await getExams()).map(normalizeExam);
+      setStatus(`${state.exams.length} deneme yüklendi`,'ok');
+      selectInitialFilter();
+      resetView();
+      renderAll();
+    }catch(err){
+      console.error(err);
+      setStatus('Bağlantı hatası','err');
+      state.exams = [];
+      renderAll();
+      toast('Denemeler yüklenemedi. Worker bağlantısını kontrol et.');
+    }
+  }
 
-const grid =
-    document.getElementById(
-        "grid"
-    );
+  function selectInitialFilter(){
+    const hasTYT = state.exams.some(x=>x.sinav==='TYT');
+    const hasAYT = state.exams.some(x=>x.sinav==='AYT');
+    if(hasTYT){ state.currentType='TYT'; return; }
+    if(hasAYT){ state.currentType='AYT'; return; }
+    const firstBranch = BRANCHES.find(b=>state.exams.some(x=>x.sinav===b));
+    if(firstBranch){ state.currentType='BRANCH'; state.currentBranch=firstBranch; return; }
+    state.currentType='TYT';
+  }
 
-const areaPath =
-    document.getElementById(
-        "areaPath"
-    );
+  function resetView(){
+    const count = filteredExams().length;
+    state.visibleCount = Math.min(Math.max(1, state.densityStart), Math.max(1,count));
+    state.viewEnd = Math.max(0,count-1);
+    state.viewStart = Math.max(0,count-state.visibleCount);
+  }
 
-const linePath =
-    document.getElementById(
-        "linePath"
-    );
+  function zoomBy(delta, anchorRatio=.5){
+    const data = filteredExams();
+    const n = data.length;
+    if(n <= 1) return;
 
-const pointsGroup =
-    document.getElementById(
-        "points"
-    );
+    let start = Number.isInteger(state.viewStart) ? state.viewStart : Math.max(0,n-state.visibleCount);
+    let end = Number.isInteger(state.viewEnd) ? state.viewEnd : n-1;
+    let count = Math.max(1,end-start+1);
 
-const axisLabels =
-    document.getElementById(
-        "axisLabels"
-    );
+    const factor = delta > 0 ? (1 + state.zoomSensitivity) : (1 - state.zoomSensitivity);
+    let nextCount = Math.round(count / factor);
+    if(delta < 0) nextCount = Math.round(count * (1 + state.zoomSensitivity));
+    nextCount = Math.max(1, Math.min(n, nextCount));
+    if(nextCount === count) return;
 
-const tooltip =
-    document.getElementById(
-        "tooltip"
-    );
+    const anchorIndex = start + Math.round((end-start) * Math.min(1,Math.max(0,anchorRatio)));
+    let nextStart = anchorIndex - Math.round((nextCount-1) * Math.min(1,Math.max(0,anchorRatio)));
+    nextStart = Math.max(0, Math.min(n-nextCount, nextStart));
+    state.viewStart = nextStart;
+    state.viewEnd = nextStart + nextCount - 1;
+    state.visibleCount = nextCount;
+    drawChart(true);
+  }
 
-const tooltipName =
-    document.getElementById(
-        "tooltipName"
-    );
+  function resetZoom(){ resetView(); drawChart(true); }
 
-const tooltipDate =
-    document.getElementById(
-        "tooltipDate"
-    );
+  function activeView(){
+    const data = filteredExams();
+    if(!data.length) return [];
+    let start = Number.isInteger(state.viewStart) ? state.viewStart : Math.max(0,data.length-state.visibleCount);
+    let end = Number.isInteger(state.viewEnd) ? state.viewEnd : data.length-1;
+    start = Math.max(0, Math.min(data.length-1,start));
+    end = Math.max(start, Math.min(data.length-1,end));
+    return data.slice(start,end+1);
+  }
 
-const tooltipValue =
-    document.getElementById(
-        "tooltipValue"
-    );
+  function svgEl(tag, attrs={}){
+    const el=document.createElementNS(svgNS,tag);
+    Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,String(v)));
+    return el;
+  }
 
-const tooltipMetric =
-    document.getElementById(
-        "tooltipMetric"
-    );
+  function clear(el){ while(el.firstChild) el.removeChild(el.firstChild); }
 
-const zoomIndicator =
-    document.getElementById(
-        "zoomIndicator"
-    );
+  function renderGrid(min,max){
+    const g=$('gridLayer'); clear(g);
+    if(!state.showGrid) return;
+    const rows=5;
+    for(let i=0;i<=rows;i++){
+      const y=plot.bottom-(plot.bottom-plot.top)*(i/rows);
+      g.appendChild(svgEl('line',{x1:plot.left,y1:y,x2:plot.right,y2:y,class:'chart-grid'}));
+      const val=min+(max-min)*(i/rows);
+      const tx=svgEl('text',{x:plot.left-10,y:y+4,'text-anchor':'end',class:'axis-text'});
+      tx.textContent = state.metric==='puan' ? fmt(val,0) : fmt(val,1);
+      g.appendChild(tx);
+    }
+  }
 
-const loadingState =
-    document.getElementById(
-        "loadingState"
-    );
+  function pathFor(points){
+    if(!points.length) return '';
+    return points.map((p,i)=>(i===0?'M':'L')+` ${p.x.toFixed(2)} ${p.y.toFixed(2)}`).join(' ');
+  }
 
-const emptyState =
-    document.getElementById(
-        "emptyState"
-    );
+  function drawChart(animated=false){
+    const data=filteredExams();
+    const visible=activeView();
+    const pointsLayer=$('pointsLayer');
+    const axesLayer=$('axesLayer');
+    clear(pointsLayer); clear(axesLayer);
 
-const emptyTitle =
-    document.getElementById(
-        "emptyTitle"
-    );
+    $('chartTitle').textContent = `${state.currentType==='BRANCH'?state.currentBranch:TYPE_LABELS[state.currentType]} • ${METRIC_LABELS[state.metric]}`;
+    $('chartMeta').textContent = data.length ? `${data.length} kayıt • ${visible.length}/${data.length} nokta` : 'Veri yok';
+    $('recordCountText').textContent = `${data.length} kayıt`;
+    $('filterInfo').textContent = state.currentType==='BRANCH' ? state.currentBranch : TYPE_LABELS[state.currentType];
+    $('statsScope').textContent = `${state.currentType==='BRANCH'?state.currentBranch:TYPE_LABELS[state.currentType]} • ${data.length} kayıt`;
 
-const emptyText =
-    document.getElementById(
-        "emptyText"
-    );
+    if(!data.length){
+      $('emptyState').style.display='grid';
+      $('areaPath').setAttribute('d',''); $('linePath').setAttribute('d',''); $('glowPath').setAttribute('d','');
+      updateStats([]);
+      return;
+    }
+    $('emptyState').style.display='none';
 
-const statusDot =
-    document.getElementById(
-        "statusDot"
-    );
+    const values=visible.map(x=>metricValue(x,state.metric)).filter(v=>v!==null && Number.isFinite(v));
+    let min=Math.min(...values), max=Math.max(...values);
+    if(!Number.isFinite(min)){min=0;max=1;}
+    if(min===max){ const pad = Math.max(1, Math.abs(min)*.14); min-=pad; max+=pad; }
+    else { const pad=(max-min)*.14; min-=pad; max+=pad; }
 
-const statusText =
-    document.getElementById(
-        "statusText"
-    );
+    renderGrid(min,max);
 
+    const pts=visible.map((item,i)=>{
+      const ratioX=visible.length===1?0.5:i/(visible.length-1);
+      const x=plot.left+(plot.right-plot.left)*ratioX;
+      const value=metricValue(item,state.metric);
+      const ratioY=(value-min)/(max-min);
+      const y=plot.bottom-(plot.bottom-plot.top)*ratioY;
+      return {x,y,item,index:data.indexOf(item),value};
+    });
 
-/* ==================================================
-   API GET
-================================================== */
+    let linePath=pathFor(pts);
+    let areaPath='';
+    if(pts.length){
+      areaPath=pathFor(pts)+` L ${pts[pts.length-1].x} ${plot.bottom} L ${pts[0].x} ${plot.bottom} Z`;
+    }
+    $('linePath').setAttribute('d',linePath);
+    $('glowPath').setAttribute('d',linePath);
+    $('areaPath').setAttribute('d',areaPath);
 
-async function getExams() {
+    pts.forEach((p,idx)=>{
+      const circle=svgEl('circle',{cx:p.x,cy:p.y,r:visible.length>38?3.1:4.3,class:'point'});
+      if(state.lastHoverIndex === p.index) circle.classList.add('selected');
+      if(!state.showPoints) circle.setAttribute('display','none');
+      circle.addEventListener('mouseenter',e=>showTooltip(e,p));
+      circle.addEventListener('mouseleave',hideTooltip);
+      circle.addEventListener('click',e=>{e.stopPropagation();showTooltip(e,p,true);});
+      pointsLayer.appendChild(circle);
+    });
 
-    /*
-       GET isteğinde Content-Type göndermiyoruz.
-       Cache'i de devre dışı bırakıyoruz.
-    */
-
-    const response =
-        await fetch(
-            `${API_BASE}/denemeler?_=${Date.now()}`,
-            {
-
-                method:
-                    "GET",
-
-                mode:
-                    "cors",
-
-                cache:
-                    "no-store"
-
-            }
-        );
-
-
-    const text =
-        await response.text();
-
-
-    let data;
-
-
-    try {
-
-        data =
-            JSON.parse(
-                text
-            );
-
+    if(visible.length){
+      const labelCount=Math.min(visible.length, state.visibleCount<=20?visible.length:8);
+      const step=Math.max(1,Math.floor((visible.length-1)/Math.max(1,labelCount-1)));
+      for(let i=0;i<visible.length;i+=step){
+        const p=pts[i];
+        const tx=svgEl('text',{x:p.x,y:466,'text-anchor':i===0?'start':(i===visible.length-1?'end':'middle'),class:'axis-text'});
+        tx.textContent=String(visible[i].name||'Deneme');
+        tx.setAttribute('transform',`rotate(-18 ${p.x} 466)`);
+        axesLayer.appendChild(tx);
+      }
     }
 
-    catch (error) {
+    const axis=svgEl('text',{x:(plot.left+plot.right)/2,y:495,'text-anchor':'middle',class:'axis-label'});
+    axis.textContent='Deneme Adı'; axesLayer.appendChild(axis);
 
-        throw new Error(
-            "Worker JSON döndürmedi."
-        );
-
+    updateStats(data);
+    if(animated){
+      $('linePath').style.strokeDasharray='4000';
+      $('linePath').style.strokeDashoffset='4000';
+      requestAnimationFrame(()=>{
+        $('linePath').style.transition='stroke-dashoffset .38s ease';
+        $('linePath').style.strokeDashoffset='0';
+        setTimeout(()=>{ $('linePath').style.transition=''; $('linePath').style.strokeDasharray=''; $('linePath').style.strokeDashoffset=''; },420);
+      });
     }
+  }
 
+  function updateStats(data){
+    $('sCount').textContent=data.length;
+    const avgNet=avg(data.map(x=>safeNum(x.net)));
+    const avgPuan=avg(data.map(x=>metricValue(x,'puan')).filter(v=>v!==null));
+    const avgSure=avg(data.map(x=>safeNum(x.sure)).filter(v=>v>0));
+    const vals=data.map(x=>metricValue(x,state.metric)).filter(v=>v!==null && Number.isFinite(v));
+    const av=avg(vals);
+    const max=vals.length?Math.max(...vals):null;
+    let maxItem=null;
+    if(max!==null) maxItem=data.find(x=>Math.abs((metricValue(x,state.metric)??-Infinity)-max)<1e-9);
+    $('sAvgNet').textContent=avgNet===null?'—':fmt(avgNet,1);
+    $('sAvgPuan').textContent=avgPuan===null?'—':fmt(avgPuan,1);
+    $('sAvgSure').textContent=avgSure===null?'—':fmt(avgSure,1);
+    $('sAvgMetric').textContent=av===null?'—':fmt(av,state.metric==='puan'?1:1);
+    $('sMetricLabel').textContent=`${METRIC_LABELS[state.metric]} ortalaması`;
+    $('sMaxMetric').textContent=max===null?'—':fmt(max,state.metric==='puan'?1:1);
+    $('sBestName').textContent=maxItem?.name||'—';
+  }
 
-    console.log(
-        "Worker /denemeler:",
-        data
-    );
+  function showTooltip(evt,p,sticky=false){
+    const item=p.item;
+    state.lastHoverIndex=p.index;
+    const tip=$('tooltip');
+    tip.innerHTML=`<div class="tooltip-name">${escapeHtml(item.name||'Adsız Deneme')}</div>
+      <div class="tooltip-row"><span>Tarih</span><b>${escapeHtml(fmtDate(item.date))}</b></div>
+      <div class="tooltip-row"><span>${METRIC_LABELS[state.metric]}</span><strong>${fmt(p.value,state.metric==='puan'?1:1)}</strong></div>`;
+    const rect=$('chartWrap').getBoundingClientRect();
+    const svgRect=chart.getBoundingClientRect();
+    const cx=svgRect.left+(p.x/1000)*svgRect.width;
+    const cy=svgRect.top+(p.y/500)*svgRect.height;
+    let left=cx-rect.left+13, top=cy-rect.top-18;
+    const tw=tip.offsetWidth||210, th=tip.offsetHeight||90;
+    if(left+tw>rect.width-10) left=rect.width-tw-10;
+    if(left<10) left=10;
+    if(top+th>rect.height-10) top=rect.height-th-10;
+    if(top<10) top=10;
+    tip.style.left=`${left}px`; tip.style.top=`${top}px`; tip.classList.add('show');
+    clearTimeout(showTooltip._timer);
+    if(!sticky) showTooltip._timer=setTimeout(()=>{hideTooltip();},2400);
+  }
 
+  function hideTooltip(){ $('tooltip').classList.remove('show'); state.lastHoverIndex=null; drawChart(false); }
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
-    if (
-        !response.ok
-    ) {
+  function renderControls(){
+    document.querySelectorAll('#typeButtons .filter-btn').forEach(btn=>btn.classList.toggle('active',btn.dataset.type===state.currentType));
+    document.querySelectorAll('#branchButtons .branch-btn').forEach(btn=>btn.classList.toggle('active',btn.dataset.branch===state.currentBranch));
+    $('branchWrap').classList.toggle('show',state.currentType==='BRANCH');
+    document.querySelectorAll('.metric-btn').forEach(btn=>btn.classList.toggle('active',btn.dataset.metric===state.metric));
+  }
 
-        throw new Error(
+  function renderAll(){ renderControls(); drawChart(false); }
 
-            data.error ||
-            `Worker HTTP ${response.status}`
-
-        );
-
+  function setFullscreen(active){
+    document.body.classList.toggle('graph-fullscreen',active);
+    $('fullscreenBtn').classList.toggle('active',active);
+    if(active){
+      document.documentElement.requestFullscreen?.().catch(()=>{});
+      try{ screen.orientation?.lock?.('landscape').catch(()=>{}); }catch(_){ }
+      toast('Yatay grafik modu açıldı');
+    }else{
+      if(document.fullscreenElement) document.exitFullscreen?.().catch(()=>{});
+      try{ screen.orientation?.unlock?.(); }catch(_){ }
     }
+    setTimeout(()=>drawChart(false),120);
+  }
 
+  $('fullscreenBtn').addEventListener('click',()=>setFullscreen(!document.body.classList.contains('graph-fullscreen')));
+  document.addEventListener('fullscreenchange',()=>{
+    if(!document.fullscreenElement && document.body.classList.contains('graph-fullscreen')) setFullscreen(false);
+  });
 
-    if (
-        data.success !== true
-    ) {
+  $('settingsBtn').addEventListener('click',e=>{e.stopPropagation();$('settingsPop').classList.toggle('show');$('settingsBtn').classList.toggle('active',$('settingsPop').classList.contains('show'));});
+  document.addEventListener('click',e=>{if(!$('settingsPop').contains(e.target) && e.target!==$('settingsBtn')){$('settingsPop').classList.remove('show');$('settingsBtn').classList.remove('active');}});
+  $('densitySelect').addEventListener('change',e=>{state.densityStart=safeNum(e.target.value,12);resetZoom();});
+  $('zoomSelect').addEventListener('change',e=>{state.zoomSensitivity=safeNum(e.target.value,.18);});
+  $('gridSwitch').addEventListener('change',e=>{state.showGrid=e.target.checked;drawChart(false);});
+  $('pointSwitch').addEventListener('change',e=>{state.showPoints=e.target.checked;drawChart(false);});
+  $('resetZoomBtn').addEventListener('click',resetZoom);
 
-        throw new Error(
+  document.querySelectorAll('#typeButtons .filter-btn').forEach(btn=>btn.addEventListener('click',()=>{state.currentType=btn.dataset.type;resetZoom();renderAll();}));
+  document.querySelectorAll('#branchButtons .branch-btn').forEach(btn=>btn.addEventListener('click',()=>{state.currentBranch=btn.dataset.branch;state.currentType='BRANCH';resetZoom();renderAll();}));
+  document.querySelectorAll('.metric-btn').forEach(btn=>btn.addEventListener('click',()=>{state.metric=btn.dataset.metric;renderAll();}));
 
-            data.error ||
-            "Worker başarısız cevap verdi."
+  chart.addEventListener('mousedown',()=>{state.mouseZoomArmed=true;});
+  window.addEventListener('mouseup',()=>{state.mouseZoomArmed=false;});
+  chart.addEventListener('wheel',e=>{
+    if(!state.mouseZoomArmed) return;
+    e.preventDefault();
+    const r=chart.getBoundingClientRect();
+    const ratio=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width));
+    zoomBy(e.deltaY<0?1:-1,ratio);
+  },{passive:false});
 
-        );
+  chart.addEventListener('dblclick',e=>{ e.preventDefault(); resetZoom(); });
 
+  chart.addEventListener('pointerdown',e=>{
+    if(e.pointerType==='touch'){
+      chart.setPointerCapture?.(e.pointerId);
+      state.touchPointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+      if(state.touchPointers.size===2){
+        const pts=[...state.touchPointers.values()]; state.pinchDistance=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y);
+      }
     }
-
-
-    return Array.isArray(
-        data.data
-    )
-        ? data.data
-        : [];
-
-}
-
-
-/* ==================================================
-   API POST
-================================================== */
-
-async function postExam(
-    payload
-) {
-
-    const response =
-        await fetch(
-            `${API_BASE}/deneme-ekle`,
-            {
-
-                method:
-                    "POST",
-
-                mode:
-                    "cors",
-
-                headers: {
-
-                    "Content-Type":
-                        "application/json"
-
-                },
-
-                body:
-                    JSON.stringify(
-                        payload
-                    )
-
-            }
-        );
-
-
-    const text =
-        await response.text();
-
-
-    let data;
-
-
-    try {
-
-        data =
-            JSON.parse(
-                text
-            );
-
+  });
+  chart.addEventListener('pointermove',e=>{
+    if(e.pointerType!=='touch') return;
+    if(!state.touchPointers.has(e.pointerId)) return;
+    state.touchPointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(state.touchPointers.size===2){
+      const pts=[...state.touchPointers.values()];
+      const dist=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y);
+      if(state.pinchDistance){
+        const ratio=dist/state.pinchDistance;
+        if(ratio>1.06) zoomBy(1,.5);
+        else if(ratio<.94) zoomBy(-1,.5);
+      }
+      state.pinchDistance=dist;
     }
-
-    catch (error) {
-
-        throw new Error(
-            "Worker JSON döndürmedi."
-        );
-
-    }
-
-
-    console.log(
-        "Worker /deneme-ekle:",
-        data
-    );
-
-
-    if (
-        !response.ok
-    ) {
-
-        throw new Error(
-
-            data.error ||
-            `Worker HTTP ${response.status}`
-
-        );
-
-    }
-
-
-    if (
-        data.success !== true
-    ) {
-
-        throw new Error(
-
-            data.error ||
-            "Deneme eklenemedi."
-
-        );
-
-    }
-
-
-    return data;
-
-}
-
-
-/* ==================================================
-   STATUS
-================================================== */
-
-function setStatus(
-    message,
-    state = "normal"
-) {
-
-    statusText.textContent =
-        message;
-
-
-    statusDot.classList.remove(
-        "loading",
-        "error"
-    );
-
-
-    if (
-        state === "loading"
-    ) {
-
-        statusDot.classList.add(
-            "loading"
-        );
-
-    }
-
-
-    if (
-        state === "error"
-    ) {
-
-        statusDot.classList.add(
-            "error"
-        );
-
-    }
-
-}
-
-
-/* ==================================================
-   INITIAL DATA
-================================================== */
-
-async function initialize() {
-
-    loadingState.style.display =
-        "flex";
-
-    emptyState.style.display =
-        "none";
-
-
-    setStatus(
-        "Notion verileri yükleniyor...",
-        "loading"
-    );
-
-
-    try {
-
-        exams =
-            await getExams();
-
-
-        console.log(
-            "Alınan deneme sayısı:",
-            exams.length
-        );
-
-
-        /*
-           En önemli bölüm:
-           Gerçek veri geldikten sonra filtreyi ayarla.
-        */
-
-        selectInitialFilter();
-
-
-        setStatus(
-            `${exams.length} deneme yüklendi`
-        );
-
-
-        drawChart();
-
-    }
-
-    catch (error) {
-
-        console.error(
-            error
-        );
-
-
-        exams = [];
-
-
-        setStatus(
-            "Notion bağlantısı kurulamadı",
-            "error"
-        );
-
-
-        showErrorState(
-            error.message
-        );
-
-    }
-
-    finally {
-
-        loadingState.style.display =
-            "none";
-
-    }
-
-}
-
-
-/* ==================================================
-   INITIAL FILTER
-================================================== */
-
-function selectInitialFilter() {
-
-    if (
-        exams.length === 0
-    ) {
-
-        currentType =
-            "TYT";
-
-        currentBranch =
-            "TYT Matematik";
-
-        updateFilterUI();
-
-        return;
-
-    }
-
-
-    /*
-       Önce TYT varsa TYT.
-       Sonra AYT varsa AYT.
-       İkisi de yoksa ilk kaydın branşı.
-    */
-
-    const hasTYT =
-        exams.some(
-            exam =>
-                exam.sinav ===
-                "TYT"
-        );
-
-
-    const hasAYT =
-        exams.some(
-            exam =>
-                exam.sinav ===
-                "AYT"
-        );
-
-
-    if (
-        hasTYT
-    ) {
-
-        currentType =
-            "TYT";
-
-    }
-
-    else if (
-        hasAYT
-    ) {
-
-        currentType =
-            "AYT";
-
-    }
-
-    else {
-
-        const first =
-            exams.find(
-                exam =>
-                    exam.sinav
-            );
-
-
-        if (
-            first
-        ) {
-
-            currentType =
-                "BRANCH";
-
-            currentBranch =
-                first.sinav;
-
-        }
-
-    }
-
-
-    updateFilterUI();
-
-}
-
-
-/* ==================================================
-   UPDATE FILTER UI
-================================================== */
-
-function updateFilterUI() {
-
-    document
-        .querySelectorAll(
-            ".filter-button"
-        )
-        .forEach(
-            button => {
-
-                button.classList.toggle(
-
-                    "active",
-
-                    button.dataset.type ===
-                    currentType
-
-                );
-
-            }
-        );
-
-
-    document
-        .querySelectorAll(
-            ".branch-button"
-        )
-        .forEach(
-            button => {
-
-                button.classList.toggle(
-
-                    "active",
-
-                    button.dataset.branch ===
-                    currentBranch
-
-                );
-
-            }
-        );
-
-
-    document
-        .getElementById(
-            "branchPanel"
-        )
-        .classList.toggle(
-            "show",
-            currentType ===
-            "BRANCH"
-        );
-
-}
-
-
-/* ==================================================
-   ERROR STATE
-================================================== */
-
-function showErrorState(
-    message
-) {
-
-    grid.innerHTML =
-        "";
-
-    linePath.setAttribute(
-        "d",
-        ""
-    );
-
-    areaPath.setAttribute(
-        "d",
-        ""
-    );
-
-    pointsGroup.innerHTML =
-        "";
-
-    axisLabels.innerHTML =
-        "";
-
-
-    emptyTitle.textContent =
-        "Notion verileri alınamadı.";
-
-
-    emptyText.textContent =
-        message ||
-        "Worker ile bağlantı kurulamadı.";
-
-
-    emptyState.style.display =
-        "flex";
-
-}
-
-
-/* ==================================================
-   CURRENT DATA
-================================================== */
-
-function getCurrentData() {
-
-    let result =
-        [];
-
-
-    if (
-        currentType ===
-        "TYT"
-    ) {
-
-        result =
-            exams.filter(
-                exam =>
-                    String(
-                        exam.sinav || ""
-                    ).trim() ===
-                    "TYT"
-            );
-
-    }
-
-    else if (
-        currentType ===
-        "AYT"
-    ) {
-
-        result =
-            exams.filter(
-                exam =>
-                    String(
-                        exam.sinav || ""
-                    ).trim() ===
-                    "AYT"
-            );
-
-    }
-
-    else {
-
-        result =
-            exams.filter(
-                exam =>
-                    String(
-                        exam.sinav || ""
-                    ).trim() ===
-                    String(
-                        currentBranch
-                    ).trim()
-            );
-
-    }
-
-
-    result.sort(
-        (
-            a,
-            b
-        ) => {
-
-            const aDate =
-                a.date
-                    ? new Date(
-                        a.date
-                    ).getTime()
-                    : Infinity;
-
-
-            const bDate =
-                b.date
-                    ? new Date(
-                        b.date
-                    ).getTime()
-                    : Infinity;
-
-
-            if (
-                aDate !== bDate
-            ) {
-
-                return (
-                    aDate -
-                    bDate
-                );
-
-            }
-
-
-            return String(
-                a.createdTime || ""
-            ).localeCompare(
-                String(
-                    b.createdTime || ""
-                )
-            );
-
-        }
-    );
-
-
-    return result;
-
-}
-
-
-/* ==================================================
-   ZOOM
-================================================== */
-
-function getVisibleCount(
-    zoom,
-    length
-) {
-
-    if (
-        length <= 12
-    ) {
-
-        return length;
-
-    }
-
-
-    return Math.min(
-
-        length,
-
-        Math.max(
-
-            12,
-
-            Math.round(
-
-                12 +
-
-                (
-                    zoom - 1
-                ) *
-
-                (
-                    length -
-                    12
-                ) /
-                3
-
-            )
-
-        )
-
-    );
-
-}
-
-
-function getVisibleEntries(
-    allData,
-    count
-) {
-
-    if (
-        count <= 0
-    ) {
-
-        return [];
-
-    }
-
-
-    if (
-        count >= allData.length
-    ) {
-
-        return allData.map(
-            (
-                item,
-                index
-            ) => ({
-
-                item,
-                index
-
-            })
-        );
-
-    }
-
-
-    const result =
-        [];
-
-
-    const step =
-        (
-            allData.length -
-            1
-        ) /
-        (
-            count -
-            1
-        );
-
-
-    for (
-        let i = 0;
-        i < count;
-        i++
-    ) {
-
-        const index =
-            Math.round(
-                i * step
-            );
-
-
-        result.push({
-
-            item:
-                allData[index],
-
-            index
-
-        });
-
-    }
-
-
-    return result;
-
-}
-
-
-/* ==================================================
-   METRIC
-================================================== */
-
-function metricName() {
-
-    switch (
-        currentMetric
-    ) {
-
-        case "dogru":
-            return "Doğru";
-
-        case "yanlis":
-            return "Yanlış";
-
-        case "bos":
-            return "Boş";
-
-        case "puan":
-            return "Puan";
-
-        default:
-            return "Net";
-
-    }
-
-}
-
-
-function metricValue(
-    item
-) {
-
-    switch (
-        currentMetric
-    ) {
-
-        case "dogru":
-
-            return Number(
-                item.dogru || 0
-            );
-
-
-        case "yanlis":
-
-            return Number(
-                item.yanlis || 0
-            );
-
-
-        case "bos":
-
-            return Number(
-                item.bos || 0
-            );
-
-
-        case "puan":
-
-            return Number(
-                item.puan || 0
-            );
-
-
-        default:
-
-            return Number(
-                item.net || 0
-            );
-
-    }
-
-}
-
-
-/* ==================================================
-   DATE
-================================================== */
-
-function formatDate(
-    date
-) {
-
-    if (
-        !date
-    ) {
-
-        return "Tarih belirtilmemiş";
-
-    }
-
-
-    const d =
-        new Date(
-            date
-        );
-
-
-    if (
-        Number.isNaN(
-            d.getTime()
-        )
-    ) {
-
-        return "Tarih belirtilmemiş";
-
-    }
-
-
-    return d.toLocaleDateString(
-        "tr-TR",
-        {
-
-            day:
-                "2-digit",
-
-            month:
-                "2-digit",
-
-            year:
-                "numeric"
-
-        }
-    );
-
-}
-
-
-/* ==================================================
-   NUMBER
-================================================== */
-
-function formatValue(
-    value
-) {
-
-    const number =
-        Number(
-            value || 0
-        );
-
-
-    if (
-        currentMetric ===
-        "puan"
-    ) {
-
-        return number.toFixed(
-            1
-        );
-
-    }
-
-
-    if (
-        Number.isInteger(
-            number
-        )
-    ) {
-
-        return String(
-            number
-        );
-
-    }
-
-
-    return number
-        .toFixed(2)
-        .replace(
-            /\.00$/,
-            ""
-        );
-
-}
-
-
-/* ==================================================
-   SVG
-================================================== */
-
-function createSvgElement(
-    type
-) {
-
-    return document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        type
-    );
-
-}
-
-
-/* ==================================================
-   GRID
-================================================== */
-
-function drawGrid(
-    minValue,
-    maxValue
-) {
-
-    grid.innerHTML =
-        "";
-
-
-    const left =
-        45;
-
-    const right =
-        980;
-
-    const top =
-        25;
-
-    const bottom =
-        415;
-
-    const count =
-        5;
-
-
-    for (
-        let i = 0;
-        i <= count;
-        i++
-    ) {
-
-        const y =
-            bottom -
-
-            (
-                i /
-                count
-            ) *
-
-            (
-                bottom -
-                top
-            );
-
-
-        const line =
-            createSvgElement(
-                "line"
-            );
-
-
-        line.setAttribute(
-            "x1",
-            left
-        );
-
-        line.setAttribute(
-            "x2",
-            right
-        );
-
-        line.setAttribute(
-            "y1",
-            y
-        );
-
-        line.setAttribute(
-            "y2",
-            y
-        );
-
-        line.setAttribute(
-            "class",
-            "grid-line"
-        );
-
-
-        grid.appendChild(
-            line
-        );
-
-
-        const label =
-            createSvgElement(
-                "text"
-            );
-
-
-        label.setAttribute(
-            "x",
-            5
-        );
-
-        label.setAttribute(
-            "y",
-            y + 4
-        );
-
-        label.setAttribute(
-            "class",
-            "axis-label"
-        );
-
-
-        const value =
-            minValue +
-
-            (
-                i /
-                count
-            ) *
-
-            (
-                maxValue -
-                minValue
-            );
-
-
-        label.textContent =
-
-            currentMetric === "puan"
-
-                ? Math.round(
-                    value
-                )
-
-                : Number(
-                    value
-                ).toFixed(
-                    0
-                );
-
-
-        grid.appendChild(
-            label
-        );
-
-    }
-
-}
-
-
-/* ==================================================
-   DRAW
-================================================== */
-
-function drawChart() {
-
-    const allData =
-        getCurrentData();
-
-
-    if (
-        allData.length === 0
-    ) {
-
-        grid.innerHTML =
-            "";
-
-        linePath.setAttribute(
-            "d",
-            ""
-        );
-
-        areaPath.setAttribute(
-            "d",
-            ""
-        );
-
-        pointsGroup.innerHTML =
-            "";
-
-        axisLabels.innerHTML =
-            "";
-
-
-        emptyTitle.textContent =
-            "Bu filtrede henüz deneme bulunmuyor.";
-
-
-        emptyText.textContent =
-            "Ekle butonuyla ilk denemeni ekleyebilirsin.";
-
-
-        emptyState.style.display =
-            "flex";
-
-
-        zoomIndicator.textContent =
-            "Zoom: 1.0x";
-
-
-        return;
-
-    }
-
-
-    emptyState.style.display =
-        "none";
-
-
-    const count =
-        getVisibleCount(
-            currentZoom,
-            allData.length
-        );
-
-
-    const visible =
-        getVisibleEntries(
-            allData,
-            count
-        );
-
-
-    const values =
-        allData.map(
-            item =>
-                metricValue(
-                    item
-                )
-        );
-
-
-    let minValue =
-        Math.min(
-            ...values
-        );
-
-
-    let maxValue =
-        Math.max(
-            ...values
-        );
-
-
-    if (
-        minValue ===
-        maxValue
-    ) {
-
-        minValue -=
-            1;
-
-        maxValue +=
-            1;
-
-    }
-
-
-    const padding =
-        (
-            maxValue -
-            minValue
-        ) *
-        0.16;
-
-
-    minValue -=
-        padding;
-
-    maxValue +=
-        padding;
-
-
-    drawGrid(
-        minValue,
-        maxValue
-    );
-
-
-    const left =
-        45;
-
-    const right =
-        980;
-
-    const top =
-        25;
-
-    const bottom =
-        415;
-
-
-    const width =
-        right -
-        left;
-
-    const height =
-        bottom -
-        top;
-
-
-    const coords =
-        visible.map(
-            (
-                entry,
-                index
-            ) => {
-
-                const value =
-                    metricValue(
-                        entry.item
-                    );
-
-
-                const x =
-
-                    visible.length ===
-                    1
-
-                        ? left +
-                          width / 2
-
-                        :
-
-                        left +
-
-                        (
-                            index /
-                            (
-                                visible.length -
-                                1
-                            )
-                        ) *
-
-                        width;
-
-
-                const normalized =
-                    (
-                        value -
-                        minValue
-                    ) /
-                    (
-                        maxValue -
-                        minValue
-                    );
-
-
-                const y =
-                    bottom -
-                    normalized *
-                    height;
-
-
-                return {
-
-                    x,
-
-                    y,
-
-                    entry
-
-                };
-
-            }
-        );
-
-
-    /* ==================================================
-       LINE
-    ================================================== */
-
-    let lineD =
-        "";
-
-
-    coords.forEach(
-        (
-            point,
-            index
-        ) => {
-
-            lineD +=
-
-                index === 0
-
-                    ? `M ${point.x} ${point.y}`
-
-                    : ` L ${point.x} ${point.y}`;
-
-        }
-    );
-
-
-    linePath.setAttribute(
-        "d",
-        lineD
-    );
-
-
-    /* ==================================================
-       AREA
-    ================================================== */
-
-    let areaD =
-        lineD;
-
-
-    if (
-        coords.length
-    ) {
-
-        const first =
-            coords[0];
-
-        const last =
-            coords[
-                coords.length - 1
-            ];
-
-
-        areaD +=
-
-            ` L ${last.x} ${bottom}` +
-
-            ` L ${first.x} ${bottom}` +
-
-            " Z";
-
-    }
-
-
-    areaPath.setAttribute(
-        "d",
-        areaD
-    );
-
-
-    /* ==================================================
-       POINTS
-    ================================================== */
-
-    pointsGroup.innerHTML =
-        "";
-
-
-    coords.forEach(
-        point => {
-
-            const circle =
-                createSvgElement(
-                    "circle"
-                );
-
-
-            circle.setAttribute(
-                "cx",
-                point.x
-            );
-
-            circle.setAttribute(
-                "cy",
-                point.y
-            );
-
-            circle.setAttribute(
-                "r",
-                currentZoom >= 3
-                    ? 5
-                    : 4
-            );
-
-            circle.setAttribute(
-                "class",
-                "point"
-            );
-
-
-            circle.addEventListener(
-                "mouseenter",
-                () => {
-
-                    showTooltip(
-                        circle,
-                        point.entry.item
-                    );
-
-                }
-            );
-
-
-            circle.addEventListener(
-                "mouseleave",
-                hideTooltip
-            );
-
-
-            circle.addEventListener(
-                "touchstart",
-                event => {
-
-                    if (
-                        event.touches.length === 1
-                    ) {
-
-                        showTooltip(
-                            circle,
-                            point.entry.item
-                        );
-
-                    }
-
-                },
-                {
-                    passive:
-                        true
-                }
-            );
-
-
-            pointsGroup.appendChild(
-                circle
-            );
-
-        }
-    );
-
-
-    /* ==================================================
-       X LABELS
-    ================================================== */
-
-    axisLabels.innerHTML =
-        "";
-
-
-    const labelCount =
-        Math.min(
-            visible.length,
-            7
-        );
-
-
-    for (
-        let i = 0;
-        i < labelCount;
-        i++
-    ) {
-
-        const index =
-
-            labelCount === 1
-
-                ? 0
-
-                : Math.round(
-
-                    i *
-
-                    (
-                        visible.length -
-                        1
-                    ) /
-
-                    (
-                        labelCount -
-                        1
-                    )
-
-                );
-
-
-        const point =
-            coords[
-                index
-            ];
-
-
-        const label =
-            createSvgElement(
-                "text"
-            );
-
-
-        label.setAttribute(
-            "x",
-            point.x
-        );
-
-        label.setAttribute(
-            "y",
-            447
-        );
-
-        label.setAttribute(
-            "text-anchor",
-            "middle"
-        );
-
-        label.setAttribute(
-            "class",
-            "x-label"
-        );
-
-
-        label.textContent =
-            point.entry.item.name ||
-            "Deneme";
-
-
-        axisLabels.appendChild(
-            label
-        );
-
-    }
-
-
-    zoomIndicator.textContent =
-        `Zoom: ${currentZoom.toFixed(1)}x`;
-
-}
-
-
-/* ==================================================
-   TOOLTIP
-================================================== */
-
-function showTooltip(
-    point,
-    item
-) {
-
-    tooltipName.textContent =
-        item.name ||
-        "İsimsiz deneme";
-
-
-    tooltipDate.textContent =
-        formatDate(
-            item.date
-        );
-
-
-    tooltipValue.textContent =
-        formatValue(
-            metricValue(
-                item
-            )
-        );
-
-
-    tooltipMetric.textContent =
-        metricName();
-
-
-    const wrapRect =
-        chartWrap.getBoundingClientRect();
-
-
-    const svgRect =
-        chartSvg.getBoundingClientRect();
-
-
-    const cx =
-        Number(
-            point.getAttribute(
-                "cx"
-            )
-        );
-
-
-    const cy =
-        Number(
-            point.getAttribute(
-                "cy"
-            )
-        );
-
-
-    const xRatio =
-        cx /
-        1000;
-
-
-    const yRatio =
-        cy /
-        470;
-
-
-    let left =
-
-        (
-            svgRect.left -
-            wrapRect.left
-        ) +
-
-        xRatio *
-        svgRect.width;
-
-
-    let top =
-
-        (
-            svgRect.top -
-            wrapRect.top
-        ) +
-
-        yRatio *
-        svgRect.height;
-
-
-    left -=
-        85;
-
-
-    top -=
-        98;
-
-
-    left =
-        Math.max(
-            8,
-            Math.min(
-                left,
-                chartWrap.clientWidth -
-                185
-            )
-        );
-
-
-    top =
-        Math.max(
-            8,
-            top
-        );
-
-
-    tooltip.style.left =
-        `${left}px`;
-
-
-    tooltip.style.top =
-        `${top}px`;
-
-
-    tooltip.classList.add(
-        "show"
-    );
-
-}
-
-
-function hideTooltip() {
-
-    tooltip.classList.remove(
-        "show"
-    );
-
-}
-
-
-/* ==================================================
-   ZOOM ANIMATION
-================================================== */
-
-let animationFrame =
-    null;
-
-
-function animateZoom() {
-
-    const difference =
-        targetZoom -
-        currentZoom;
-
-
-    currentZoom +=
-        difference *
-        0.16;
-
-
-    if (
-        Math.abs(
-            difference
-        ) <
-        0.005
-    ) {
-
-        currentZoom =
-            targetZoom;
-
-    }
-
-
-    drawChart();
-
-
-    if (
-        Math.abs(
-            targetZoom -
-            currentZoom
-        ) >=
-        0.005
-    ) {
-
-        animationFrame =
-            requestAnimationFrame(
-                animateZoom
-            );
-
-    }
-
-}
-
-
-function setZoom(
-    value
-) {
-
-    targetZoom =
-        Math.max(
-            MIN_ZOOM,
-            Math.min(
-                MAX_ZOOM,
-                value
-            )
-        );
-
-
-    if (
-        animationFrame
-    ) {
-
-        cancelAnimationFrame(
-            animationFrame
-        );
-
-    }
-
-
-    animationFrame =
-        requestAnimationFrame(
-            animateZoom
-        );
-
-}
-
-
-/* ==================================================
-   MOUSE ZOOM
-================================================== */
-
-let leftMouseDown =
-    false;
-
-
-chartWrap.addEventListener(
-    "pointerdown",
-    event => {
-
-        if (
-            event.pointerType ===
-                "mouse" &&
-            event.button === 0
-        ) {
-
-            leftMouseDown =
-                true;
-
-        }
-
-    }
-);
-
-
-window.addEventListener(
-    "pointerup",
-    () => {
-
-        leftMouseDown =
-            false;
-
-    }
-);
-
-
-chartWrap.addEventListener(
-    "wheel",
-    event => {
-
-        const leftHeld =
-            leftMouseDown ||
-            Boolean(
-                event.buttons & 1
-            );
-
-
-        if (
-            !leftHeld
-        ) {
-
-            return;
-
-        }
-
-
-        event.preventDefault();
-
-
-        if (
-            event.deltaY < 0
-        ) {
-
-            setZoom(
-                targetZoom +
-                0.35
-            );
-
-        }
-
-        else {
-
-            setZoom(
-                targetZoom -
-                0.35
-            );
-
-        }
-
-    },
-    {
-        passive:
-            false
-    }
-);
-
-
-/* ==================================================
-   TOUCH PINCH
-================================================== */
-
-let pinchStartDistance =
-    null;
-
-let pinchStartZoom =
-    1;
-
-
-function getTouchDistance(
-    touches
-) {
-
-    const dx =
-        touches[0].clientX -
-        touches[1].clientX;
-
-
-    const dy =
-        touches[0].clientY -
-        touches[1].clientY;
-
-
-    return Math.sqrt(
-        dx * dx +
-        dy * dy
-    );
-
-}
-
-
-chartWrap.addEventListener(
-    "touchstart",
-    event => {
-
-        if (
-            event.touches.length ===
-            2
-        ) {
-
-            pinchStartDistance =
-                getTouchDistance(
-                    event.touches
-                );
-
-
-            pinchStartZoom =
-                targetZoom;
-
-        }
-
-    },
-    {
-        passive:
-            false
-    }
-);
-
-
-chartWrap.addEventListener(
-    "touchmove",
-    event => {
-
-        if (
-            event.touches.length !== 2 ||
-            pinchStartDistance === null
-        ) {
-
-            return;
-
-        }
-
-
-        event.preventDefault();
-
-
-        const distance =
-            getTouchDistance(
-                event.touches
-            );
-
-
-        const ratio =
-            distance /
-            pinchStartDistance;
-
-
-        setZoom(
-            pinchStartZoom *
-            ratio
-        );
-
-    },
-    {
-        passive:
-            false
-    }
-);
-
-
-chartWrap.addEventListener(
-    "touchend",
-    event => {
-
-        if (
-            event.touches.length <
-            2
-        ) {
-
-            pinchStartDistance =
-                null;
-
-        }
-
-    }
-);
-
-
-/* ==================================================
-   FILTER BUTTONS
-================================================== */
-
-document
-    .querySelectorAll(
-        ".filter-button"
-    )
-    .forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    currentType =
-                        button.dataset.type;
-
-
-                    updateFilterUI();
-
-
-                    currentZoom =
-                        1;
-
-                    targetZoom =
-                        1;
-
-
-                    drawChart();
-
-                }
-            );
-
-        }
-    );
-
-
-/* ==================================================
-   BRANCH BUTTONS
-================================================== */
-
-document
-    .querySelectorAll(
-        ".branch-button"
-    )
-    .forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    currentBranch =
-                        button.dataset.branch;
-
-
-                    currentType =
-                        "BRANCH";
-
-
-                    updateFilterUI();
-
-
-                    currentZoom =
-                        1;
-
-                    targetZoom =
-                        1;
-
-
-                    drawChart();
-
-                }
-            );
-
-        }
-    );
-
-
-/* ==================================================
-   METRIC BUTTONS
-================================================== */
-
-document
-    .querySelectorAll(
-        ".metric-button"
-    )
-    .forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    document
-                        .querySelectorAll(
-                            ".metric-button"
-                        )
-                        .forEach(
-                            item =>
-                                item.classList.remove(
-                                    "active"
-                                )
-                        );
-
-
-                    button.classList.add(
-                        "active"
-                    );
-
-
-                    currentMetric =
-                        button.dataset.metric;
-
-
-                    currentZoom =
-                        1;
-
-                    targetZoom =
-                        1;
-
-
-                    drawChart();
-
-                }
-            );
-
-        }
-    );
-
-
-/* ==================================================
-   PANEL
-================================================== */
-
-const addPanel =
-    document.getElementById(
-        "addPanel"
-    );
-
-const panelOverlay =
-    document.getElementById(
-        "panelOverlay"
-    );
-
-
-function syncAddType() {
-
-    const select =
-        document.getElementById(
-            "examType"
-        );
-
-
-    if (
-        currentType ===
-        "TYT"
-    ) {
-
-        select.value =
-            "TYT";
-
-    }
-
-    else if (
-        currentType ===
-        "AYT"
-    ) {
-
-        select.value =
-            "AYT";
-
-    }
-
-    else {
-
-        select.value =
-            currentBranch;
-
-    }
-
-}
-
-
-function openPanel() {
-
-    syncAddType();
-
-
-    hideMessages();
-
-
-    addPanel.classList.add(
-        "show"
-    );
-
-
-    panelOverlay.classList.add(
-        "show"
-    );
-
-
-    document.body.classList.add(
-        "panel-open"
-    );
-
-
-    setTimeout(
-        () => {
-
-            document
-                .getElementById(
-                    "examName"
-                )
-                .focus();
-
-        },
-        250
-    );
-
-}
-
-
-function closePanel() {
-
-    addPanel.classList.remove(
-        "show"
-    );
-
-
-    panelOverlay.classList.remove(
-        "show"
-    );
-
-
-    document.body.classList.remove(
-        "panel-open"
-    );
-
-}
-
-
-document
-    .getElementById(
-        "openAddPanel"
-    )
-    .addEventListener(
-        "click",
-        openPanel
-    );
-
-
-document
-    .getElementById(
-        "closeAddPanel"
-    )
-    .addEventListener(
-        "click",
-        closePanel
-    );
-
-
-panelOverlay.addEventListener(
-    "click",
-    closePanel
-);
-
-
-document.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            event.key ===
-                "Escape" &&
-            addPanel.classList.contains(
-                "show"
-            )
-        ) {
-
-            closePanel();
-
-        }
-
-    }
-);
-
-
-/* ==================================================
-   FORM
-================================================== */
-
-const addForm =
-    document.getElementById(
-        "addForm"
-    );
-
-const examName =
-    document.getElementById(
-        "examName"
-    );
-
-const examType =
-    document.getElementById(
-        "examType"
-    );
-
-const examDate =
-    document.getElementById(
-        "examDate"
-    );
-
-const correctInput =
-    document.getElementById(
-        "correct"
-    );
-
-const wrongInput =
-    document.getElementById(
-        "wrong"
-    );
-
-const emptyInput =
-    document.getElementById(
-        "empty"
-    );
-
-const durationInput =
-    document.getElementById(
-        "duration"
-    );
-
-const calculatedNet =
-    document.getElementById(
-        "calculatedNet"
-    );
-
-const calculatedPoint =
-    document.getElementById(
-        "calculatedPoint"
-    );
-
-const submitButton =
-    document.getElementById(
-        "submitButton"
-    );
-
-const successMessage =
-    document.getElementById(
-        "successMessage"
-    );
-
-const errorMessage =
-    document.getElementById(
-        "errorMessage"
-    );
-
-
-/* ==================================================
-   FORM CALCULATION
-================================================== */
-
-function inputNumber(
-    input
-) {
-
-    const value =
-        Number(
-            input.value
-        );
-
-
-    return Number.isFinite(
-        value
-    )
-        ? Math.max(
-            0,
-            value
-        )
-        : 0;
-
-}
-
-
-function calculateForm() {
-
-    const dogru =
-        inputNumber(
-            correctInput
-        );
-
-
-    const yanlis =
-        inputNumber(
-            wrongInput
-        );
-
-
-    const bos =
-        inputNumber(
-            emptyInput
-        );
-
-
-    const sure =
-        inputNumber(
-            durationInput
-        );
-
-
-    const net =
-        dogru -
-        (
-            yanlis /
-            4
-        );
-
-
-    const puan =
-        sure > 0
-
-            ? (
-                net /
-                sure
-            ) *
-            1000
-
-            : 0;
-
-
-    calculatedNet.textContent =
-        net.toFixed(
-            2
-        )
-        .replace(
-            /\.00$/,
-            ""
-        );
-
-
-    calculatedPoint.textContent =
-        puan.toFixed(
-            1
-        );
-
-
-    return {
-
-        dogru,
-
-        yanlis,
-
-        bos,
-
-        sure,
-
-        net,
-
-        puan
-
+  });
+  const clearPointer=e=>{if(e.pointerType==='touch'){state.touchPointers.delete(e.pointerId);if(state.touchPointers.size<2)state.pinchDistance=null;}};
+  chart.addEventListener('pointerup',clearPointer); chart.addEventListener('pointercancel',clearPointer); chart.addEventListener('pointerleave',clearPointer);
+
+  // Ekle drawer
+  const openDrawer=()=>{$('drawer').classList.add('show');$('overlay').classList.add('show');setTimeout(()=>$('fName').focus(),220)};
+  const closeDrawer=()=>{$('drawer').classList.remove('show');$('overlay').classList.remove('show');};
+  $('openAdd').addEventListener('click',openDrawer); $('closeAdd').addEventListener('click',closeDrawer); $('overlay').addEventListener('click',closeDrawer);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();if(document.body.classList.contains('graph-fullscreen'))setFullscreen(false);}});
+
+  function updatePreview(){
+    const d=safeNum($('fDogru').value,0), y=safeNum($('fYanlis').value,0), s=safeNum($('fSure').value,0);
+    const net=d-y/4;
+    $('previewNet').textContent=fmt(net,1);
+    $('previewPuan').textContent=s>0?fmt(net/s*1000,1):'0.0';
+  }
+  ['fDogru','fYanlis','fSure'].forEach(id=>$(id).addEventListener('input',updatePreview));
+  $('fDate').value=new Date().toISOString().slice(0,10);
+
+  $('addForm').addEventListener('submit',async e=>{
+    e.preventDefault();
+    const button=$('submitAdd'); button.disabled=true; button.textContent='Kaydediliyor…';
+    const body={
+      name:$('fName').value.trim(),
+      sinav:$('fSinav').value,
+      dogru:safeNum($('fDogru').value,0),
+      yanlis:safeNum($('fYanlis').value,0),
+      bos:safeNum($('fBos').value,0),
+      sure:safeNum($('fSure').value,0),
+      date:$('fDate').value
     };
-
-}
-
-
-[
-    correctInput,
-    wrongInput,
-    emptyInput,
-    durationInput
-]
-.forEach(
-    input => {
-
-        input.addEventListener(
-            "input",
-            calculateForm
-        );
-
+    try{
+      await addExam(body);
+      closeDrawer();
+      toast('Deneme Notion’a eklendi. Grafik güncelleniyor.');
+      $('addForm').reset(); $('fDate').value=new Date().toISOString().slice(0,10); $('fSure').value=165; updatePreview();
+      await reload();
+    }catch(err){
+      console.error(err); toast('Deneme eklenemedi: '+err.message);
+    }finally{
+      button.disabled=false; button.textContent='Denemeyi Kaydet';
     }
-);
-
-
-/* ==================================================
-   MESSAGES
-================================================== */
-
-function hideMessages() {
-
-    successMessage.classList.remove(
-        "show"
-    );
-
-    errorMessage.classList.remove(
-        "show"
-    );
-
-}
-
-
-function showError(
-    message
-) {
-
-    errorMessage.textContent =
-        message;
-
-
-    errorMessage.classList.add(
-        "show"
-    );
-
-}
-
-
-/* ==================================================
-   ADD
-================================================== */
-
-addForm.addEventListener(
-    "submit",
-    async event => {
-
-        event.preventDefault();
-
-
-        hideMessages();
-
-
-        const name =
-            examName.value.trim();
-
-
-        const sinav =
-            examType.value;
-
-
-        const date =
-            examDate.value;
-
-
-        const values =
-            calculateForm();
-
-
-        if (
-            !name
-        ) {
-
-            showError(
-                "Deneme adı zorunludur."
-            );
-
-            return;
-
-        }
-
-
-        if (
-            !date
-        ) {
-
-            showError(
-                "Tarih zorunludur."
-            );
-
-            return;
-
-        }
-
-
-        submitButton.disabled =
-            true;
-
-
-        submitButton.textContent =
-            "Notion'a kaydediliyor...";
-
-
-        try {
-
-            await postExam({
-
-                name,
-
-                sinav,
-
-                date,
-
-                dogru:
-                    values.dogru,
-
-                yanlis:
-                    values.yanlis,
-
-                bos:
-                    values.bos,
-
-                sure:
-                    values.sure
-
-            });
-
-
-            /*
-               Yeni kaydın formula alanı dahil
-               kesin verisini Notion'dan tekrar çek.
-            */
-
-            exams =
-                await getExams();
-
-
-            /*
-               Eklenen kayda geç.
-            */
-
-            if (
-                sinav === "TYT"
-            ) {
-
-                currentType =
-                    "TYT";
-
-            }
-
-            else if (
-                sinav === "AYT"
-            ) {
-
-                currentType =
-                    "AYT";
-
-            }
-
-            else {
-
-                currentType =
-                    "BRANCH";
-
-                currentBranch =
-                    sinav;
-
-            }
-
-
-            updateFilterUI();
-
-
-            currentZoom =
-                1;
-
-            targetZoom =
-                1;
-
-
-            drawChart();
-
-
-            setStatus(
-                `${exams.length} deneme yüklendi`
-            );
-
-
-            successMessage.classList.add(
-                "show"
-            );
-
-
-            setTimeout(
-                () => {
-
-                    examName.value =
-                        "";
-
-                    correctInput.value =
-                        0;
-
-                    wrongInput.value =
-                        0;
-
-                    emptyInput.value =
-                        0;
-
-                    durationInput.value =
-                        165;
-
-                    examDate.value =
-                        getTodayString();
-
-                    calculateForm();
-
-                },
-                300
-            );
-
-
-            setTimeout(
-                () => {
-
-                    closePanel();
-
-                },
-                750
-            );
-
-        }
-
-        catch (
-            error
-        ) {
-
-            console.error(
-                "Deneme ekleme hatası:",
-                error
-            );
-
-
-            showError(
-                error.message ||
-                "Deneme eklenemedi."
-            );
-
-        }
-
-        finally {
-
-            submitButton.disabled =
-                false;
-
-            submitButton.textContent =
-                "Denemeyi Ekle";
-
-        }
-
-    }
-);
-
-
-/* ==================================================
-   TODAY
-================================================== */
-
-function getTodayString() {
-
-    const now =
-        new Date();
-
-
-    return [
-
-        now.getFullYear(),
-
-        String(
-            now.getMonth() + 1
-        ).padStart(
-            2,
-            "0"
-        ),
-
-        String(
-            now.getDate()
-        ).padStart(
-            2,
-            "0"
-        )
-
-    ].join("-");
-
-}
-
-
-examDate.value =
-    getTodayString();
-
-
-/* ==================================================
-   INITIAL CALCULATION
-================================================== */
-
-calculateForm();
-
-
-/* ==================================================
-   START
-================================================== */
-
-initialize();
-
+  });
+
+  updatePreview();
+  reload();
+})();
 </script>
-
 </body>
-
 </html>
