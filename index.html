@@ -3722,25 +3722,25 @@ async function formuKaydet() {
     const dersValue =
         document.getElementById(
             "dersInput"
-        ).value;
+        ).value.trim();
 
 
     const konuValue =
         document.getElementById(
             "konuInput"
-        ).value;
+        ).value.trim();
 
 
     const baslikValue =
         document.getElementById(
             "baslikInput"
-        ).value;
+        ).value.trim();
 
 
     const aciklamaValue =
         document.getElementById(
             "aciklamaInput"
-        ).value;
+        ).value.trim();
 
 
     if (
@@ -3797,9 +3797,16 @@ async function formuKaydet() {
         let response;
 
 
+        /*
+        =====================================================
+        DÜZENLEME
+        =====================================================
+        */
+
         if (
             duzenlemeModu &&
-            seciliNot
+            seciliNot &&
+            seciliNot.id
         ) {
 
             response =
@@ -3830,6 +3837,14 @@ async function formuKaydet() {
                 );
 
         }
+
+
+        /*
+        =====================================================
+        YENİ KAYIT
+        =====================================================
+        */
+
         else {
 
             response =
@@ -3864,6 +3879,7 @@ async function formuKaydet() {
 
 
         if (
+            !response.ok ||
             !data.success
         ) {
 
@@ -3875,56 +3891,32 @@ async function formuKaydet() {
         }
 
 
+        /*
+        =====================================================
+        DÜZENLENEN NOT
+        =====================================================
+        */
+
         if (
-            duzenlemeModu &&
-            data.item
+            duzenlemeModu
         ) {
+
+            if (!data.item) {
+
+                throw new Error(
+                    "Sunucudan güncellenen not bilgisi gelmedi."
+                );
+
+            }
+
 
             const editedId =
                 data.item.id;
 
 
-            const ana =
-                bilgiler.find(
-                    item =>
-                        item.id ===
-                        editedId
-                );
+            /* AKTİF LİSTEYİ GÜNCELLE */
 
-
-            if (ana) {
-
-                Object.assign(
-                    ana,
-                    data.item
-                );
-
-            }
-
-
-            const ayar =
-                ayarBilgileri.find(
-                    item =>
-                        item.id ===
-                        editedId
-                );
-
-
-            if (ayar) {
-
-                Object.assign(
-                    ayar,
-                    data.item
-                );
-
-            }
-
-
-            seciliNot =
-                data.item;
-
-
-            const aktifIndex =
+            const anaIndex =
                 bilgiler.findIndex(
                     item =>
                         item.id ===
@@ -3933,63 +3925,146 @@ async function formuKaydet() {
 
 
             if (
-                aktifIndex !== -1
+                anaIndex !== -1
             ) {
 
+                bilgiler[
+                    anaIndex
+                ] =
+                    data.item;
+
                 seciliIndex =
-                    aktifIndex;
-
-
-                ders.textContent =
-                    data.item.ders ||
-                    "Bilgi";
-
-
-                baslik.textContent =
-                    data.item.baslik ||
-                    "";
-
-
-                konu.textContent =
-                    data.item.konu
-                        ? "Konu: " +
-                          data.item.konu
-                        : "";
-
-
-                aciklama.textContent =
-                    data.item.aciklama ||
-                    "";
-
-
-                if (
-                    data.item.gorsel
-                ) {
-
-                    gorsel.src =
-                        data.item.gorsel;
-
-                    gorselWrap.classList.add(
-                        "show"
-                    );
-
-                }
-                else {
-
-                    gorsel.removeAttribute(
-                        "src"
-                    );
-
-                    gorselWrap.classList.remove(
-                        "show"
-                    );
-
-                }
+                    anaIndex;
 
             }
 
+
+            /* TÜM KAYITLARI GÜNCELLE */
+
+            const ayarIndex =
+                ayarBilgileri.findIndex(
+                    item =>
+                        item.id ===
+                        editedId
+                );
+
+
+            if (
+                ayarIndex !== -1
+            ) {
+
+                ayarBilgileri[
+                    ayarIndex
+                ] =
+                    data.item;
+
+            }
+
+
+            /* SEÇİLİ NOTU GÜNCELLE */
+
+            seciliNot =
+                data.item;
+
+
+            /* EKRANDAKİ KARTI GÜNCELLE */
+
+            ders.textContent =
+                data.item.ders ||
+                "Bilgi";
+
+
+            baslik.textContent =
+                data.item.baslik ||
+                "";
+
+
+            konu.textContent =
+                data.item.konu
+                    ? "Konu: " +
+                      data.item.konu
+                    : "";
+
+
+            aciklama.textContent =
+                data.item.aciklama ||
+                "";
+
+
+            /* GÖRSEL */
+
+            if (
+                data.item.gorsel
+            ) {
+
+                gorsel.src =
+                    data.item.gorsel;
+
+                gorsel.alt =
+                    data.item.baslik ||
+                    "Bilgi görseli";
+
+                gorselWrap.classList.add(
+                    "show"
+                );
+
+            }
+            else {
+
+                gorsel.removeAttribute(
+                    "src"
+                );
+
+                gorselWrap.classList.remove(
+                    "show"
+                );
+
+            }
+
+
+            seciliNotuGoster();
+
+            ayarlarListesiniOlustur();
+
+
+            /*
+            Düzenleme modunu burada kapatıyoruz.
+            Mesaj değişkenini bundan önce belirlemek
+            zorunda kalmıyoruz.
+            */
+
+            form.classList.remove(
+                "open"
+            );
+
+            formPause =
+                false;
+
+            duzenlemeModu =
+                false;
+
+            formuTemizle();
+
+            sonZaman =
+                performance.now();
+
+
+            toastGoster(
+                "✓ Not güncellendi."
+            );
+
+            return;
+
         }
-        else if (
+
+
+        /*
+        =====================================================
+        YENİ EKLENEN NOT
+        =====================================================
+        */
+
+        if (
             data.item
         ) {
 
@@ -4011,7 +4086,20 @@ async function formuKaydet() {
         }
 
 
-        formuKapat();
+        form.classList.remove(
+            "open"
+        );
+
+        formPause =
+            false;
+
+        duzenlemeModu =
+            false;
+
+        formuTemizle();
+
+        sonZaman =
+            performance.now();
 
 
         if (
@@ -4025,24 +4113,17 @@ async function formuKaydet() {
         }
 
 
-        const mesaj =
-            duzenlemeModu
-                ? "✓ Not güncellendi."
-                : "✓ Bilgi eklendi.";
-
-
         toastGoster(
-            mesaj
+            "✓ Bilgi eklendi."
         );
-
 
     }
     catch (error) {
 
         console.error(
+            "Form kaydetme hatası:",
             error
         );
-
 
         status.textContent =
             "Hata: " +
