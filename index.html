@@ -703,7 +703,7 @@ button.danger:hover {
     grid-template-columns:
         repeat(
             2,
-            minmax(0, 1fr)
+            minmax(0,1fr)
         );
 
     gap:
@@ -1088,6 +1088,9 @@ button.danger:hover {
     margin-bottom:
         14px;
 
+    color:
+        #f0f0f0;
+
 }
 
 
@@ -1347,6 +1350,10 @@ textarea {
     </div>
 
 
+    <!-- =====================================================
+         ANA BUTONLAR
+    ===================================================== -->
+
     <div class="buttons">
 
 
@@ -1425,7 +1432,9 @@ textarea {
         </div>
 
 
-        <div class="setting-grid">
+        <div
+            class="setting-grid"
+        >
 
 
             <div
@@ -1816,7 +1825,9 @@ textarea {
 </div>
 
 
-<!-- TOAST -->
+<!-- =========================================================
+     TOAST
+========================================================= -->
 
 <div
     class="toast"
@@ -1838,13 +1849,17 @@ const API =
    VERİLER
 ========================================================= */
 
-let bilgiler = [];
+let bilgiler =
+    [];
 
-let ayarBilgileri = [];
+let ayarBilgileri =
+    [];
 
-let seciliIndex = -1;
+let seciliIndex =
+    -1;
 
-let seciliNot = null;
+let seciliNot =
+    null;
 
 
 /* =========================================================
@@ -1887,68 +1902,61 @@ let duzenlemeModu =
 
 
 /* =========================================================
-   ELEMENTLER
+   GÖSTERİM CACHE
 ========================================================= */
 
-const panel =
-    document.getElementById(
-        "panel"
-    );
+const sonGosterimCache =
+    {};
 
+
+/* =========================================================
+   ELEMENTLER
+========================================================= */
 
 const card =
     document.getElementById(
         "card"
     );
 
-
 const ders =
     document.getElementById(
         "ders"
     );
-
 
 const baslik =
     document.getElementById(
         "baslik"
     );
 
-
 const konu =
     document.getElementById(
         "konu"
     );
-
 
 const aciklama =
     document.getElementById(
         "aciklama"
     );
 
-
 const sayac =
     document.getElementById(
         "sayac"
     );
-
 
 const progress =
     document.getElementById(
         "progress"
     );
 
-
 const settings =
     document.getElementById(
         "settings"
     );
 
-
 const form =
     document.getElementById(
         "form"
     );
-
 
 const toast =
     document.getElementById(
@@ -1991,14 +1999,14 @@ function toastGoster(
                 );
 
             },
-            3200
+            3500
         );
 
 }
 
 
 /* =========================================================
-   TARİH
+   TARİH FORMATLA
 ========================================================= */
 
 function tarihFormatla(
@@ -2055,7 +2063,7 @@ function tarihFormatla(
 
 
 /* =========================================================
-   AKTİF VERİLER
+   AKTİF VERİLERİ GETİR
 ========================================================= */
 
 async function verileriGetir(
@@ -2131,15 +2139,12 @@ async function verileriGetir(
 
 
         /*
-           İlk açılışta rastgele bilgi getir.
-
-           Sonraki yenilemelerde mevcut
-           kartı korumaya çalış.
+           İlk açılışta rastgele getir.
         */
 
         if (
             ilkYukleme ||
-            seciliNot === null
+            !seciliNot
         ) {
 
             rastgeleNotGoster();
@@ -2149,7 +2154,12 @@ async function verileriGetir(
         }
 
 
-        const ayniNot =
+        /*
+           Mevcut kart halen aktifse
+           kartı değiştirme.
+        */
+
+        const mevcut =
             bilgiler.find(
                 item =>
                     item.id ===
@@ -2157,17 +2167,16 @@ async function verileriGetir(
             );
 
 
-        if (ayniNot) {
+        if (mevcut) {
 
             seciliNot =
-                ayniNot;
-
+                mevcut;
 
             seciliIndex =
                 bilgiler.findIndex(
                     item =>
                         item.id ===
-                        ayniNot.id
+                        mevcut.id
                 );
 
         }
@@ -2193,7 +2202,7 @@ async function verileriGetir(
 
 
 /* =========================================================
-   TÜM NOTLAR
+   TÜM NOTLARI GETİR
 ========================================================= */
 
 async function tumNotlariGetir() {
@@ -2228,14 +2237,7 @@ async function tumNotlariGetir() {
             [];
 
 
-        /*
-           Eğer seçili notun sunucuda
-           güncellenmiş hali varsa onu kullan.
-        */
-
-        if (
-            seciliNot
-        ) {
+        if (seciliNot) {
 
             const guncel =
                 ayarBilgileri.find(
@@ -2318,7 +2320,8 @@ function rastgeleNotGoster() {
     }
     while (
         bilgiler.length > 1 &&
-        yeniIndex === seciliIndex
+        yeniIndex ===
+            seciliIndex
     );
 
 
@@ -2394,11 +2397,6 @@ function kartGoster(
             );
 
 
-            /*
-               Kart görünür olduktan
-               sonra gösterim kaydet.
-            */
-
             gosterimiKaydet(
                 item
             );
@@ -2414,24 +2412,7 @@ function kartGoster(
    GÖSTERİM KAYDET
 ========================================================= */
 
-/*
-   Her not için son gösterimi client tarafında
-   bir önceki gösterim olarak da tutuyoruz.
-
-   Böylece Worker'a:
-
-   oncekiGosterim
-
-   gönderiyoruz.
-
-   Notion ise kalıcı sayaç olarak görev yapıyor.
-*/
-
-const sonGosterimCache =
-    {};
-
-
-function gosterimiKaydet(
+async function gosterimiKaydet(
     item
 ) {
 
@@ -2445,10 +2426,9 @@ function gosterimiKaydet(
     }
 
 
-    const cacheKey =
-        "yks-bilgi-son-gosterim-" +
-        item.id;
-
+    /*
+       Önce hafızadaki son gösterimi kullan.
+    */
 
     let oncekiGosterim =
         sonGosterimCache[
@@ -2458,8 +2438,11 @@ function gosterimiKaydet(
 
 
     /*
-       İlk olarak mevcut Notion değerini
-       başlangıç değeri olarak kullan.
+       Sayfa ilk açıldığında cache boşsa
+       Notion'daki mevcut Son Gösterim'i
+       kullan.
+
+       Böylece mevcut veri korunur.
     */
 
     if (
@@ -2474,162 +2457,160 @@ function gosterimiKaydet(
 
 
     /*
-       Şimdiki gösterim zamanı.
-       Bir sonraki gösterimde
-       Son Gösterim olacak.
+       Bu gösterimin gerçek zamanı.
     */
 
     const simdikiGosterim =
         new Date().toISOString();
 
 
-    fetch(
-        API +
-        "/ozet-goster/" +
-        encodeURIComponent(
-            item.id
-        ),
-        {
+    try {
 
-            method:
-                "POST",
+        const response =
+            await fetch(
+                API +
+                "/ozet-goster/" +
+                encodeURIComponent(
+                    item.id
+                ),
+                {
 
-            headers: {
+                    method:
+                        "POST",
 
-                "Content-Type":
-                    "application/json"
+                    headers: {
 
-            },
+                        "Content-Type":
+                            "application/json"
 
-            body:
-                JSON.stringify({
+                    },
 
-                    oncekiGosterim:
-                        oncekiGosterim
+                    body:
+                        JSON.stringify({
 
-                })
+                            oncekiGosterim:
+                                oncekiGosterim
+
+                        })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data.success
+        ) {
+
+            console.error(
+                "Gösterim güncellenemedi:",
+                data
+            );
+
+            return;
 
         }
-    )
-    .then(
-        response =>
-            response.json()
-    )
-    .then(
-        data => {
 
-            if (
-                !data.success
-            ) {
 
-                console.error(
-                    "Gösterim güncellenemedi:",
-                    data
+        /*
+           Şu anki gösterimi cache'e yaz.
+
+           Bir sonraki gösterimde bu
+           "önceki gösterim" olacak.
+        */
+
+        sonGosterimCache[
+            item.id
+        ] =
+            simdikiGosterim;
+
+
+        if (
+            data.item
+        ) {
+
+            const ana =
+                bilgiler.find(
+                    x =>
+                        x.id ===
+                        item.id
                 );
 
-                return;
+
+            if (ana) {
+
+                Object.assign(
+                    ana,
+                    data.item
+                );
 
             }
 
 
-            /*
-               Bu gösterimi gelecekteki
-               "bir önceki gösterim"
-               olarak cache'e yaz.
-            */
+            const ayar =
+                ayarBilgileri.find(
+                    x =>
+                        x.id ===
+                        item.id
+                );
 
-            sonGosterimCache[
-                item.id
-            ] =
-                simdikiGosterim;
+
+            if (ayar) {
+
+                Object.assign(
+                    ayar,
+                    data.item
+                );
+
+            }
 
 
             if (
-                data.item
+                seciliNot &&
+                seciliNot.id ===
+                item.id
             ) {
 
-                const ana =
-                    bilgiler.find(
-                        x =>
-                            x.id ===
-                            item.id
-                    );
-
-
-                if (ana) {
-
-                    Object.assign(
-                        ana,
-                        data.item
-                    );
-
-                }
-
-
-                const ayar =
-                    ayarBilgileri.find(
-                        x =>
-                            x.id ===
-                            item.id
-                    );
-
-
-                if (ayar) {
-
-                    Object.assign(
-                        ayar,
-                        data.item
-                    );
-
-                }
+                Object.assign(
+                    seciliNot,
+                    data.item
+                );
 
 
                 if (
-                    seciliNot &&
-                    seciliNot.id ===
-                    item.id
+                    settings.classList.contains(
+                        "open"
+                    )
                 ) {
 
-                    Object.assign(
-                        seciliNot,
-                        data.item
-                    );
+                    seciliNotuGoster();
 
-
-                    if (
-                        settings.classList.contains(
-                            "open"
-                        )
-                    ) {
-
-                        seciliNotuGoster();
-
-                        ayarlarListesiniOlustur();
-
-                    }
+                    ayarlarListesiniOlustur();
 
                 }
 
             }
 
         }
-    )
-    .catch(
-        error => {
 
-            console.error(
-                "Gösterim kaydı hatası:",
-                error
-            );
+    }
+    catch (error) {
 
-        }
-    );
+        console.error(
+            "Gösterim kaydı hatası:",
+            error
+        );
+
+    }
 
 }
 
 
 /* =========================================================
-   TIMER
+   AKICI TIMER
 ========================================================= */
 
 function timerBaslat() {
@@ -2744,7 +2725,7 @@ function timerDongusu(
 
 
 /* =========================================================
-   PANEL PAUSE
+   PANEL MOUSE PAUSE
 ========================================================= */
 
 function panelMouseEnter() {
@@ -2768,7 +2749,7 @@ function panelMouseLeave() {
 
 
 /* =========================================================
-   TOUCH PAUSE
+   TOUCH
 ========================================================= */
 
 function kartTouchStart() {
@@ -2798,7 +2779,7 @@ function kartTouchEnd() {
 
 
 /* =========================================================
-   AYARLAR AÇ
+   AYARLAR
 ========================================================= */
 
 async function ayarlariAc() {
@@ -2825,13 +2806,8 @@ async function ayarlariAc() {
     );
 
 
-    /*
-       O an ekrandaki kart
-       başlangıçta seçili olur.
-    */
-
     if (
-        seciliNot === null &&
+        !seciliNot &&
         bilgiler.length
     ) {
 
@@ -2873,7 +2849,7 @@ function ayarlariKapat() {
 
 
 /* =========================================================
-   SEÇİLİ NOT GÖSTER
+   SEÇİLİ NOT
 ========================================================= */
 
 function seciliNotuGoster() {
@@ -2937,38 +2913,29 @@ function seciliNotuGoster() {
         title.textContent =
             "-";
 
-
         selectedDers.textContent =
             "-";
-
 
         selectedKonu.textContent =
             "-";
 
-
         selectedAciklama.textContent =
             "-";
-
 
         selectedUrl.textContent =
             "Belirli değil";
 
-
         selectedAktif.textContent =
             "-";
-
 
         selectedEklenme.textContent =
             "-";
 
-
         selectedSonGosterim.textContent =
             "-";
 
-
         selectedGosterim.textContent =
             "0";
-
 
         return;
 
@@ -3133,10 +3100,12 @@ function ayarlarListesiniOlustur() {
                                     <span
                                         class="meta-orange"
                                     >
+
                                         ${escapeHtml(
                                             item.konu ||
                                             "Konu yok"
                                         )}
+
                                     </span>
 
 
@@ -3177,7 +3146,6 @@ function ayarlarListesiniOlustur() {
 
                                     </span>
 
-
                                 </div>
 
                             </div>
@@ -3204,7 +3172,8 @@ function ayarNotuSec(
     const bulunan =
         ayarBilgileri.find(
             item =>
-                item.id === id
+                item.id ===
+                id
         );
 
 
@@ -3226,13 +3195,6 @@ function ayarNotuSec(
                 bulunan.id
         );
 
-
-    /*
-       Seçilen kayıt aktifse ana kart
-       seçimini de onunla eşleştir.
-
-       Pasifse mevcut kart değişmez.
-    */
 
     if (
         aktifIndex !== -1
@@ -3412,18 +3374,10 @@ async function seciliNotuSil() {
         }
 
 
-        /*
-           Cache temizle.
-        */
-
         delete sonGosterimCache[
             silinenId
         ];
 
-
-        /*
-           Listelerden çıkar.
-        */
 
         bilgiler =
             bilgiler.filter(
@@ -3440,11 +3394,6 @@ async function seciliNotuSil() {
                     silinenId
             );
 
-
-        /*
-           Eğer silinen not ekrandaki
-           aktif kart ise yeni kart getir.
-        */
 
         const aktifKartSilindi =
             (
@@ -3507,11 +3456,6 @@ async function seciliNotuSil() {
 
         }
 
-
-        /*
-           Seçili not artık yoksa
-           kalan aktif kartı seç.
-        */
 
         if (
             !seciliNot &&
@@ -3824,12 +3768,16 @@ async function formuKaydet() {
         }
 
 
+        /*
+           DÜZENLEME
+        */
+
         if (
             duzenlemeModu &&
             data.item
         ) {
 
-            const id =
+            const editedId =
                 data.item.id;
 
 
@@ -3837,7 +3785,7 @@ async function formuKaydet() {
                 bilgiler.find(
                     item =>
                         item.id ===
-                        id
+                        editedId
                 );
 
 
@@ -3855,7 +3803,7 @@ async function formuKaydet() {
                 ayarBilgileri.find(
                     item =>
                         item.id ===
-                        id
+                        editedId
                 );
 
 
@@ -3873,18 +3821,11 @@ async function formuKaydet() {
                 data.item;
 
 
-            /*
-               Eğer düzenlenen kayıt aktifse
-               ana kart da güncellenir.
-
-               Timer sıfırlanmaz.
-            */
-
             const aktifIndex =
                 bilgiler.findIndex(
                     item =>
                         item.id ===
-                        id
+                        editedId
                 );
 
 
@@ -3925,8 +3866,13 @@ async function formuKaydet() {
         ) {
 
             /*
-               Yeni kayıt.
+               YENİ EKLEME
             */
+
+            ayarBilgileri.push(
+                data.item
+            );
+
 
             if (
                 data.item.aktif
@@ -3937,11 +3883,6 @@ async function formuKaydet() {
                 );
 
             }
-
-
-            ayarBilgileri.push(
-                data.item
-            );
 
         }
 
@@ -3985,7 +3926,7 @@ async function formuKaydet() {
 
 
 /* =========================================================
-   KONU SAYFASI
+   KONU SAYFASI URL
 ========================================================= */
 
 function konuSayfasiUrlAl() {
@@ -4007,8 +3948,8 @@ function konuSayfasiUrlAl() {
 
 
     /*
-       Düzenleme sırasında mevcut
-       URL korunur.
+       Düzenleme sırasında mevcut link
+       korunur.
     */
 
     if (
@@ -4063,20 +4004,43 @@ function konuyaGit() {
     }
 
 
-    const win =
-        window.open(
-            seciliNot.notionUrl,
-            "_blank",
-            "noopener,noreferrer"
+    /*
+       Gerçek anchor oluşturuyoruz.
+       Bu, bazı iframe/popup ortamlarında
+       window.open'dan daha güvenilir.
+    */
+
+    const link =
+        document.createElement(
+            "a"
         );
 
 
-    if (!win) {
+    link.href =
+        seciliNot.notionUrl;
 
-        window.location.href =
-            seciliNot.notionUrl;
 
-    }
+    link.target =
+        "_blank";
+
+
+    link.rel =
+        "noopener noreferrer";
+
+
+    link.style.display =
+        "none";
+
+
+    document.body.appendChild(
+        link
+    );
+
+
+    link.click();
+
+
+    link.remove();
 
 }
 
@@ -4085,164 +4049,51 @@ function konuyaGit() {
    YAPAY ZEKA
 ========================================================= */
 
-async function yapayZeka() {
+function yapayZeka() {
 
     if (!seciliNot) {
 
-        alert(
-            "Önce bir bilgi seçili olmalı."
-        );
+        alert("Önce bir bilgi seçili olmalı.");
 
         return;
 
     }
-
-
-    /*
-       İçerikle birlikte
-       YKS yönlendirmesi.
-    */
 
     const prompt =
-`Bu YKS bilgi kartındaki içerikle birlikte çalış.
+`Ders: ${seciliNot.ders || "-"}
 
-Ders:
-${seciliNot.ders || "-"}
+Başlık: ${seciliNot.baslik || "-"}
 
-Konu:
-${seciliNot.konu || "-"}
+Açıklama: ${seciliNot.aciklama || "-"}
 
-Başlık:
-${seciliNot.baslik || "-"}
-
-İçerik:
-${seciliNot.aciklama || "-"}
+Bu konuyu açıkla.`;
 
 
-Görevin:
-
-1. Önce verdiğim içeriği dikkatlice analiz et.
-2. Konuyu YKS seviyesinde anlaşılır şekilde açıkla.
-3. Kritik noktaları ve sınavda karıştırılabilecek ayrıntıları belirt.
-4. Varsa istisnaları ayrıca göster.
-5. İçerikte eksik veya hatalı bir nokta varsa belirt.
-6. Sonrasında beni bu konu hakkında tek tek, zor ve ÖSYM tarzında sorularla test et.
-7. Ben cevap vermeden doğru cevabı söyleme.
-8. Gerektiğinde yanlış yaptığım noktayı açıklayıp tekrar soru sor.
-9. Konuşmayı doğrudan bu bilgi kartındaki içerikten başlat.`;
+    const chatUrl =
+        "https://chatgpt.com/?q=" +
+        encodeURIComponent(prompt);
 
 
-    /*
-       ChatGPT'yi aç.
-    */
+    const link =
+        document.createElement("a");
 
-    const win =
-        window.open(
-            "https://chatgpt.com/",
-            "_blank",
-            "noopener,noreferrer"
-        );
+    link.href =
+        chatUrl;
 
+    link.target =
+        "_blank";
 
-    /*
-       Promptu panoya kopyala.
-    */
+    link.rel =
+        "noopener noreferrer";
 
-    let copied =
-        false;
+    link.style.display =
+        "none";
 
+    document.body.appendChild(link);
 
-    try {
+    link.click();
 
-        await navigator.clipboard.writeText(
-            prompt
-        );
-
-
-        copied =
-            true;
-
-    }
-    catch {
-
-        try {
-
-            const textarea =
-                document.createElement(
-                    "textarea"
-                );
-
-
-            textarea.value =
-                prompt;
-
-
-            textarea.style.position =
-                "fixed";
-
-
-            textarea.style.left =
-                "-9999px";
-
-
-            textarea.style.top =
-                "0";
-
-
-            document.body.appendChild(
-                textarea
-            );
-
-
-            textarea.focus();
-
-
-            textarea.select();
-
-
-            copied =
-                document.execCommand(
-                    "copy"
-                );
-
-
-            textarea.remove();
-
-        }
-        catch {
-
-            copied =
-                false;
-
-        }
-
-    }
-
-
-    if (!win) {
-
-        window.location.href =
-            "https://chatgpt.com/";
-
-        return;
-
-    }
-
-
-    if (copied) {
-
-        toastGoster(
-            "🤖 İçerik + yönlendirme kopyalandı. ChatGPT'ye Ctrl+V yap."
-        );
-
-    }
-    else {
-
-        toastGoster(
-            "🤖 ChatGPT açıldı. Prompt otomatik kopyalanamadı."
-        );
-
-    }
+    link.remove();
 
 }
 
@@ -4291,7 +4142,7 @@ document.addEventListener(
 
 
 /* =========================================================
-   SAYFA GİZLENMESİ
+   SEKME GÖRÜNMEZSE DURDUR
 ========================================================= */
 
 document.addEventListener(
@@ -4321,7 +4172,7 @@ document.addEventListener(
 
 
 /* =========================================================
-   HTML ESCAPE
+   HTML GÜVENLİĞİ
 ========================================================= */
 
 function escapeHtml(
