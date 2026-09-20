@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bugünün Bilgisi</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                         Roboto, Helvetica, Arial, sans-serif;
+            background: transparent;
+        }
+
+        .panel {
+            width: 100%;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .card {
+            min-height: 180px;
+            padding: 28px;
+            border-radius: 16px;
+            background: #f7f7f7;
+            border: 1px solid #e5e5e5;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            transition: opacity 0.35s ease,
+                        transform 0.35s ease;
+        }
+
+        .subject {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            opacity: 0.6;
+        }
+
+        .title {
+            font-size: 23px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .content {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 5px;
+            margin-top: 12px;
+            overflow: hidden;
+            border-radius: 10px;
+            background: #e5e5e5;
+        }
+
+        .progress {
+            height: 100%;
+            width: 100%;
+            transform-origin: left;
+            background: #2383e2;
+        }
+
+        .counter {
+            text-align: right;
+            margin-top: 7px;
+            font-size: 12px;
+            opacity: 0.45;
+        }
+
+        @media (max-width: 500px) {
+            body {
+                padding: 10px;
+            }
+
+            .card {
+                padding: 22px;
+            }
+
+            .title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="panel">
+
+    <div class="card" id="card">
+
+        <div class="subject" id="subject"></div>
+
+        <div class="title" id="title"></div>
+
+        <div class="content" id="content"></div>
+
+    </div>
+
+    <div class="progress-container">
+        <div class="progress" id="progress"></div>
+    </div>
+
+    <div class="counter" id="counter"></div>
+
+</div>
+
+
+<script>
+
+const bilgiler = [
+
+    {
+        subject: "📚 TYT Türkçe",
+        title: "Küçük Ünlü Uyumu",
+        content: "Düz ünlülerden (a, e, ı, i) sonra yine düz; yuvarlak ünlülerden (o, ö, u, ü) sonra dar-yuvarlak (u, ü) veya düz-geniş (a, e) ünlüler gelebilir."
+    },
+
+    {
+        subject: "🧬 TYT Biyoloji",
+        title: "Enzimler",
+        content: "Enzimler aktivasyon enerjisini düşürerek tepkimelerin daha hızlı gerçekleşmesini sağlar. Tepkime sonunda harcanmazlar."
+    },
+
+    {
+        subject: "🏛️ TYT Tarih",
+        title: "Tarih ve Zaman",
+        content: "Tarih, geçmişte yaşamış insan topluluklarının faaliyetlerini yer ve zaman göstererek, neden-sonuç ilişkisi içinde inceleyen bilim dalıdır."
+    }
+
+];
+
+const sure = 10000;
+
+let index = 0;
+
+const subject = document.getElementById("subject");
+const title = document.getElementById("title");
+const content = document.getElementById("content");
+const progress = document.getElementById("progress");
+const counter = document.getElementById("counter");
+const card = document.getElementById("card");
+
+
+function goster() {
+
+    const bilgi = bilgiler[index];
+
+    card.style.opacity = "0";
+    card.style.transform = "translateY(8px)";
+
+    setTimeout(() => {
+
+        subject.textContent = bilgi.subject;
+        title.textContent = bilgi.title;
+        content.textContent = bilgi.content;
+
+        counter.textContent =
+            `${index + 1} / ${bilgiler.length}`;
+
+        card.style.opacity = "1";
+        card.style.transform = "translateY(0)";
+
+        progress.style.transition = "none";
+        progress.style.transform = "scaleX(1)";
+
+        requestAnimationFrame(() => {
+
+            requestAnimationFrame(() => {
+
+                progress.style.transition =
+                    `transform ${sure}ms linear`;
+
+                progress.style.transform =
+                    "scaleX(0)";
+
+            });
+
+        });
+
+    }, 300);
+
+}
+
+
+function sonraki() {
+
+    index++;
+
+    if (index >= bilgiler.length) {
+        index = 0;
+    }
+
+    goster();
+
+}
+
+
+goster();
+
+setInterval(sonraki, sure + 300);
+
+</script>
+
+</body>
+</html>
