@@ -1,1312 +1,3604 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Bugünün Bilgisi</title>
+<meta charset="UTF-8">
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-        body {
-            margin: 0;
-            padding: 0;
-            background: transparent;
-            font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                sans-serif;
-            color: #e5e7eb;
-        }
+<title>Bugünün Bilgisi</title>
 
-        .container {
-            width: 100%;
-            max-width: 760px;
-            margin: 0 auto;
-            padding: 12px;
-        }
 
-        /* ANA BİLGİ KARTI */
+<style>
 
-        .info-card {
-            background: #292929;
-            border: 1px solid #3b3b3b;
-            border-radius: 14px;
-            padding: 20px;
-            box-shadow:
-                0 4px 14px rgba(0, 0, 0, 0.15);
-            transition: opacity 0.25s ease;
-            user-select: none;
-        }
+/* =========================
+   TEMEL
+========================= */
 
-        .info-card.paused {
-            opacity: 0.9;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        .lesson {
-            display: inline-block;
-            font-size: 12px;
-            font-weight: 600;
-            color: #9ca3af;
-            background: #353535;
-            padding: 5px 9px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-        }
 
-        .title {
-            font-size: 22px;
-            font-weight: 700;
-            line-height: 1.3;
-            color: #f3f4f6;
-            margin-bottom: 6px;
-        }
+:root {
 
-        .topic {
-            font-size: 13px;
-            color: #9ca3af;
-            margin-bottom: 12px;
-        }
+    --orange: #ff7a00;
 
-        .description {
-            font-size: 15px;
-            line-height: 1.65;
-            color: #d1d5db;
-            white-space: pre-wrap;
-        }
+    --orange-light: #ff922b;
 
-        /* PROGRESS */
+    --orange-dark: #c75d00;
 
-        .progress-wrapper {
-            margin-top: 18px;
-        }
 
-        .progress-background {
-            width: 100%;
-            height: 4px;
-            background: #404040;
-            border-radius: 999px;
-            overflow: hidden;
-        }
+    --black: #000000;
 
-        .progress-bar {
-            width: 0%;
-            height: 100%;
-            background: #9ca3af;
-            border-radius: 999px;
-            transition: width 1s linear;
-        }
+    --card: #121212;
 
-        /* ALT BİLGİ */
+    --card-2: #171717;
 
-        .bottom-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-            gap: 10px;
-        }
+    --border: #292929;
 
-        .counter {
-            font-size: 12px;
-            color: #777;
-        }
+    --border-orange:
+        rgba(255, 122, 0, 0.45);
 
-        .pause-text {
-            font-size: 11px;
-            color: #666;
-        }
 
-        /* BUTONLAR */
+    --text: #f2f2f2;
 
-        .actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 14px;
-            flex-wrap: wrap;
-        }
+    --text-soft: #cfcfcf;
 
-        .action-button {
-            flex: 1;
-            min-width: 160px;
-            border: 1px solid #3b3b3b;
-            background: #292929;
-            color: #d1d5db;
-            border-radius: 9px;
-            padding: 10px 14px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition:
-                background 0.15s ease,
-                border-color 0.15s ease,
-                transform 0.1s ease;
-        }
+    --text-muted: #888888;
 
-        .action-button:hover {
-            background: #333333;
-            border-color: #4b4b4b;
-        }
+    --text-dark: #666666;
 
-        .action-button:active {
-            transform: scale(0.98);
-        }
+}
 
-        /* KONUYA GİT */
 
-        .topic-button {
-            display: none;
-        }
+html,
+body {
 
-        .topic-button.visible {
-            display: block;
-        }
+    margin: 0;
 
-        /* EKLE BUTONU */
+    padding: 0;
 
-        .add-button {
-            width: 100%;
-            margin-top: 8px;
-        }
+    background: #000000;
 
-        /* EKLE PANELİ */
+}
 
-        .add-panel {
-            display: none;
-            margin-top: 12px;
-            padding: 18px;
-            background: #252525;
-            border: 1px solid #3b3b3b;
-            border-radius: 12px;
-        }
 
-        .add-panel.open {
-            display: block;
-        }
+body {
 
-        .form-title {
-            font-size: 15px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: #f3f4f6;
-        }
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
 
-        .form-group {
-            margin-bottom: 13px;
-        }
+    color:
+        var(--text);
 
-        .form-label {
-            display: block;
-            font-size: 12px;
-            color: #9ca3af;
-            margin-bottom: 6px;
-        }
+}
 
-        .form-input,
-        .form-select,
-        .form-textarea {
-            width: 100%;
-            border: 1px solid #404040;
-            background: #1f1f1f;
-            color: #e5e7eb;
-            border-radius: 8px;
-            padding: 9px 10px;
-            font-size: 13px;
-            outline: none;
-            font-family: inherit;
-        }
 
-        .form-input:focus,
-        .form-select:focus,
-        .form-textarea:focus {
-            border-color: #666;
-        }
+.panel {
 
-        .form-textarea {
-            min-height: 100px;
-            resize: vertical;
-            line-height: 1.5;
-        }
+    width: 100%;
 
-        .submit-button {
-            width: 100%;
-            margin-top: 5px;
-            border: none;
-            background: #e5e7eb;
-            color: #1f1f1f;
-            border-radius: 8px;
-            padding: 10px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-        }
+    max-width: 760px;
 
-        .submit-button:hover {
-            background: #ffffff;
-        }
+    margin: auto;
 
-        .submit-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+}
 
-        .status {
-            margin-top: 10px;
-            font-size: 12px;
-            line-height: 1.5;
-            color: #9ca3af;
-        }
 
-        .status.success {
-            color: #a7f3d0;
-        }
+/* =========================
+   ANA KART
+========================= */
 
-        .status.error {
-            color: #fca5a5;
-        }
+.card {
 
-        /* MOBİL */
+    position: relative;
 
-        @media (max-width: 600px) {
-            .container {
-                padding: 8px;
-            }
+    background:
+        linear-gradient(
+            145deg,
+            #151515 0%,
+            #101010 100%
+        );
 
-            .info-card {
-                padding: 16px;
-            }
+    border:
+        1px solid #2d2d2d;
 
-            .title {
-                font-size: 19px;
-            }
+    border-radius:
+        14px;
 
-            .description {
-                font-size: 14px;
-            }
+    padding:
+        22px 22px 18px;
 
-            .action-button {
-                min-width: 100%;
-            }
-        }
-    </style>
+    overflow:
+        hidden;
+
+    min-height:
+        220px;
+
+    transition:
+        opacity .25s ease,
+        transform .25s ease,
+        border-color .2s ease,
+        box-shadow .2s ease;
+
+}
+
+
+.card:hover {
+
+    border-color:
+        var(--border-orange);
+
+    box-shadow:
+        0 0 0 1px
+        rgba(255,122,0,0.04),
+
+        0 8px 30px
+        rgba(0,0,0,0.35);
+
+}
+
+
+.card::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+
+    left: 0;
+
+    right: 0;
+
+    height: 2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            var(--orange),
+            transparent
+        );
+
+    opacity: .8;
+
+}
+
+
+.card.fade {
+
+    opacity: 0;
+
+    transform:
+        translateY(4px);
+
+}
+
+
+.top-line {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 10px;
+
+}
+
+
+.ders {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    background:
+        rgba(255,122,0,0.08);
+
+    border:
+        1px solid
+        rgba(255,122,0,0.28);
+
+    border-radius: 7px;
+
+    padding:
+        5px 9px;
+
+    font-size: 12px;
+
+    color:
+        var(--orange-light);
+
+    font-weight: 500;
+
+}
+
+
+.sayac {
+
+    font-size: 12px;
+
+    color: #9a9a9a;
+
+    white-space: nowrap;
+
+    min-width: 35px;
+
+    text-align: right;
+
+    font-variant-numeric:
+        tabular-nums;
+
+}
+
+
+.baslik {
+
+    font-size: 23px;
+
+    font-weight: 650;
+
+    line-height: 1.3;
+
+    margin:
+        8px 0 10px;
+
+    color: #f4f4f4;
+
+    word-break: break-word;
+
+}
+
+
+.konu {
+
+    font-size: 12px;
+
+    color:
+        var(--orange-light);
+
+    margin-bottom: 12px;
+
+    opacity: .85;
+
+}
+
+
+.aciklama {
+
+    font-size: 15px;
+
+    line-height: 1.65;
+
+    color:
+        var(--text-soft);
+
+    white-space:
+        pre-wrap;
+
+    word-break:
+        break-word;
+
+}
+
+
+/* =========================
+   SÜRE BAR
+========================= */
+
+.progress-wrap {
+
+    margin-top: 18px;
+
+    height: 4px;
+
+    background: #242424;
+
+    border-radius:
+        999px;
+
+    overflow: hidden;
+
+}
+
+
+.progress {
+
+    height: 100%;
+
+    width: 0%;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--orange-dark),
+            var(--orange),
+            var(--orange-light)
+        );
+
+    border-radius:
+        inherit;
+
+    transform-origin:
+        left center;
+
+    will-change:
+        width;
+
+    box-shadow:
+        0 0 8px
+        rgba(255,122,0,0.25);
+
+}
+
+
+/* =========================
+   BUTONLAR
+========================= */
+
+.buttons {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin-top: 13px;
+
+}
+
+
+button {
+
+    border:
+        1px solid #383838;
+
+    background:
+        #181818;
+
+    color:
+        #dcdcdc;
+
+    border-radius:
+        8px;
+
+    padding:
+        8px 11px;
+
+    font-size:
+        13px;
+
+    cursor:
+        pointer;
+
+    transition:
+        background .15s ease,
+        border-color .15s ease,
+        color .15s ease,
+        transform .1s ease,
+        box-shadow .15s ease;
+
+}
+
+
+button:hover {
+
+    background:
+        rgba(255,122,0,0.09);
+
+    border-color:
+        rgba(255,122,0,0.45);
+
+    color:
+        #ffffff;
+
+    box-shadow:
+        0 0 0 1px
+        rgba(255,122,0,0.04);
+
+}
+
+
+button:active {
+
+    transform:
+        scale(.98);
+
+}
+
+
+button.danger {
+
+    border-color:
+        rgba(220,70,50,0.28);
+
+}
+
+
+button.danger:hover {
+
+    background:
+        rgba(220,70,50,0.10);
+
+    border-color:
+        rgba(220,70,50,0.5);
+
+}
+
+
+/* =========================
+   AYARLAR
+========================= */
+
+.settings {
+
+    display: none;
+
+    margin-top: 12px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #0f0f0f,
+            #090909
+        );
+
+    border:
+        1px solid #292929;
+
+    border-radius:
+        14px;
+
+    padding:
+        17px;
+
+}
+
+
+.settings.open {
+
+    display: block;
+
+}
+
+
+.settings-title {
+
+    font-size: 15px;
+
+    font-weight: 650;
+
+    color: #f2f2f2;
+
+    margin-bottom: 14px;
+
+}
+
+
+/* =========================
+   SEÇİLİ NOT
+========================= */
+
+.selected-settings {
+
+    background: #151515;
+
+    border:
+        1px solid
+        rgba(255,122,0,0.22);
+
+    border-radius:
+        11px;
+
+    padding: 14px;
+
+    margin-bottom: 15px;
+
+    box-shadow:
+        inset 0 1px 0
+        rgba(255,255,255,0.015);
+
+}
+
+
+.selected-label {
+
+    font-size: 10px;
+
+    color:
+        var(--orange);
+
+    margin-bottom: 6px;
+
+    text-transform:
+        uppercase;
+
+    letter-spacing:
+        .5px;
+
+    font-weight: 600;
+
+}
+
+
+.selected-title {
+
+    font-size: 18px;
+
+    font-weight: 650;
+
+    color: #f4f4f4;
+
+    margin-bottom: 12px;
+
+    word-break:
+        break-word;
+
+}
+
+
+.setting-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0,1fr)
+        );
+
+    gap: 8px;
+
+}
+
+
+.setting-item {
+
+    background: #101010;
+
+    border:
+        1px solid #272727;
+
+    border-radius: 8px;
+
+    padding: 10px;
+
+    min-height: 58px;
+
+}
+
+
+.setting-item.full {
+
+    grid-column:
+        1 / -1;
+
+}
+
+
+.setting-item .label {
+
+    display: block;
+
+    font-size: 10px;
+
+    color: #747474;
+
+    margin-bottom: 5px;
+
+}
+
+
+.setting-item .value {
+
+    font-size: 12px;
+
+    color: #d3d3d3;
+
+    word-break: break-word;
+
+    line-height: 1.45;
+
+}
+
+
+.setting-item .value.orange {
+
+    color:
+        var(--orange-light);
+
+}
+
+
+.setting-actions {
+
+    display: flex;
+
+    gap: 8px;
+
+    margin-top: 12px;
+
+    flex-wrap: wrap;
+
+}
+
+
+/* =========================
+   DİĞER KAYITLAR
+========================= */
+
+.all-title {
+
+    font-size: 12px;
+
+    color: #a3a3a3;
+
+    margin:
+        17px 0 8px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+}
+
+
+.all-title::before {
+
+    content: "";
+
+    display: block;
+
+    width: 3px;
+
+    height: 13px;
+
+    border-radius: 99px;
+
+    background:
+        var(--orange);
+
+}
+
+
+.note-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+    max-height: 320px;
+
+    overflow-y: auto;
+
+    padding-right: 2px;
+
+}
+
+
+.note-list::-webkit-scrollbar {
+
+    width: 5px;
+
+}
+
+
+.note-list::-webkit-scrollbar-track {
+
+    background: #0b0b0b;
+
+    border-radius: 10px;
+
+}
+
+
+.note-list::-webkit-scrollbar-thumb {
+
+    background: #343434;
+
+    border-radius: 10px;
+
+}
+
+
+.note-list::-webkit-scrollbar-thumb:hover {
+
+    background: #4a4a4a;
+
+}
+
+
+.note-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    background: #141414;
+
+    border:
+        1px solid #282828;
+
+    border-radius:
+        9px;
+
+    padding:
+        10px;
+
+    cursor:
+        pointer;
+
+    transition:
+        background .15s ease,
+        border-color .15s ease,
+        transform .1s ease;
+
+}
+
+
+.note-item:hover {
+
+    background: #181818;
+
+    border-color:
+        rgba(255,122,0,0.25);
+
+}
+
+
+.note-item:active {
+
+    transform:
+        scale(.995);
+
+}
+
+
+.note-item.selected {
+
+    border-color:
+        rgba(255,122,0,0.55);
+
+    background:
+        rgba(255,122,0,0.055);
+
+    box-shadow:
+        inset 3px 0 0
+        var(--orange);
+
+}
+
+
+.note-item-title {
+
+    font-size: 12px;
+
+    color: #e0e0e0;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+}
+
+
+.note-meta {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 7px;
+
+    margin-top: 5px;
+
+    font-size: 10px;
+
+    color: #777;
+
+    line-height: 1.4;
+
+}
+
+
+.meta-orange {
+
+    color:
+        #b8681f;
+
+}
+
+
+.active-status {
+
+    color:
+        #75a957;
+
+}
+
+
+.passive-status {
+
+    color:
+        #777;
+
+}
+
+
+/* =========================
+   FORM
+========================= */
+
+.form {
+
+    display: none;
+
+    margin-top: 12px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #101010,
+            #090909
+        );
+
+    border:
+        1px solid #292929;
+
+    border-radius:
+        14px;
+
+    padding:
+        17px;
+
+}
+
+
+.form.open {
+
+    display: block;
+
+}
+
+
+.form-title {
+
+    font-size: 15px;
+
+    font-weight: 650;
+
+    margin-bottom: 14px;
+
+    color:
+        #f0f0f0;
+
+}
+
+
+.field {
+
+    margin-bottom: 11px;
+
+}
+
+
+.field label {
+
+    display: block;
+
+    font-size: 11px;
+
+    color: #999;
+
+    margin-bottom: 5px;
+
+}
+
+
+input,
+textarea,
+select {
+
+    width: 100%;
+
+    border:
+        1px solid #303030;
+
+    background:
+        #161616;
+
+    color:
+        #dddddd;
+
+    border-radius:
+        8px;
+
+    padding:
+        9px 10px;
+
+    font-family:
+        inherit;
+
+    font-size:
+        13px;
+
+    outline:
+        none;
+
+    transition:
+        border-color .15s ease,
+        box-shadow .15s ease;
+
+}
+
+
+input:focus,
+textarea:focus,
+select:focus {
+
+    border-color:
+        rgba(255,122,0,0.55);
+
+    box-shadow:
+        0 0 0 2px
+        rgba(255,122,0,0.07);
+
+}
+
+
+textarea {
+
+    min-height:
+        100px;
+
+    resize:
+        vertical;
+
+}
+
+
+.form-buttons {
+
+    display: flex;
+
+    gap: 8px;
+
+    margin-top: 13px;
+
+}
+
+
+.status {
+
+    font-size: 12px;
+
+    color: #999;
+
+    margin-top: 9px;
+
+    min-height: 17px;
+
+}
+
+
+/* =========================
+   MOBİL
+========================= */
+
+@media (max-width: 520px) {
+
+    .card {
+
+        padding:
+            17px;
+
+    }
+
+
+    .baslik {
+
+        font-size:
+            20px;
+
+    }
+
+
+    .setting-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .setting-item.full {
+
+        grid-column:
+            auto;
+
+    }
+
+}
+
+</style>
 </head>
+
 
 <body>
 
-<div class="container">
 
-    <!-- BİLGİ KARTI -->
+<div class="panel">
 
-    <div
-        class="info-card"
-        id="infoCard"
-    >
+
+<!-- =========================
+     ANA KART
+========================= -->
+
+<div
+    class="card"
+    id="card"
+    onmouseenter="kartMouseEnter()"
+    onmouseleave="kartMouseLeave()"
+    ontouchstart="kartTouchStart()"
+    ontouchend="kartTouchEnd()"
+>
+
+
+    <div class="top-line">
+
 
         <div
-            class="lesson"
-            id="lesson"
+            class="ders"
+            id="ders"
         >
             Yükleniyor...
         </div>
 
-        <div
-            class="title"
-            id="title"
-        >
-            Bilgiler yükleniyor...
-        </div>
 
         <div
-            class="topic"
-            id="topic"
+            class="sayac"
+            id="sayac"
         >
+            10 sn
         </div>
 
-        <div
-            class="description"
-            id="description"
-        >
-        </div>
-
-        <!-- PROGRESS -->
-
-        <div class="progress-wrapper">
-
-            <div class="progress-background">
-
-                <div
-                    class="progress-bar"
-                    id="progressBar"
-                ></div>
-
-            </div>
-
-            <div class="bottom-row">
-
-                <div
-                    class="counter"
-                    id="counter"
-                >
-                    0 / 0
-                </div>
-
-                <div
-                    class="pause-text"
-                    id="pauseText"
-                >
-                    Duraklatmak için üzerine gel
-                </div>
-
-            </div>
-
-        </div>
 
     </div>
 
 
-    <!-- BUTONLAR -->
+    <div
+        class="baslik"
+        id="baslik"
+    >
+        Bilgiler yükleniyor...
+    </div>
 
-    <div class="actions">
+
+    <div
+        class="konu"
+        id="konu"
+    ></div>
+
+
+    <div
+        class="aciklama"
+        id="aciklama"
+    ></div>
+
+
+    <div class="progress-wrap">
+
+        <div
+            class="progress"
+            id="progress"
+        ></div>
+
+    </div>
+
+
+    <div class="buttons">
+
 
         <button
-            class="action-button topic-button"
-            id="topicButton"
+            onclick="yapayZeka()"
+        >
+            🤖 Yapay Zeka
+        </button>
+
+
+        <button
+            onclick="konuyaGit()"
         >
             📖 Konuya Git
         </button>
 
+
         <button
-            class="action-button add-button"
-            id="addButton"
+            onclick="ayarlariAc()"
+        >
+            ⚙ Ayarla
+        </button>
+
+
+        <button
+            onclick="bilgiEkleAc()"
         >
             ＋ Bilgi Ekle
         </button>
 
+
     </div>
 
 
-    <!-- EKLEME PANELİ -->
+</div>
+
+
+<!-- =========================
+     AYARLAR
+========================= -->
+
+<div
+    class="settings"
+    id="settings"
+>
+
+
+    <div class="settings-title">
+
+        ⚙ Seçili Not Ayarları
+
+    </div>
+
+
+    <!-- SEÇİLİ NOT -->
 
     <div
-        class="add-panel"
-        id="addPanel"
+        class="selected-settings"
     >
 
-        <div class="form-title">
-            Yeni Bilgi Ekle
-        </div>
-
-
-        <!-- DERS -->
-
-        <div class="form-group">
-
-            <label
-                class="form-label"
-                for="ders"
-            >
-                Ders
-            </label>
-
-            <select
-                class="form-select"
-                id="ders"
-            >
-
-                <option value="">
-                    Ders seç
-                </option>
-
-                <option value="TYT Matematik">
-                    TYT Matematik
-                </option>
-
-                <option value="TYT Türkçe">
-                    TYT Türkçe
-                </option>
-
-                <option value="TYT Tarih">
-                    TYT Tarih
-                </option>
-
-                <option value="TYT Coğrafya">
-                    TYT Coğrafya
-                </option>
-
-                <option value="TYT Felsefe">
-                    TYT Felsefe
-                </option>
-
-                <option value="TYT Din Kültürü">
-                    TYT Din Kültürü
-                </option>
-
-                <option value="TYT Fizik">
-                    TYT Fizik
-                </option>
-
-                <option value="TYT Kimya">
-                    TYT Kimya
-                </option>
-
-                <option value="TYT Biyoloji">
-                    TYT Biyoloji
-                </option>
-
-                <option value="AYT Matematik">
-                    AYT Matematik
-                </option>
-
-                <option value="AYT Fizik">
-                    AYT Fizik
-                </option>
-
-                <option value="AYT Kimya">
-                    AYT Kimya
-                </option>
-
-                <option value="AYT Biyoloji">
-                    AYT Biyoloji
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <!-- KONU -->
-
-        <div class="form-group">
-
-            <label
-                class="form-label"
-                for="konu"
-            >
-                Konu
-            </label>
-
-            <input
-                class="form-input"
-                id="konu"
-                type="text"
-                placeholder="Örn. Ses Bilgisi"
-            >
-
-        </div>
-
-
-        <!-- KONU SAYFASI -->
-
-        <div class="form-group">
-
-            <label
-                class="form-label"
-                for="konuSayfasi"
-            >
-                Konu Sayfası
-            </label>
-
-            <select
-                class="form-select"
-                id="konuSayfasi"
-            >
-
-                <option value="">
-                    None
-                </option>
-
-                <option value="current">
-                    Bu sayfa
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <!-- BAŞLIK -->
-
-        <div class="form-group">
-
-            <label
-                class="form-label"
-                for="baslik"
-            >
-                Başlık
-            </label>
-
-            <input
-                class="form-input"
-                id="baslik"
-                type="text"
-                placeholder="Bilginin başlığı"
-            >
-
-        </div>
-
-
-        <!-- AÇIKLAMA -->
-
-        <div class="form-group">
-
-            <label
-                class="form-label"
-                for="aciklama"
-            >
-                Açıklama
-            </label>
-
-            <textarea
-                class="form-textarea"
-                id="aciklama"
-                placeholder="Bilginin kısa açıklaması..."
-            ></textarea>
-
-        </div>
-
-
-        <!-- GÖNDER -->
-
-        <button
-            class="submit-button"
-            id="submitButton"
-        >
-            Notion'a Ekle
-        </button>
 
         <div
-            class="status"
-            id="status"
-        ></div>
+            class="selected-label"
+        >
+            Şu anda seçili olan not
+        </div>
+
+
+        <div
+            class="selected-title"
+            id="selectedTitle"
+        >
+            -
+        </div>
+
+
+        <div
+            class="setting-grid"
+        >
+
+
+            <div
+                class="setting-item"
+            >
+
+                <span class="label">
+                    Ders
+                </span>
+
+                <span
+                    class="value"
+                    id="selectedDers"
+                >
+                    -
+                </span>
+
+            </div>
+
+
+            <div
+                class="setting-item"
+            >
+
+                <span class="label">
+                    Konu
+                </span>
+
+                <span
+                    class="value orange"
+                    id="selectedKonu"
+                >
+                    -
+                </span>
+
+            </div>
+
+
+            <div
+                class="setting-item full"
+            >
+
+                <span class="label">
+                    Açıklama
+                </span>
+
+                <span
+                    class="value"
+                    id="selectedAciklama"
+                >
+                    -
+                </span>
+
+            </div>
+
+
+            <div
+                class="setting-item"
+            >
+
+                <span class="label">
+                    Konu Sayfası
+                </span>
+
+                <span
+                    class="value"
+                    id="selectedUrl"
+                >
+                    Belirli değil
+                </span>
+
+            </div>
+
+
+            <div
+                class="setting-item"
+            >
+
+                <span class="label">
+                    Durum
+                </span>
+
+                <span
+                    class="value"
+                    id="selectedAktif"
+                >
+                    -
+                </span>
+
+            </div>
+
+
+            <div
+                class="setting-item"
+            >
+
+                <span class="label">
+                    Eklenme Tarihi
+                </span>
+
+                <span
+                    class="value"
+                    id="selectedEklenme"
+                >
+                    -
+                </span>
+
+            </div>
+
+
+            <div
+                class="setting-item"
+            >
+
+                <span class="label">
+                    Son Gösterim
+                </span>
+
+                <span
+                    class="value"
+                    id="selectedSonGosterim"
+                >
+                    -
+                </span>
+
+            </div>
+
+
+            <div
+                class="setting-item"
+            >
+
+                <span class="label">
+                    Gösterim Sayısı
+                </span>
+
+                <span
+                    class="value orange"
+                    id="selectedGosterim"
+                >
+                    0
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <div
+            class="setting-actions"
+        >
+
+
+            <button
+                onclick="seciliNotuDuzenle()"
+            >
+                ✏️ Notu Düzenle
+            </button>
+
+
+            <button
+                class="danger"
+                onclick="seciliNotuSil()"
+            >
+                🗑️ Notu Sil
+            </button>
+
+
+        </div>
+
 
     </div>
+
+
+    <!-- DİĞER KAYITLAR -->
+
+    <div
+        class="all-title"
+    >
+        Diğer Kayıtlar
+    </div>
+
+
+    <div
+        class="note-list"
+        id="noteList"
+    >
+        Yükleniyor...
+    </div>
+
+
+</div>
+
+
+<!-- =========================
+     FORM
+========================= -->
+
+<div
+    class="form"
+    id="form"
+>
+
+
+    <div
+        class="form-title"
+        id="formTitle"
+    >
+        ＋ Yeni Bilgi Ekle
+    </div>
+
+
+    <div class="field">
+
+        <label>
+            Ders
+        </label>
+
+
+        <select
+            id="dersInput"
+        >
+
+            <option value="">
+                Ders seç
+            </option>
+
+            <option>
+                TYT Matematik
+            </option>
+
+            <option>
+                TYT Türkçe
+            </option>
+
+            <option>
+                TYT Tarih
+            </option>
+
+            <option>
+                TYT Coğrafya
+            </option>
+
+            <option>
+                TYT Felsefe
+            </option>
+
+            <option>
+                TYT Din Kültürü
+            </option>
+
+            <option>
+                TYT Fizik
+            </option>
+
+            <option>
+                TYT Kimya
+            </option>
+
+            <option>
+                TYT Biyoloji
+            </option>
+
+            <option>
+                AYT Matematik
+            </option>
+
+            <option>
+                AYT Fizik
+            </option>
+
+            <option>
+                AYT Kimya
+            </option>
+
+            <option>
+                AYT Biyoloji
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="field">
+
+        <label>
+            Konu
+        </label>
+
+
+        <input
+            id="konuInput"
+            type="text"
+            placeholder="Örn. Ses Bilgisi"
+        >
+
+    </div>
+
+
+    <div class="field">
+
+        <label>
+            Konu Sayfası
+        </label>
+
+
+        <select
+            id="konuSayfasiInput"
+        >
+
+            <option value="">
+                None
+            </option>
+
+            <option value="current">
+                Bu sayfa
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="field">
+
+        <label>
+            Başlık
+        </label>
+
+
+        <input
+            id="baslikInput"
+            type="text"
+            placeholder="Bilginin başlığı"
+        >
+
+    </div>
+
+
+    <div class="field">
+
+        <label>
+            Açıklama
+        </label>
+
+
+        <textarea
+            id="aciklamaInput"
+            placeholder="Bilgiyi buraya yaz..."
+        ></textarea>
+
+    </div>
+
+
+    <div class="form-buttons">
+
+
+        <button
+            onclick="formuKaydet()"
+        >
+            💾 Kaydet
+        </button>
+
+
+        <button
+            onclick="formuKapat()"
+        >
+            İptal
+        </button>
+
+
+    </div>
+
+
+    <div
+        class="status"
+        id="status"
+    ></div>
+
+
+</div>
+
 
 </div>
 
 
 <script>
 
-    /* =========================================================
-       AYARLAR
-    ========================================================= */
 
-    const API_URL =
-        "https://yks-bilgi-api.yanhesap100yh.workers.dev";
+/* =========================
+   API
+========================= */
 
-
-    /* =========================================================
-       ELEMENTLER
-    ========================================================= */
-
-    const infoCard =
-        document.getElementById("infoCard");
-
-    const lesson =
-        document.getElementById("lesson");
-
-    const title =
-        document.getElementById("title");
-
-    const topic =
-        document.getElementById("topic");
-
-    const description =
-        document.getElementById("description");
-
-    const progressBar =
-        document.getElementById("progressBar");
-
-    const counter =
-        document.getElementById("counter");
-
-    const pauseText =
-        document.getElementById("pauseText");
-
-    const topicButton =
-        document.getElementById("topicButton");
-
-    const addButton =
-        document.getElementById("addButton");
-
-    const addPanel =
-        document.getElementById("addPanel");
-
-    const dersInput =
-        document.getElementById("ders");
-
-    const konuInput =
-        document.getElementById("konu");
-
-    const konuSayfasiInput =
-        document.getElementById("konuSayfasi");
-
-    const baslikInput =
-        document.getElementById("baslik");
-
-    const aciklamaInput =
-        document.getElementById("aciklama");
-
-    const submitButton =
-        document.getElementById("submitButton");
-
-    const status =
-        document.getElementById("status");
+const API =
+    "https://yks-bilgi-api.yanhesap100yh.workers.dev";
 
 
-    /* =========================================================
-       DEĞİŞKENLER
-    ========================================================= */
+/* =========================
+   VERİ
+========================= */
 
-    let bilgiler = [];
+let bilgiler = [];
 
-    let index = 0;
+let ayarBilgileri = [];
 
-    let timer = null;
+let seciliIndex = -1;
 
-    let kalan = 10;
-
-    let paused = false;
+let seciliNot = null;
 
 
-    /* =========================================================
-       BİLGİLERİ NOTION'DAN GETİR
-    ========================================================= */
+/* =========================
+   TIMER
+========================= */
 
-    async function bilgileriGetir() {
+const SURE = 10;
 
-        try {
+let kalanSure = SURE;
 
-            const response =
-                await fetch(
-                    API_URL + "/ozetler"
-                );
+let timer = null;
 
-            const data =
-                await response.json();
-
-            if (
-                !data.success ||
-                !Array.isArray(data.items)
-            ) {
-
-                throw new Error(
-                    "Bilgiler alınamadı."
-                );
-
-            }
-
-            bilgiler = data.items;
-
-            if (bilgiler.length === 0) {
-
-                title.textContent =
-                    "Henüz aktif bilgi yok.";
-
-                lesson.textContent =
-                    "";
-
-                topic.textContent =
-                    "";
-
-                description.textContent =
-                    "Özet Havuzu'na aktif bir bilgi eklediğinde burada görünecek.";
-
-                counter.textContent =
-                    "0 / 0";
-
-                return;
-
-            }
+let sonZaman = null;
 
 
-            /* =================================================
-               İLK BİLGİ DE RASTGELE
-            ================================================= */
+/* =========================
+   PAUSE
+========================= */
 
-            index =
-                Math.floor(
-                    Math.random() *
-                    bilgiler.length
-                );
+let mousePause = false;
+
+let settingsPause = false;
+
+let formPause = false;
 
 
-            goster();
+/* =========================
+   FORM
+========================= */
 
-            baslatTimer();
+let duzenlemeModu = false;
 
-        }
 
-        catch (error) {
+/* =========================
+   ELEMENTLER
+========================= */
 
-            console.error(error);
+const card =
+    document.getElementById(
+        "card"
+    );
 
-            title.textContent =
-                "Bağlantı hatası";
 
-            description.textContent =
-                "Notion'dan bilgiler alınırken bir hata oluştu.";
+const ders =
+    document.getElementById(
+        "ders"
+    );
 
-        }
 
+const baslik =
+    document.getElementById(
+        "baslik"
+    );
+
+
+const konu =
+    document.getElementById(
+        "konu"
+    );
+
+
+const aciklama =
+    document.getElementById(
+        "aciklama"
+    );
+
+
+const sayac =
+    document.getElementById(
+        "sayac"
+    );
+
+
+const progress =
+    document.getElementById(
+        "progress"
+    );
+
+
+const settings =
+    document.getElementById(
+        "settings"
+    );
+
+
+const form =
+    document.getElementById(
+        "form"
+    );
+
+
+/* =========================
+   TARİH
+========================= */
+
+function tarihFormatla(
+    tarih
+) {
+
+    if (!tarih) {
+        return "-";
     }
 
 
-    /* =========================================================
-       RASTGELE INDEX
-       
-       Aynı bilgi arka arkaya gelmesin.
-    ========================================================= */
-
-    function rastgeleIndexSec() {
-
-        if (bilgiler.length <= 1) {
-
-            return 0;
-
-        }
-
-
-        let yeniIndex;
-
-
-        do {
-
-            yeniIndex =
-                Math.floor(
-                    Math.random() *
-                    bilgiler.length
-                );
-
-        }
-        while (
-            yeniIndex === index
+    const date =
+        new Date(
+            tarih
         );
 
 
-        return yeniIndex;
-
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+        return "-";
     }
 
 
-    /* =========================================================
-       BİLGİYİ EKRANA YAZ
-    ========================================================= */
+    return date.toLocaleString(
+        "tr-TR",
+        {
+            day:
+                "2-digit",
 
-    function goster() {
+            month:
+                "2-digit",
 
-        const bilgi =
-            bilgiler[index];
+            year:
+                "numeric",
+
+            hour:
+                "2-digit",
+
+            minute:
+                "2-digit"
+        }
+    );
+
+}
 
 
-        if (!bilgi) {
+/* =========================
+   AKTİF VERİLER
+========================= */
+
+async function verileriGetir() {
+
+    try {
+
+        const response =
+            await fetch(
+                API +
+                "/ozetler"
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            throw new Error(
+                data.error ||
+                "Veriler alınamadı."
+            );
+
+        }
+
+
+        bilgiler =
+            data.items ||
+            [];
+
+
+        if (
+            !bilgiler.length
+        ) {
+
+            cancelAnimationFrame(
+                timer
+            );
+
+
+            baslik.textContent =
+                "Henüz aktif bilgi yok.";
+
+
+            ders.textContent =
+                "Bilgi";
+
+
+            konu.textContent =
+                "";
+
+
+            aciklama.textContent =
+                "";
+
+
+            sayac.textContent =
+                "";
+
+
+            progress.style.width =
+                "0%";
+
 
             return;
 
         }
 
 
-        lesson.textContent =
-            bilgi.ders || "";
+        rastgeleNotGoster();
 
 
-        title.textContent =
-            bilgi.baslik || "";
+    }
+    catch (error) {
+
+        console.error(
+            error
+        );
 
 
-        topic.textContent =
-            bilgi.konu
-                ? "Konu: " + bilgi.konu
+        baslik.textContent =
+            "Bilgiler yüklenemedi.";
+
+
+        aciklama.textContent =
+            "API bağlantısını kontrol edin.";
+
+    }
+
+}
+
+
+/* =========================
+   TÜM NOTLAR
+========================= */
+
+async function tumNotlariGetir() {
+
+    try {
+
+        const response =
+            await fetch(
+                API +
+                "/ozetler-tumu"
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            throw new Error(
+                data.error ||
+                "Kayıtlar alınamadı."
+            );
+
+        }
+
+
+        ayarBilgileri =
+            data.items ||
+            [];
+
+
+        ayarlarListesiniOlustur();
+
+    }
+    catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        document.getElementById(
+            "noteList"
+        ).innerHTML = `
+
+            <div style="
+                color:#777;
+                font-size:12px;
+                padding:10px 0;
+            ">
+
+                Kayıtlar alınamadı.
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================
+   RASTGELE NOT
+========================= */
+
+function rastgeleNotGoster() {
+
+    if (
+        !bilgiler.length
+    ) {
+        return;
+    }
+
+
+    let yeniIndex;
+
+
+    do {
+
+        yeniIndex =
+            Math.floor(
+                Math.random() *
+                bilgiler.length
+            );
+
+    }
+    while (
+        bilgiler.length > 1 &&
+        yeniIndex === seciliIndex
+    );
+
+
+    seciliIndex =
+        yeniIndex;
+
+
+    seciliNot =
+        bilgiler[
+            seciliIndex
+        ];
+
+
+    kartGoster(
+        seciliNot
+    );
+
+
+    timerBaslat();
+
+}
+
+
+/* =========================
+   KART GÖSTER
+========================= */
+
+function kartGoster(
+    item
+) {
+
+    card.classList.add(
+        "fade"
+    );
+
+
+    setTimeout(() => {
+
+        ders.textContent =
+            item.ders ||
+            "Bilgi";
+
+
+        baslik.textContent =
+            item.baslik ||
+            "";
+
+
+        konu.textContent =
+            item.konu
+                ? "Konu: " +
+                  item.konu
                 : "";
 
 
-        description.textContent =
-            bilgi.aciklama || "";
+        aciklama.textContent =
+            item.aciklama ||
+            "";
 
 
-        counter.textContent =
-            `${index + 1} / ${bilgiler.length}`;
+        sayac.textContent =
+            SURE +
+            " sn";
 
 
-        /* =====================================================
-           KONUYA GİT BUTONU
-        ===================================================== */
+        progress.style.width =
+            "0%";
 
-        if (bilgi.notionUrl) {
 
-            topicButton.classList.add(
-                "visible"
+        card.classList.remove(
+            "fade"
+        );
+
+
+    }, 220);
+
+
+    /*
+       Kart gerçekten yeni bilgi
+       olarak seçildiği anda
+       gösterim kaydı oluştur.
+    */
+
+    gosterimiKaydet(
+        item
+    );
+
+}
+
+
+/* =========================
+   GÖSTERİM SAYACI
+========================= */
+
+async function gosterimiKaydet(
+    item
+) {
+
+    if (!item || !item.id) {
+        return;
+    }
+
+
+    /*
+       Daha önce bu bilgi
+       bu tarayıcıda ne zaman
+       gösterilmişti?
+    */
+
+    let previousShowTime = null;
+
+
+    try {
+
+        previousShowTime =
+            localStorage.getItem(
+                "yks-bilgi-son-gosterim-" +
+                item.id
             );
+
+    }
+    catch {
+
+        previousShowTime =
+            null;
+
+    }
+
+
+    /*
+       Bu gösterimin zamanı.
+    */
+
+    const currentShowTime =
+        new Date().toISOString();
+
+
+    try {
+
+        const response =
+            await fetch(
+                API +
+                "/ozet-goster/" +
+                encodeURIComponent(
+                    item.id
+                ),
+                {
+                    method:
+                        "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            previousShowTime:
+                                previousShowTime
+
+                        })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            data.success &&
+            data.item
+        ) {
+
+            /*
+               Hem ana listedeki
+               hem de ayarlar listesindeki
+               nesneyi güncelle.
+            */
+
+            const ana =
+                bilgiler.find(
+                    x =>
+                        x.id ===
+                        item.id
+                );
+
+
+            if (ana) {
+
+                Object.assign(
+                    ana,
+                    data.item
+                );
+
+            }
+
+
+            const ayar =
+                ayarBilgileri.find(
+                    x =>
+                        x.id ===
+                        item.id
+                );
+
+
+            if (ayar) {
+
+                Object.assign(
+                    ayar,
+                    data.item
+                );
+
+            }
+
+
+            if (
+                seciliNot &&
+                seciliNot.id ===
+                item.id
+            ) {
+
+                Object.assign(
+                    seciliNot,
+                    data.item
+                );
+
+
+                /*
+                   Ayarlar açıksa
+                   değerleri hemen güncelle.
+                */
+
+                if (
+                    settings.classList.contains(
+                        "open"
+                    )
+                ) {
+
+                    seciliNotuGoster();
+
+
+                    ayarlarListesiniOlustur();
+
+                }
+
+            }
+
+        }
+
+
+        /*
+           Bu gösterimi artık
+           bir sonraki gösterimin
+           "önceki gösterimi"
+           olarak sakla.
+        */
+
+        try {
+
+            localStorage.setItem(
+                "yks-bilgi-son-gosterim-" +
+                item.id,
+
+                currentShowTime
+            );
+
+        }
+        catch {
+
+            /* localStorage kapalıysa
+               sistem yine çalışmaya devam eder. */
+
+        }
+
+
+    }
+    catch (error) {
+
+        console.error(
+            "Gösterim kaydı hatası:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================
+   AKICI TIMER
+========================= */
+
+function timerBaslat() {
+
+    cancelAnimationFrame(
+        timer
+    );
+
+
+    kalanSure =
+        SURE;
+
+
+    sonZaman =
+        performance.now();
+
+
+    progress.style.width =
+        "0%";
+
+
+    sayac.textContent =
+        SURE +
+        " sn";
+
+
+    timer =
+        requestAnimationFrame(
+            timerDongusu
+        );
+
+}
+
+
+function timerDongusu(
+    zaman
+) {
+
+    const duraklatildi =
+        mousePause ||
+        settingsPause ||
+        formPause;
+
+
+    if (
+        !duraklatildi
+    ) {
+
+        const delta =
+            (
+                zaman -
+                sonZaman
+            ) / 1000;
+
+
+        kalanSure -=
+            delta;
+
+
+        if (
+            kalanSure < 0
+        ) {
+
+            kalanSure =
+                0;
+
+        }
+
+
+        const yuzde =
+            (
+                (SURE - kalanSure) /
+                SURE
+            ) * 100;
+
+
+        progress.style.width =
+            yuzde +
+            "%";
+
+
+        sayac.textContent =
+            Math.ceil(
+                kalanSure
+            ) +
+            " sn";
+
+    }
+
+
+    /*
+       Pause sırasında geçen süre
+       sayaçtan düşmez.
+    */
+
+    sonZaman =
+        zaman;
+
+
+    if (
+        kalanSure <= 0
+    ) {
+
+        rastgeleNotGoster();
+
+        return;
+
+    }
+
+
+    timer =
+        requestAnimationFrame(
+            timerDongusu
+        );
+
+}
+
+
+/* =========================
+   MOUSE
+========================= */
+
+function kartMouseEnter() {
+
+    mousePause =
+        true;
+
+}
+
+
+function kartMouseLeave() {
+
+    mousePause =
+        false;
+
+}
+
+
+/* =========================
+   TOUCH
+========================= */
+
+function kartTouchStart() {
+
+    mousePause =
+        true;
+
+}
+
+
+function kartTouchEnd() {
+
+    setTimeout(() => {
+
+        mousePause =
+            false;
+
+    }, 300);
+
+}
+
+
+/* =========================
+   AYARLAR
+========================= */
+
+async function ayarlariAc() {
+
+    if (
+        settings.classList.contains(
+            "open"
+        )
+    ) {
+
+        ayarlariKapat();
+
+        return;
+
+    }
+
+
+    /*
+       Timer burada durur.
+    */
+
+    settingsPause =
+        true;
+
+
+    settings.classList.add(
+        "open"
+    );
+
+
+    seciliNot =
+        bilgiler[
+            seciliIndex
+        ] ||
+        null;
+
+
+    seciliNotuGoster();
+
+
+    await tumNotlariGetir();
+
+}
+
+
+/* =========================
+   AYARLARI KAPAT
+========================= */
+
+function ayarlariKapat() {
+
+    settings.classList.remove(
+        "open"
+    );
+
+
+    settingsPause =
+        false;
+
+}
+
+
+/* =========================
+   SEÇİLİ NOT
+========================= */
+
+function seciliNotuGoster() {
+
+    const title =
+        document.getElementById(
+            "selectedTitle"
+        );
+
+
+    const selectedDers =
+        document.getElementById(
+            "selectedDers"
+        );
+
+
+    const selectedKonu =
+        document.getElementById(
+            "selectedKonu"
+        );
+
+
+    const selectedAciklama =
+        document.getElementById(
+            "selectedAciklama"
+        );
+
+
+    const selectedUrl =
+        document.getElementById(
+            "selectedUrl"
+        );
+
+
+    const selectedAktif =
+        document.getElementById(
+            "selectedAktif"
+        );
+
+
+    const selectedEklenme =
+        document.getElementById(
+            "selectedEklenme"
+        );
+
+
+    const selectedSonGosterim =
+        document.getElementById(
+            "selectedSonGosterim"
+        );
+
+
+    const selectedGosterim =
+        document.getElementById(
+            "selectedGosterim"
+        );
+
+
+    if (!seciliNot) {
+
+        title.textContent =
+            "-";
+
+        selectedDers.textContent =
+            "-";
+
+        selectedKonu.textContent =
+            "-";
+
+        selectedAciklama.textContent =
+            "-";
+
+        selectedUrl.textContent =
+            "Belirli değil";
+
+        selectedAktif.textContent =
+            "-";
+
+        selectedEklenme.textContent =
+            "-";
+
+        selectedSonGosterim.textContent =
+            "-";
+
+        selectedGosterim.textContent =
+            "0";
+
+        return;
+
+    }
+
+
+    title.textContent =
+        seciliNot.baslik ||
+        "-";
+
+
+    selectedDers.textContent =
+        seciliNot.ders ||
+        "-";
+
+
+    selectedKonu.textContent =
+        seciliNot.konu ||
+        "-";
+
+
+    selectedAciklama.textContent =
+        seciliNot.aciklama ||
+        "-";
+
+
+    selectedUrl.textContent =
+        seciliNot.notionUrl
+            ? "Bağlantı mevcut"
+            : "Belirli değil";
+
+
+    selectedAktif.textContent =
+        seciliNot.aktif
+            ? "● Aktif"
+            : "○ Pasif";
+
+
+    selectedAktif.className =
+        seciliNot.aktif
+            ? "value active-status"
+            : "value passive-status";
+
+
+    selectedEklenme.textContent =
+        tarihFormatla(
+            seciliNot.eklenmeTarihi
+        );
+
+
+    selectedSonGosterim.textContent =
+        tarihFormatla(
+            seciliNot.sonGosterim
+        );
+
+
+    selectedGosterim.textContent =
+        seciliNot.gosterimSayisi ||
+        0;
+
+}
+
+
+/* =========================
+   DİĞER KAYITLAR
+========================= */
+
+function ayarlarListesiniOlustur() {
+
+    const list =
+        document.getElementById(
+            "noteList"
+        );
+
+
+    if (
+        !ayarBilgileri.length
+    ) {
+
+        list.innerHTML = `
+
+            <div style="
+                color:#777;
+                font-size:12px;
+                padding:10px 0;
+            ">
+
+                Henüz kayıt bulunmuyor.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    list.innerHTML =
+        ayarBilgileri
+            .map(item => {
+
+                const selected =
+                    seciliNot &&
+                    item.id ===
+                    seciliNot.id
+                        ? "selected"
+                        : "";
+
+
+                const tarih =
+                    tarihFormatla(
+                        item.eklenmeTarihi
+                    );
+
+
+                const sonGosterim =
+                    tarihFormatla(
+                        item.sonGosterim
+                    );
+
+
+                return `
+
+                    <div
+                        class="note-item ${selected}"
+                        onclick="ayarNotuSec('${item.id}')"
+                    >
+
+                        <div
+                            style="
+                                flex:1;
+                                min-width:0;
+                            "
+                        >
+
+                            <div
+                                class="note-item-title"
+                            >
+
+                                ${escapeHtml(
+                                    item.baslik ||
+                                    "Başlıksız"
+                                )}
+
+                            </div>
+
+
+                            <div
+                                class="note-meta"
+                            >
+
+                                <span>
+                                    ${escapeHtml(
+                                        item.ders ||
+                                        "-"
+                                    )}
+                                </span>
+
+
+                                <span
+                                    class="meta-orange"
+                                >
+                                    ${escapeHtml(
+                                        item.konu ||
+                                        "Konu yok"
+                                    )}
+                                </span>
+
+
+                                <span>
+                                    📅 Eklendi:
+                                    ${tarih}
+                                </span>
+
+
+                                <span>
+                                    👁 Gösterim:
+                                    ${
+                                        item.gosterimSayisi ||
+                                        0
+                                    }
+                                </span>
+
+
+                                <span>
+                                    🕒 Son:
+                                    ${sonGosterim}
+                                </span>
+
+
+                                <span
+                                    class="${
+                                        item.aktif
+                                            ? "active-status"
+                                            : "passive-status"
+                                    }"
+                                >
+
+                                    ${
+                                        item.aktif
+                                            ? "● Aktif"
+                                            : "○ Pasif"
+                                    }
+
+                                </span>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+                `;
+
+            })
+            .join("");
+
+}
+
+
+/* =========================
+   AYARLARDAN NOT SEÇ
+========================= */
+
+function ayarNotuSec(
+    id
+) {
+
+    const bulunan =
+        ayarBilgileri.find(
+            item =>
+                item.id === id
+        );
+
+
+    if (!bulunan) {
+        return;
+    }
+
+
+    seciliNot =
+        bulunan;
+
+
+    seciliNotuGoster();
+
+
+    ayarlarListesiniOlustur();
+
+}
+
+
+/* =========================
+   NOT DÜZENLE
+========================= */
+
+function seciliNotuDuzenle() {
+
+    if (!seciliNot) {
+
+        alert(
+            "Önce bir not seç."
+        );
+
+        return;
+
+    }
+
+
+    duzenlemeModu =
+        true;
+
+
+    formuDoldur(
+        seciliNot
+    );
+
+
+    form.classList.add(
+        "open"
+    );
+
+
+    formPause =
+        true;
+
+}
+
+
+/* =========================
+   FORM DOLDUR
+========================= */
+
+function formuDoldur(
+    item
+) {
+
+    document.getElementById(
+        "formTitle"
+    ).textContent =
+        "✏️ Notu Düzenle";
+
+
+    document.getElementById(
+        "dersInput"
+    ).value =
+        item.ders ||
+        "";
+
+
+    document.getElementById(
+        "konuInput"
+    ).value =
+        item.konu ||
+        "";
+
+
+    document.getElementById(
+        "baslikInput"
+    ).value =
+        item.baslik ||
+        "";
+
+
+    document.getElementById(
+        "aciklamaInput"
+    ).value =
+        item.aciklama ||
+        "";
+
+
+    document.getElementById(
+        "konuSayfasiInput"
+    ).value =
+        item.notionUrl
+            ? "current"
+            : "";
+
+}
+
+
+/* =========================
+   NOT SİL
+========================= */
+
+async function seciliNotuSil() {
+
+    if (!seciliNot) {
+
+        alert(
+            "Önce bir not seç."
+        );
+
+        return;
+
+    }
+
+
+    const onay =
+        confirm(
+            `"${seciliNot.baslik}" notunu silmek istediğine emin misin?`
+        );
+
+
+    if (!onay) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                API +
+                "/ozet-sil/" +
+                encodeURIComponent(
+                    seciliNot.id
+                ),
+                {
+                    method:
+                        "DELETE"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            throw new Error(
+                data.error ||
+                "Not silinemedi."
+            );
+
+        }
+
+
+        const silinenId =
+            seciliNot.id;
+
+
+        bilgiler =
+            bilgiler.filter(
+                item =>
+                    item.id !==
+                    silinenId
+            );
+
+
+        ayarBilgileri =
+            ayarBilgileri.filter(
+                item =>
+                    item.id !==
+                    silinenId
+            );
+
+
+        try {
+
+            localStorage.removeItem(
+                "yks-bilgi-son-gosterim-" +
+                silinenId
+            );
+
+        }
+        catch {}
+
+
+        seciliNot =
+            null;
+
+
+        if (
+            bilgiler.length
+        ) {
+
+            seciliIndex =
+                -1;
+
+
+            rastgeleNotGoster();
 
         }
         else {
 
-            topicButton.classList.remove(
-                "visible"
+            cancelAnimationFrame(
+                timer
             );
 
+
+            baslik.textContent =
+                "Henüz aktif bilgi yok.";
+
+
+            ders.textContent =
+                "Bilgi";
+
+
+            konu.textContent =
+                "";
+
+
+            aciklama.textContent =
+                "";
+
+
+            sayac.textContent =
+                "";
+
+
+            progress.style.width =
+                "0%";
+
         }
+
+
+        seciliNot =
+            bilgiler[
+                seciliIndex
+            ] ||
+            null;
+
+
+        seciliNotuGoster();
+
+
+        ayarlarListesiniOlustur();
+
+
+    }
+    catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        alert(
+            "Not silinemedi: " +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================
+   BİLGİ EKLE
+========================= */
+
+function bilgiEkleAc() {
+
+    duzenlemeModu =
+        false;
+
+
+    formuTemizle();
+
+
+    document.getElementById(
+        "formTitle"
+    ).textContent =
+        "＋ Yeni Bilgi Ekle";
+
+
+    form.classList.add(
+        "open"
+    );
+
+
+    formPause =
+        true;
+
+}
+
+
+/* =========================
+   FORM KAPAT
+========================= */
+
+function formuKapat() {
+
+    form.classList.remove(
+        "open"
+    );
+
+
+    formPause =
+        false;
+
+
+    duzenlemeModu =
+        false;
+
+
+    formuTemizle();
+
+}
+
+
+/* =========================
+   FORM TEMİZLE
+========================= */
+
+function formuTemizle() {
+
+    document.getElementById(
+        "dersInput"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "konuInput"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "baslikInput"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "aciklamaInput"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "konuSayfasiInput"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "status"
+    ).textContent =
+        "";
+
+}
+
+
+/* =========================
+   FORM KAYDET
+========================= */
+
+async function formuKaydet() {
+
+    const dersValue =
+        document.getElementById(
+            "dersInput"
+        ).value;
+
+
+    const konuValue =
+        document.getElementById(
+            "konuInput"
+        ).value;
+
+
+    const baslikValue =
+        document.getElementById(
+            "baslikInput"
+        ).value;
+
+
+    const aciklamaValue =
+        document.getElementById(
+            "aciklamaInput"
+        ).value;
+
+
+    if (
+        !dersValue ||
+        !baslikValue ||
+        !aciklamaValue
+    ) {
+
+        alert(
+            "Ders, Başlık ve Açıklama zorunludur."
+        );
+
+        return;
 
     }
 
 
-    /* =========================================================
-       10 SANİYE SONRA SONRAKİ RASTGELE BİLGİ
-    ========================================================= */
-
-    function sonrakiBilgi() {
-
-        if (bilgiler.length === 0) {
-
-            return;
-
-        }
+    const notionUrl =
+        konuSayfasiUrlAl();
 
 
-        index =
-            rastgeleIndexSec();
+    const payload = {
+
+        baslik:
+            baslikValue,
+
+        ders:
+            dersValue,
+
+        konu:
+            konuValue,
+
+        aciklama:
+            aciklamaValue,
+
+        notionUrl:
+            notionUrl
+
+    };
 
 
-        goster();
+    const status =
+        document.getElementById(
+            "status"
+        );
 
 
-        baslatTimer();
-
-    }
-
-
-    /* =========================================================
-       TIMER BAŞLAT
-    ========================================================= */
-
-    function baslatTimer() {
-
-        clearInterval(timer);
+    status.textContent =
+        "Kaydediliyor...";
 
 
-        kalan = 10;
+    try {
+
+        let response;
 
 
-        progressBar.style.width =
-            "0%";
+        if (
+            duzenlemeModu
+        ) {
 
+            response =
+                await fetch(
+                    API +
+                    "/ozet-duzenle/" +
+                    encodeURIComponent(
+                        seciliNot.id
+                    ),
+                    {
+                        method:
+                            "PATCH",
 
-        timer =
-            setInterval(
-                () => {
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
 
-                    if (paused) {
-
-                        return;
-
+                        body:
+                            JSON.stringify(
+                                payload
+                            )
                     }
+                );
 
+        }
+        else {
 
-                    kalan--;
+            response =
+                await fetch(
+                    API +
+                    "/ozet-ekle",
+                    {
+                        method:
+                            "POST",
 
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
 
-                    const ilerleme =
-                        ((10 - kalan) / 10) * 100;
-
-
-                    progressBar.style.width =
-                        ilerleme + "%";
-
-
-                    if (kalan <= 0) {
-
-                        clearInterval(timer);
-
-
-                        sonrakiBilgi();
-
+                        body:
+                            JSON.stringify(
+                                payload
+                            )
                     }
-
-                },
-                1000
-            );
-
-    }
-
-
-    /* =========================================================
-       MOUSE İLE DURAKLAT
-    ========================================================= */
-
-    infoCard.addEventListener(
-        "mouseenter",
-        () => {
-
-            paused = true;
-
-            infoCard.classList.add(
-                "paused"
-            );
-
-            pauseText.textContent =
-                "Devam etmek için üzerinden çık";
+                );
 
         }
-    );
 
 
-    infoCard.addEventListener(
-        "mouseleave",
-        () => {
-
-            paused = false;
-
-            infoCard.classList.remove(
-                "paused"
-            );
-
-            pauseText.textContent =
-                "Duraklatmak için üzerine gel";
-
-        }
-    );
+        const data =
+            await response.json();
 
 
-    /* =========================================================
-       MOBİL / TOUCH DURAKLATMA
-    ========================================================= */
+        if (
+            !data.success
+        ) {
 
-    infoCard.addEventListener(
-        "touchstart",
-        () => {
-
-            paused = true;
-
-            infoCard.classList.add(
-                "paused"
-            );
-
-            pauseText.textContent =
-                "Devam etmek için tekrar dokun";
-
-        },
-        {
-            passive: true
-        }
-    );
-
-
-    infoCard.addEventListener(
-        "touchend",
-        () => {
-
-            paused = false;
-
-            infoCard.classList.remove(
-                "paused"
-            );
-
-            pauseText.textContent =
-                "Duraklatmak için üzerine gel";
-
-        },
-        {
-            passive: true
-        }
-    );
-
-
-    /* =========================================================
-       KONUYA GİT
-    ========================================================= */
-
-    topicButton.addEventListener(
-        "click",
-        () => {
-
-            const bilgi =
-                bilgiler[index];
-
-
-            if (
-                !bilgi ||
-                !bilgi.notionUrl
-            ) {
-
-                return;
-
-            }
-
-
-            window.open(
-                bilgi.notionUrl,
-                "_blank"
+            throw new Error(
+                data.error ||
+                "İşlem başarısız."
             );
 
         }
-    );
 
 
-    /* =========================================================
-       EKLE PANELİNİ AÇ / KAPAT
-    ========================================================= */
+        status.textContent =
+            "✓ Kaydedildi.";
 
-    addButton.addEventListener(
-        "click",
-        () => {
 
-            addPanel.classList.toggle(
+        if (
+            duzenlemeModu &&
+            data.item
+        ) {
+
+            Object.assign(
+                seciliNot,
+                data.item
+            );
+
+        }
+
+
+        formuKapat();
+
+
+        await verileriGetir();
+
+
+        if (
+            settings.classList.contains(
                 "open"
-            );
-
-            if (
-                addPanel.classList.contains(
-                    "open"
-                )
-            ) {
-
-                addButton.textContent =
-                    "− Bilgi Ekle";
-
-            }
-            else {
-
-                addButton.textContent =
-                    "＋ Bilgi Ekle";
-
-            }
-
-        }
-    );
-
-
-    /* =========================================================
-       KONU SAYFASI URL'SİNİ AL
-    ========================================================= */
-
-    function konuSayfasiUrlAl() {
-
-        if (
-            konuSayfasiInput.value !==
-            "current"
+            )
         ) {
 
-            return "";
+            await tumNotlariGetir();
+
+            /*
+               verileriGetir() yeni
+               seciliNot oluşturduğu için
+               tekrar detay göster.
+            */
+
+            seciliNot =
+                bilgiler[
+                    seciliIndex
+                ] ||
+                seciliNot;
+
+
+            seciliNotuGoster();
 
         }
 
 
-        const referrer =
-            document.referrer;
+    }
+    catch (error) {
+
+        console.error(
+            error
+        );
 
 
-        if (
-            referrer &&
-            referrer.includes("notion")
-        ) {
+        status.textContent =
+            "Hata: " +
+            error.message;
 
-            return referrer;
+    }
 
-        }
+}
 
+
+/* =========================
+   KONU SAYFASI URL
+========================= */
+
+function konuSayfasiUrlAl() {
+
+    const secim =
+        document.getElementById(
+            "konuSayfasiInput"
+        ).value;
+
+
+    if (
+        secim !== "current"
+    ) {
+
+        /*
+           Düzenleme sırasında
+           None seçilirse URL temizlenir.
+        */
 
         return "";
 
     }
 
 
-    /* =========================================================
-       NOTION'A YENİ BİLGİ EKLE
-    ========================================================= */
+    /*
+       Düzenleme sırasında
+       mevcut URL'yi koru.
+    */
 
-    submitButton.addEventListener(
-        "click",
-        async () => {
+    if (
+        duzenlemeModu &&
+        seciliNot &&
+        seciliNot.notionUrl
+    ) {
 
-            const ders =
-                dersInput.value.trim();
+        return seciliNot.notionUrl;
 
-            const konu =
-                konuInput.value.trim();
+    }
 
-            const baslik =
-                baslikInput.value.trim();
 
-            const aciklama =
-                aciklamaInput.value.trim();
+    /*
+       Notion embed referrer.
+    */
 
+    const referrer =
+        document.referrer;
 
-            /* ZORUNLU ALANLAR */
 
-            if (
-                !ders ||
-                !baslik ||
-                !aciklama
-            ) {
+    if (
+        referrer &&
+        referrer.includes(
+            "notion"
+        )
+    ) {
 
-                status.textContent =
-                    "Lütfen Ders, Başlık ve Açıklama alanlarını doldur.";
+        return referrer;
 
-                status.className =
-                    "status error";
+    }
 
-                return;
 
-            }
+    return "";
 
+}
 
-            const notionUrl =
-                konuSayfasiUrlAl();
 
+/* =========================
+   KONUYA GİT
+========================= */
 
-            /* BUTONU KİLİTLE */
+function konuyaGit() {
 
-            submitButton.disabled =
-                true;
+    if (
+        !seciliNot ||
+        !seciliNot.notionUrl
+    ) {
 
-            submitButton.textContent =
-                "Ekleniyor...";
+        alert(
+            "Konu belirli değil."
+        );
 
+        return;
 
-            status.textContent =
-                "";
+    }
 
 
-            try {
-
-                const response =
-                    await fetch(
-                        API_URL + "/ozet-ekle",
-                        {
-
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body:
-                                JSON.stringify({
-
-                                    baslik:
-                                        baslik,
-
-                                    ders:
-                                        ders,
-
-                                    konu:
-                                        konu,
-
-                                    aciklama:
-                                        aciklama,
-
-                                    notionUrl:
-                                        notionUrl
-
-                                })
-
-                        }
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                if (
-                    !response.ok ||
-                    !data.success
-                ) {
-
-                    console.error(
-                        data
-                    );
-
-                    throw new Error(
-                        data.error ||
-                        "Kayıt eklenemedi."
-                    );
-
-                }
-
-
-                /* BAŞARILI */
-
-                status.textContent =
-                    "✓ Bilgi başarıyla Notion'a eklendi.";
-
-                status.className =
-                    "status success";
-
-
-                /* FORMU TEMİZLE */
-
-                dersInput.value =
-                    "";
-
-                konuInput.value =
-                    "";
-
-                konuSayfasiInput.value =
-                    "";
-
-                baslikInput.value =
-                    "";
-
-                aciklamaInput.value =
-                    "";
-
-
-                /* YENİ BİLGİLERİ ÇEK */
-
-                await bilgileriGetir();
-
-
-                /* 2 SANİYE SONRA MESAJI SİL */
-
-                setTimeout(
-                    () => {
-
-                        status.textContent =
-                            "";
-
-                    },
-                    3000
-                );
-
-            }
-
-            catch (error) {
-
-                console.error(error);
-
-                status.textContent =
-                    "✕ " +
-                    error.message;
-
-                status.className =
-                    "status error";
-
-            }
-
-            finally {
-
-                submitButton.disabled =
-                    false;
-
-                submitButton.textContent =
-                    "Notion'a Ekle";
-
-            }
-
-        }
+    window.open(
+        seciliNot.notionUrl,
+        "_blank"
     );
 
+}
 
-    /* =========================================================
-       BAŞLAT
-    ========================================================= */
 
-    bilgileriGetir();
+/* =========================
+   YAPAY ZEKA
+========================= */
+
+function yapayZeka() {
+
+    if (!seciliNot) {
+        return;
+    }
+
+
+    const prompt =
+        `Bu bilgi hakkında bana yardımcı ol.
+
+Başlık: ${
+    seciliNot.baslik || ""
+}
+
+Ders: ${
+    seciliNot.ders || ""
+}
+
+Konu: ${
+    seciliNot.konu || ""
+}
+
+Açıklama: ${
+    seciliNot.aciklama || ""
+}
+
+Bana bu bilgiyi YKS seviyesinde açıkla ve gerekirse beni test et.`;
+
+
+    window.open(
+        "https://chatgpt.com/?q=" +
+        encodeURIComponent(
+            prompt
+        ),
+        "_blank"
+    );
+
+}
+
+
+/* =========================
+   ESC
+========================= */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key !== "Escape"
+        ) {
+            return;
+        }
+
+
+        if (
+            form.classList.contains(
+                "open"
+            )
+        ) {
+
+            formuKapat();
+
+        }
+
+
+        if (
+            settings.classList.contains(
+                "open"
+            )
+        ) {
+
+            ayarlariKapat();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   HTML GÜVENLİĞİ
+========================= */
+
+function escapeHtml(
+    value
+) {
+
+    return String(
+        value
+    )
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================
+   BAŞLAT
+========================= */
+
+verileriGetir();
 
 </script>
 
