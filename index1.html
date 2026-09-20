@@ -1,66 +1,95 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
 <title>Kısa Not Ekle</title>
 
 <style>
+
+:root {
+    --bg: #191919;
+    --card: #111111;
+    --border: #2d2d2d;
+    --text: #eeeeee;
+    --muted: #999999;
+    --orange: #ff8a00;
+}
+
 * {
     box-sizing: border-box;
 }
 
+html,
 body {
     margin: 0;
-    padding: 20px;
-    background: #191919;
-    color: #ffffff;
-    font-family: Arial, Helvetica, sans-serif;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+body {
+    padding: 18px;
 }
 
 .container {
-    max-width: 700px;
-    margin: auto;
+    width: min(100%, 700px);
+    margin: 0 auto;
 }
 
 .card {
-    background: #111111;
-    border: 1px solid #2b2b2b;
-    border-radius: 14px;
-    padding: 24px;
-    box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
 }
 
-h1 {
-    margin: 0 0 22px;
-    font-size: 22px;
+.title {
+    font-size: 21px;
+    font-weight: 700;
+    margin-bottom: 4px;
 }
 
-label {
+.subtitle {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.field {
+    margin-bottom: 14px;
+}
+
+.field label {
     display: block;
-    margin: 18px 0 8px;
-    color: #bdbdbd;
-    font-size: 14px;
+    font-size: 12px;
+    color: #b8b8b8;
+    margin-bottom: 6px;
 }
 
 input,
 textarea,
 select {
     width: 100%;
-    border: 1px solid #333;
-    border-radius: 9px;
-    background: #1d1d1d;
-    color: white;
-    padding: 12px;
-    font-size: 14px;
+    border: 1px solid #343434;
+    border-radius: 10px;
+    background: #0d0d0d;
+    color: #eee;
+    padding: 11px 12px;
     outline: none;
-}
-
-input:focus,
-textarea:focus,
-select:focus {
-    border-color: #ff8c00;
 }
 
 textarea {
@@ -68,83 +97,112 @@ textarea {
     resize: vertical;
 }
 
-.source-box {
-    margin-top: 18px;
-    padding: 12px;
-    background: #181818;
-    border: 1px solid #2c2c2c;
-    border-radius: 9px;
-    font-size: 12px;
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: #555;
+}
+
+.source {
+    padding: 11px 12px;
+    border-radius: 10px;
+    background: #191919;
+    border: 1px solid #2a2a2a;
     color: #999;
+    font-size: 12px;
     word-break: break-all;
+    margin-top: 6px;
 }
 
-.source-box strong {
-    color: #ddd;
+.source.detected {
+    color: #d8d8d8;
 }
 
-.buttons {
-    display: flex;
+.actions {
+    display: grid;
+    grid-template-columns:
+        1fr 1fr;
     gap: 10px;
-    margin-top: 20px;
+    margin-top: 18px;
 }
 
 button {
-    flex: 1;
-    border: 0;
-    border-radius: 9px;
-    padding: 12px;
+    min-height: 43px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: #1d1d1d;
+    color: #eee;
     cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
 }
 
-.save {
-    background: #ff8c00;
-    color: #111;
+button.primary {
+    background: #26190d;
+    border-color: #71450f;
+    color: #ffae50;
 }
 
-.save:hover {
-    background: #ff9f2f;
+button:hover {
+    background: #252525;
 }
 
-.clear {
-    background: #292929;
-    color: white;
-}
-
-.clear:hover {
-    background: #353535;
+button.primary:hover {
+    background: #30200f;
 }
 
 .status {
-    margin-top: 16px;
-    padding: 12px;
-    border-radius: 9px;
     display: none;
+    margin-top: 15px;
+    padding: 11px 12px;
+    border-radius: 10px;
     font-size: 13px;
+}
+
+.status.show {
+    display: block;
 }
 
 .status.success {
-    display: block;
-    background: #17351f;
-    border: 1px solid #285c36;
-    color: #8ee8a5;
+    background: #142017;
+    border: 1px solid #28462e;
+    color: #aad1b0;
 }
 
 .status.error {
-    display: block;
-    background: #351717;
-    border: 1px solid #632828;
-    color: #ff9c9c;
+    background: #241315;
+    border: 1px solid #52282c;
+    color: #ffb0b4;
 }
 
-.detected {
-    margin-top: 8px;
-    color: #ff9f2f;
-    font-size: 13px;
+.note-preview {
+    margin-top: 18px;
+    padding: 13px;
+    border: 1px solid #272727;
+    background: #171717;
+    border-radius: 12px;
 }
+
+.preview-label {
+    font-size: 11px;
+    color: #777;
+    margin-bottom: 5px;
+}
+
+.preview-value {
+    font-size: 14px;
+    color: #ddd;
+    white-space: pre-wrap;
+}
+
+@media (max-width: 550px) {
+
+    .actions {
+        grid-template-columns: 1fr;
+    }
+
+}
+
 </style>
+
 </head>
 
 <body>
@@ -153,74 +211,123 @@ button {
 
     <div class="card">
 
-        <h1>📝 Kısa Not Ekle</h1>
+        <div class="title">
+            📝 Kısa Not Ekle
+        </div>
 
-        <label for="baslik">Başlık</label>
-        <input
-            id="baslik"
-            type="text"
-            placeholder="Örneğin: Kavimler Göçü"
-        >
+        <div class="subtitle">
+            Bu bilgiyi Özet Havuzu'na yeni aktif kayıt olarak ekle.
+        </div>
 
-        <label for="ders">Ders</label>
-        <select id="ders">
 
-            <option value="">Ders seçiliyor...</option>
+        <div class="field">
 
-            <option>TYT Matematik</option>
-            <option>TYT Türkçe</option>
-            <option>TYT Tarih</option>
-            <option>TYT Coğrafya</option>
-            <option>TYT Felsefe</option>
-            <option>TYT Din Kültürü</option>
-            <option>TYT Fizik</option>
-            <option>TYT Kimya</option>
-            <option>TYT Biyoloji</option>
+            <label>
+                Başlık
+            </label>
 
-            <option>AYT Matematik</option>
-            <option>AYT Fizik</option>
-            <option>AYT Kimya</option>
-            <option>AYT Biyoloji</option>
+            <input
+                id="baslik"
+                placeholder="Örn. Küçük Ünlü Uyumu"
+            >
 
-        </select>
+        </div>
 
-        <div id="detected" class="detected"></div>
 
-        <label for="aciklama">Kısa Not</label>
+        <div class="field">
 
-        <textarea
-            id="aciklama"
-            placeholder="Kısa notunu buraya yaz..."
-        ></textarea>
+            <label>
+                Ders
+            </label>
 
-        <div class="source-box">
+            <select id="ders">
 
-            <strong>Kaynak sayfa:</strong>
+                <option value="">
+                    Otomatik algılanacak / seç
+                </option>
 
-            <div id="sourceUrl">
-                Kaynak sayfa bulunuyor...
+                <option>TYT Matematik</option>
+                <option>TYT Türkçe</option>
+                <option>TYT Tarih</option>
+                <option>TYT Coğrafya</option>
+                <option>TYT Felsefe</option>
+                <option>TYT Din Kültürü</option>
+                <option>TYT Fizik</option>
+                <option>TYT Kimya</option>
+                <option>TYT Biyoloji</option>
+                <option>AYT Matematik</option>
+                <option>AYT Fizik</option>
+                <option>AYT Kimya</option>
+                <option>AYT Biyoloji</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Kısa Not
+            </label>
+
+            <textarea
+                id="aciklama"
+                placeholder="Hatırlamak istediğin bilgiyi yaz..."
+            ></textarea>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Kaynak Sayfa
+            </label>
+
+            <div
+                id="source"
+                class="source"
+            >
+                Kaynak belirleniyor...
             </div>
 
         </div>
 
-        <div class="buttons">
 
-            <button
-                class="save"
-                id="saveButton"
-                onclick="kaydet()"
+        <div class="note-preview">
+
+            <div class="preview-label">
+                Önizleme
+            </div>
+
+            <div
+                id="preview"
+                class="preview-value"
             >
-                💾 Kısa Notu Kaydet
-            </button>
+                Henüz not yazılmadı.
+            </div>
+
+        </div>
+
+
+        <div class="actions">
 
             <button
-                class="clear"
-                onclick="temizle()"
+                id="clearButton"
             >
                 Temizle
             </button>
 
+            <button
+                id="saveButton"
+                class="primary"
+            >
+                Kaydet
+            </button>
+
         </div>
+
 
         <div
             id="status"
@@ -243,20 +350,15 @@ const WORKER_URL =
 
 
 /* =========================================================
-   URL PARAMETRESİ
+   URL
+   En doğru yöntem:
+   index1.html?page=NOTION_SAYFASI_URL
 ========================================================= */
 
 const params =
-    new URLSearchParams(window.location.search);
-
-
-/*
-   Öncelik:
-
-   1. ?page=...
-   2. document.referrer
-   3. boş
-*/
+    new URLSearchParams(
+        window.location.search
+    );
 
 const kaynakUrl =
     params.get("page") ||
@@ -265,331 +367,458 @@ const kaynakUrl =
 
 
 /* =========================================================
-   DERS ALGILAMA
+   DOM
 ========================================================= */
 
-function normalizeUrl(url) {
+const baslik =
+    document.getElementById(
+        "baslik"
+    );
 
-    try {
+const ders =
+    document.getElementById(
+        "ders"
+    );
 
-        return decodeURIComponent(url)
-            .toLowerCase()
-            .replaceAll("ı", "i")
-            .replaceAll("ş", "s")
-            .replaceAll("ğ", "g")
-            .replaceAll("ü", "u")
-            .replaceAll("ö", "o")
-            .replaceAll("ç", "c");
+const aciklama =
+    document.getElementById(
+        "aciklama"
+    );
 
-    } catch {
+const source =
+    document.getElementById(
+        "source"
+    );
 
-        return url
-            .toLowerCase()
-            .replaceAll("ı", "i")
-            .replaceAll("ş", "s")
-            .replaceAll("ğ", "g")
-            .replaceAll("ü", "u")
-            .replaceAll("ö", "o")
-            .replaceAll("ç", "c");
+const preview =
+    document.getElementById(
+        "preview"
+    );
 
-    }
-
-}
+const status =
+    document.getElementById(
+        "status"
+    );
 
 
-function dersBul(url) {
+/* =========================================================
+   DERS OTOMATİK ALGILAMA
+========================================================= */
 
-    const u =
-        normalizeUrl(url);
+function otomatikDersAlgila(url) {
 
-    const eslesmeler = [
+    const text =
+        decodeURIComponent(
+            url || ""
+        ).toLocaleLowerCase(
+            "tr-TR"
+        );
 
-        {
-            ders: "TYT Türkçe",
-            kelimeler: [
+    /*
+       Doğrudan ders isimleri
+    */
+
+    const rules = [
+
+        [
+            [
                 "tyt-turkce",
                 "tyt_turkce",
-                "tytturkce",
-                "turkce"
-            ]
-        },
+                "tyt türkçe",
+                "türkçe"
+            ],
+            "TYT Türkçe"
+        ],
 
-        {
-            ders: "TYT Matematik",
-            kelimeler: [
-                "tyt-matematik",
-                "tyt_matematik",
-                "tytmatematik"
-            ]
-        },
-
-        {
-            ders: "TYT Tarih",
-            kelimeler: [
+        [
+            [
                 "tyt-tarih",
                 "tyt_tarih",
-                "tyttarih"
-            ]
-        },
+                "tyt tarih",
+                "tarih"
+            ],
+            "TYT Tarih"
+        ],
 
-        {
-            ders: "TYT Coğrafya",
-            kelimeler: [
+        [
+            [
                 "tyt-cografya",
-                "tyt_cografya",
-                "tytcografya"
-            ]
-        },
+                "tyt_coğrafya",
+                "tyt coğrafya",
+                "coğrafya"
+            ],
+            "TYT Coğrafya"
+        ],
 
-        {
-            ders: "TYT Felsefe",
-            kelimeler: [
+        [
+            [
                 "tyt-felsefe",
                 "tyt_felsefe",
-                "tytfelsefe"
-            ]
-        },
+                "tyt felsefe",
+                "felsefe"
+            ],
+            "TYT Felsefe"
+        ],
 
-        {
-            ders: "TYT Din Kültürü",
-            kelimeler: [
-                "tyt-din",
-                "tyt_din",
-                "tytdin",
-                "din-kulturu"
-            ]
-        },
-
-        {
-            ders: "TYT Fizik",
-            kelimeler: [
-                "tyt-fizik",
-                "tyt_fizik",
-                "tytfizik"
-            ]
-        },
-
-        {
-            ders: "TYT Kimya",
-            kelimeler: [
-                "tyt-kimya",
-                "tyt_kimya",
-                "tytkimya"
-            ]
-        },
-
-        {
-            ders: "TYT Biyoloji",
-            kelimeler: [
+        [
+            [
                 "tyt-biyoloji",
                 "tyt_biyoloji",
-                "tytbiyoloji"
-            ]
-        },
+                "tyt biyoloji",
+                "biyoloji"
+            ],
+            "TYT Biyoloji"
+        ],
 
-        {
-            ders: "AYT Matematik",
-            kelimeler: [
+        [
+            [
+                "tyt-kimya",
+                "tyt_kimya",
+                "tyt kimya",
+                "kimya"
+            ],
+            "TYT Kimya"
+        ],
+
+        [
+            [
+                "tyt-fizik",
+                "tyt_fizik",
+                "tyt fizik",
+                "fizik"
+            ],
+            "TYT Fizik"
+        ],
+
+        [
+            [
                 "ayt-matematik",
                 "ayt_matematik",
-                "aytmatematik"
-            ]
-        },
+                "ayt matematik"
+            ],
+            "AYT Matematik"
+        ],
 
-        {
-            ders: "AYT Fizik",
-            kelimeler: [
+        [
+            [
+                "tyt-matematik",
+                "tyt_matematik",
+                "tyt matematik",
+                "matematik"
+            ],
+            "TYT Matematik"
+        ],
+
+        [
+            [
                 "ayt-fizik",
                 "ayt_fizik",
-                "aytfizik"
-            ]
-        },
+                "ayt fizik"
+            ],
+            "AYT Fizik"
+        ],
 
-        {
-            ders: "AYT Kimya",
-            kelimeler: [
+        [
+            [
                 "ayt-kimya",
                 "ayt_kimya",
-                "aytkimya"
-            ]
-        },
+                "ayt kimya"
+            ],
+            "AYT Kimya"
+        ],
 
-        {
-            ders: "AYT Biyoloji",
-            kelimeler: [
+        [
+            [
                 "ayt-biyoloji",
                 "ayt_biyoloji",
-                "aytbyoloji",
-                "aytbioloji"
-            ]
-        }
+                "ayt biyoloji"
+            ],
+            "AYT Biyoloji"
+        ]
 
     ];
 
+    for (
+        const [keywords, lesson]
+        of rules
+    ) {
 
-    for (const item of eslesmeler) {
-
-        for (const kelime of item.kelimeler) {
-
-            if (u.includes(kelime)) {
-
-                return item.ders;
-
-            }
-
+        if (
+            keywords.some(
+                keyword =>
+                    text.includes(
+                        keyword
+                    )
+            )
+        ) {
+            return lesson;
         }
 
     }
 
+    /*
+       Bilinen konu isimleri
+       üzerinden daha özel tahminler.
+    */
+
+    if (
+        /ses-bilgisi|ses bilgisi/.test(
+            text
+        )
+    ) {
+        return "TYT Türkçe";
+    }
+
+    if (
+        /yazım-kuralları|yazim-kurallari/.test(
+            text
+        )
+    ) {
+        return "TYT Türkçe";
+    }
+
+    if (
+        /insanlığın-ilk-dönemleri|insanligin-ilk-donemleri/.test(
+            text
+        )
+    ) {
+        return "TYT Tarih";
+    }
+
+    if (
+        /tarih-ve-zaman/.test(
+            text
+        )
+    ) {
+        return "TYT Tarih";
+    }
+
+    if (
+        /ilk-ve-orta-çağlarda-türk-dünyası|ilk-ve-orta-caglarda-turk-dunyasi/.test(
+            text
+        )
+    ) {
+        return "TYT Tarih";
+    }
+
+    if (
+        /orta-çağda-dünya|orta-cagda-dunya/.test(
+            text
+        )
+    ) {
+        return "TYT Tarih";
+    }
+
+    if (
+        /canlıların-genel-özellikleri|canlilarin-genel-ozellikleri/.test(
+            text
+        )
+    ) {
+        return "TYT Biyoloji";
+    }
+
     return "";
+}
+
+
+/* =========================================================
+   KAYNAĞI GÖSTER
+========================================================= */
+
+if (kaynakUrl) {
+
+    source.textContent =
+        kaynakUrl;
+
+    source.classList.add(
+        "detected"
+    );
+
+} else {
+
+    source.textContent =
+        "Kaynak URL bulunamadı. Manuel ders seçebilirsin.";
+}
+
+
+/* =========================================================
+   DERSİ OTOMATİK SEÇ
+========================================================= */
+
+const otomatikDers =
+    otomatikDersAlgila(
+        kaynakUrl
+    );
+
+if (otomatikDers) {
+
+    ders.value =
+        otomatikDers;
 
 }
 
 
 /* =========================================================
-   SAYFA YÜKLENDİĞİNDE
+   ÖNİZLEME
 ========================================================= */
 
-function baslat() {
+function updatePreview() {
 
-    const source =
-        document.getElementById("sourceUrl");
+    if (
+        !aciklama.value.trim()
+    ) {
 
-    const dersSelect =
-        document.getElementById("ders");
+        preview.textContent =
+            "Henüz not yazılmadı.";
 
-    const detected =
-        document.getElementById("detected");
-
-
-    if (kaynakUrl) {
-
-        source.textContent =
-            kaynakUrl;
-
-    } else {
-
-        source.textContent =
-            "Kaynak sayfa bulunamadı.";
-
+        return;
     }
 
+    preview.textContent =
+        aciklama.value.trim();
+}
 
-    const bulunanDers =
-        dersBul(kaynakUrl);
+aciklama.addEventListener(
+    "input",
+    updatePreview
+);
+
+baslik.addEventListener(
+    "input",
+    updatePreview
+);
 
 
-    if (bulunanDers) {
+/* =========================================================
+   STATUS
+========================================================= */
 
-        dersSelect.value =
-            bulunanDers;
+function setStatus(
+    message,
+    type
+) {
 
-        detected.textContent =
-            "✓ Ders otomatik algılandı: " +
-            bulunanDers;
+    status.textContent =
+        message;
 
-    } else {
-
-        detected.textContent =
-            "Ders otomatik algılanamadı. Lütfen seç.";
-
-        dersSelect.value = "";
-
-    }
+    status.className =
+        `status show ${type}`;
 
 }
 
 
-baslat();
+/* =========================================================
+   TEMİZLE
+========================================================= */
+
+document
+    .getElementById(
+        "clearButton"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            baslik.value =
+                "";
+
+            aciklama.value =
+                "";
+
+            updatePreview();
+
+            setStatus(
+                "Form temizlendi.",
+                "success"
+            );
+
+        }
+    );
 
 
 /* =========================================================
    KAYDET
 ========================================================= */
 
-async function kaydet() {
-
-    const baslik =
-        document.getElementById("baslik")
-            .value
-            .trim();
-
-    const ders =
-        document.getElementById("ders")
-            .value
-            .trim();
-
-    const aciklama =
-        document.getElementById("aciklama")
-            .value
-            .trim();
-
-    const status =
-        document.getElementById("status");
-
-    const button =
-        document.getElementById("saveButton");
+document
+    .getElementById(
+        "saveButton"
+    )
+    .addEventListener(
+        "click",
+        saveNote
+    );
 
 
-    status.className =
-        "status";
+async function saveNote() {
 
-    status.textContent =
-        "";
+    const title =
+        baslik.value.trim();
 
+    const note =
+        aciklama.value.trim();
 
-    if (!baslik) {
+    const selectedLesson =
+        ders.value;
 
-        hata("Lütfen bir başlık gir.");
+    if (!title) {
 
-        return;
-
-    }
-
-
-    if (!ders) {
-
-        hata("Ders seçilemedi. Lütfen dersi seç.");
-
-        return;
-
-    }
-
-
-    if (!aciklama) {
-
-        hata("Lütfen kısa notu yaz.");
-
-        return;
-
-    }
-
-
-    if (!kaynakUrl) {
-
-        hata(
-            "Kaynak Notion sayfasının URL'si bulunamadı."
+        setStatus(
+            "Başlık zorunludur.",
+            "error"
         );
 
-        return;
+        baslik.focus();
 
+        return;
     }
 
+    if (!note) {
 
-    button.disabled =
+        setStatus(
+            "Kısa not boş bırakılamaz.",
+            "error"
+        );
+
+        aciklama.focus();
+
+        return;
+    }
+
+    /*
+       Otomatik algılama başarısızsa
+       manual select zorunlu.
+    */
+
+    if (!selectedLesson) {
+
+        setStatus(
+            "Ders otomatik algılanamadı. Lütfen ders seç.",
+            "error"
+        );
+
+        ders.focus();
+
+        return;
+    }
+
+    const saveButton =
+        document.getElementById(
+            "saveButton"
+        );
+
+    saveButton.disabled =
         true;
 
-    button.textContent =
-        "⏳ Kaydediliyor...";
-
+    saveButton.textContent =
+        "Kaydediliyor...";
 
     try {
 
         const response =
             await fetch(
-                WORKER_URL + "/kisa-not-ekle",
+                `${WORKER_URL}/kisa-not-ekle`,
                 {
-
                     method: "POST",
 
                     headers: {
@@ -601,68 +830,67 @@ async function kaydet() {
                         JSON.stringify({
 
                             baslik:
-                                baslik,
+                                title,
 
                             ders:
-                                ders,
+                                selectedLesson,
 
                             aciklama:
-                                aciklama,
+                                note,
 
                             kaynakUrl:
                                 kaynakUrl
 
                         })
-
                 }
             );
 
+        const result =
+            await response.json();
 
-        const data =
-            await response.json()
-                .catch(() => ({}));
-
-
-        if (!response.ok) {
+        if (
+            !response.ok ||
+            !result.success
+        ) {
 
             throw new Error(
-                data.error ||
-                "Worker hata verdi."
+                result.error ||
+                "Kayıt sırasında hata oluştu."
             );
-
         }
 
+        setStatus(
+            "Kısa not başarıyla Özet Havuzu'na eklendi.",
+            "success"
+        );
 
-        status.className =
-            "status success";
+        baslik.value =
+            "";
 
-        status.textContent =
-            "✓ Kısa not başarıyla Özet Havuzu'na kaydedildi.";
+        aciklama.value =
+            "";
 
-
-        document.getElementById("baslik")
-            .value = "";
-
-        document.getElementById("aciklama")
-            .value = "";
-
+        updatePreview();
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            error
+        );
 
-        hata(
-            "Kayıt başarısız: " +
-            error.message
+        setStatus(
+            error.message ||
+                "Kayıt sırasında hata oluştu.",
+            "error"
         );
 
     } finally {
 
-        button.disabled =
+        saveButton.disabled =
             false;
 
-        button.textContent =
-            "💾 Kısa Notu Kaydet";
+        saveButton.textContent =
+            "Kaydet";
 
     }
 
@@ -670,47 +898,13 @@ async function kaydet() {
 
 
 /* =========================================================
-   HATA
+   BAŞLANGIÇ
 ========================================================= */
 
-function hata(mesaj) {
-
-    const status =
-        document.getElementById("status");
-
-    status.className =
-        "status error";
-
-    status.textContent =
-        "⚠ " + mesaj;
-
-}
-
-
-/* =========================================================
-   TEMİZLE
-========================================================= */
-
-function temizle() {
-
-    document.getElementById("baslik")
-        .value = "";
-
-    document.getElementById("aciklama")
-        .value = "";
-
-    const status =
-        document.getElementById("status");
-
-    status.className =
-        "status";
-
-    status.textContent =
-        "";
-
-}
+updatePreview();
 
 </script>
 
 </body>
+
 </html>
