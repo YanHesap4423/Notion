@@ -3432,182 +3432,160 @@ function formuDoldur(
    SİL
 ========================================================= */
 
-async function seciliNotuSil() {
+let silmeOnayiBekleniyor = false;
+
+function seciliNotuSil() {
 
     if (!seciliNot || !seciliNot.id) {
-
-        alert(
-            "Önce bir not seç."
-        );
-
-        return;
-
-    }
-
-    const silinenId =
-        seciliNot.id;
-
-    const silinenBaslik =
-        seciliNot.baslik ||
-        "Bu not";
-
-    const onay =
-        confirm(
-            `"${silinenBaslik}" notunu silmek istediğine emin misin?`
-        );
-
-    if (!onay) {
         return;
     }
+
+    const silBtn = document.querySelector(
+        '[onclick="seciliNotuSil()"]'
+    );
+
+    if (!silmeOnayiBekleniyor) {
+
+        silmeOnayiBekleniyor = true;
+
+        if (silBtn) {
+            silBtn.dataset.originalText = silBtn.textContent;
+
+            silBtn.textContent = "⚠️ Emin misin? Sil";
+            silBtn.style.borderColor = "#ff7a00";
+            silBtn.style.color = "#ff922b";
+        }
+
+        // 3 saniye içinde tekrar basılmazsa normale dön
+        clearTimeout(window.silmeOnayTimer);
+
+        window.silmeOnayTimer = setTimeout(() => {
+
+            silmeOnayiBekleniyor = false;
+
+            if (silBtn) {
+                silBtn.textContent =
+                    silBtn.dataset.originalText || "🗑️ Notu Sil";
+
+                silBtn.style.borderColor = "";
+                silBtn.style.color = "";
+            }
+
+        }, 3000);
+
+        return;
+    }
+
+    // İkinci tıklama → gerçekten sil
+    clearTimeout(window.silmeOnayTimer);
+
+    silmeOnayiBekleniyor = false;
+
+    if (silBtn) {
+        silBtn.textContent = "Siliniyor...";
+        silBtn.disabled = true;
+    }
+
+    notuGercektenSil();
+}
+
+
+async function notuGercektenSil() {
+
+    if (!seciliNot || !seciliNot.id) {
+        return;
+    }
+
+    const silinenId = seciliNot.id;
 
     try {
 
-        const response =
-            await fetch(
-                API +
-                "/ozet-sil/" +
-                encodeURIComponent(
-                    silinenId
-                ),
-                {
-                    method: "DELETE"
-                }
-            );
+        const response = await fetch(
+            API + "/ozet-sil/" + encodeURIComponent(silinenId),
+            {
+                method: "DELETE"
+            }
+        );
 
-        const data =
-            await response.json();
+        const data = await response.json();
 
         if (!response.ok || !data.success) {
-
             throw new Error(
-                data.error ||
-                "Not silinemedi."
+                data.error || "Not silinemedi."
             );
-
         }
 
-        /* CACHE'DEN SİL */
+        // Cache'den kaldır
+        delete sonGosterimCache[silinenId];
 
-        delete sonGosterimCache[
-            silinenId
-        ];
+        // Ana listeden kaldır
+        bilgiler = bilgiler.filter(
+            item => item.id !== silinenId
+        );
 
+        // Ayarlar listesinden kaldır
+        ayarBilgileri = ayarBilgileri.filter(
+            item => item.id !== silinenId
+        );
 
-        /* AKTİF LİSTEDEN SİL */
+        // Seçili notu temizle
+        seciliNot = null;
+        seciliIndex = -1;
 
-        bilgiler =
-            bilgiler.filter(
-                item =>
-                    item.id !==
-                    silinenId
-            );
+        // Yeni aktif not varsa göster
+        if (bilgiler.length > 0) {
 
+            rastgeleNotGoster();
 
-        /* TÜM KAYITLARDAN SİL */
+        } else {
 
-        ayarBilgileri =
-            ayarBilgileri.filter(
-                item =>
-                    item.id !==
-                    silinenId
-            );
+            cancelAnimationFrame(timer);
 
+            ders.textContent = "Bilgi";
+            baslik.textContent = "Henüz aktif bilgi yok.";
+            konu.textContent = "";
+            aciklama.textContent = "";
+            sayac.textContent = "";
 
-        /* EĞER EKRANDAKİ NOT SİLİNDİYSE */
+            progress.style.width = "0%";
 
-        const aktifKartSilindi =
-            seciliNot &&
-            seciliNot.id ===
-            silinenId;
+            gorselWrap.classList.remove("show");
 
-
-        if (aktifKartSilindi) {
-
-            seciliNot = null;
-
-            seciliIndex = -1;
-
-            if (bilgiler.length > 0) {
-
-                rastgeleNotGoster();
-
-            }
-            else {
-
-                cancelAnimationFrame(
-                    timer
-                );
-
-                baslik.textContent =
-                    "Henüz aktif bilgi yok.";
-
-                ders.textContent =
-                    "Bilgi";
-
-                konu.textContent =
-                    "";
-
-                aciklama.textContent =
-                    "";
-
-                sayac.textContent =
-                    "";
-
-                progress.style.width =
-                    "0%";
-
-                gorselWrap.classList.remove(
-                    "show"
-                );
-
-            }
-
+            ayarlarListesiniOlustur();
+            seciliNotuGoster();
         }
-        else {
-
-            /* Başka bir kayıt seçiliyse onu koru */
-
-            const guncel =
-                ayarBilgileri.find(
-                    item =>
-                        item.id ===
-                        seciliNot?.id
-                );
-
-            if (guncel) {
-
-                seciliNot =
-                    guncel;
-
-            }
-
-        }
-
-
-        seciliNotuGoster();
 
         ayarlarListesiniOlustur();
 
+        toastGoster("✓ Not silindi.");
 
-        toastGoster(
-            "✓ Not silindi."
-        );
-
-    }
-    catch (error) {
+    } catch (error) {
 
         console.error(
             "Not silme hatası:",
             error
         );
 
-        alert(
-            "Not silinemedi: " +
-            error.message
+        toastGoster(
+            "✕ Not silinemedi."
         );
 
-    }
+        // Butonu normale döndür
+        const silBtn = document.querySelector(
+            '[onclick="seciliNotuSil()"]'
+        );
 
+        if (silBtn) {
+
+            silBtn.disabled = false;
+
+            silBtn.textContent =
+                "🗑️ Notu Sil";
+
+            silBtn.style.borderColor = "";
+            silBtn.style.color = "";
+        }
+    }
 }
 
 
