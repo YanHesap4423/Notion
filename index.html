@@ -3347,7 +3347,7 @@ function ayarNotuSec(
 
 function seciliNotuDuzenle() {
 
-    if (!seciliNot) {
+    if (!seciliNot || !seciliNot.id) {
 
         alert(
             "Önce bir not seç."
@@ -3357,23 +3357,21 @@ function seciliNotuDuzenle() {
 
     }
 
-
-    duzenlemeModu =
-        true;
-
+    duzenlemeModu = true;
 
     formuDoldur(
         seciliNot
     );
 
-
     form.classList.add(
         "open"
     );
 
+    formPause = true;
 
-    formPause =
-        true;
+    document.getElementById(
+        "status"
+    ).textContent = "";
 
 }
 
@@ -3436,7 +3434,7 @@ function formuDoldur(
 
 async function seciliNotuSil() {
 
-    if (!seciliNot) {
+    if (!seciliNot || !seciliNot.id) {
 
         alert(
             "Önce bir not seç."
@@ -3446,28 +3444,21 @@ async function seciliNotuSil() {
 
     }
 
-
     const silinenId =
         seciliNot.id;
-
 
     const silinenBaslik =
         seciliNot.baslik ||
         "Bu not";
-
 
     const onay =
         confirm(
             `"${silinenBaslik}" notunu silmek istediğine emin misin?`
         );
 
-
     if (!onay) {
-
         return;
-
     }
-
 
     try {
 
@@ -3479,19 +3470,14 @@ async function seciliNotuSil() {
                     silinenId
                 ),
                 {
-                    method:
-                        "DELETE"
+                    method: "DELETE"
                 }
             );
-
 
         const data =
             await response.json();
 
-
-        if (
-            !data.success
-        ) {
+        if (!response.ok || !data.success) {
 
             throw new Error(
                 data.error ||
@@ -3500,11 +3486,14 @@ async function seciliNotuSil() {
 
         }
 
+        /* CACHE'DEN SİL */
 
         delete sonGosterimCache[
             silinenId
         ];
 
+
+        /* AKTİF LİSTEDEN SİL */
 
         bilgiler =
             bilgiler.filter(
@@ -3514,6 +3503,8 @@ async function seciliNotuSil() {
             );
 
 
+        /* TÜM KAYITLARDAN SİL */
+
         ayarBilgileri =
             ayarBilgileri.filter(
                 item =>
@@ -3522,29 +3513,21 @@ async function seciliNotuSil() {
             );
 
 
+        /* EĞER EKRANDAKİ NOT SİLİNDİYSE */
+
         const aktifKartSilindi =
-            (
-                seciliNot &&
-                seciliNot.id ===
-                silinenId
-            );
+            seciliNot &&
+            seciliNot.id ===
+            silinenId;
 
 
-        seciliNot =
-            null;
+        if (aktifKartSilindi) {
 
+            seciliNot = null;
 
-        if (
-            aktifKartSilindi
-        ) {
+            seciliIndex = -1;
 
-            if (
-                bilgiler.length
-            ) {
-
-                seciliIndex =
-                    -1;
-
+            if (bilgiler.length > 0) {
 
                 rastgeleNotGoster();
 
@@ -3555,30 +3538,23 @@ async function seciliNotuSil() {
                     timer
                 );
 
-
                 baslik.textContent =
                     "Henüz aktif bilgi yok.";
-
 
                 ders.textContent =
                     "Bilgi";
 
-
                 konu.textContent =
                     "";
-
 
                 aciklama.textContent =
                     "";
 
-
                 sayac.textContent =
                     "";
 
-
                 progress.style.width =
                     "0%";
-
 
                 gorselWrap.classList.remove(
                     "show"
@@ -3587,28 +3563,28 @@ async function seciliNotuSil() {
             }
 
         }
+        else {
 
+            /* Başka bir kayıt seçiliyse onu koru */
 
-        if (
-            !seciliNot &&
-            bilgiler.length &&
-            !aktifKartSilindi
-        ) {
+            const guncel =
+                ayarBilgileri.find(
+                    item =>
+                        item.id ===
+                        seciliNot?.id
+                );
 
-            seciliNot =
-                bilgiler[
-                    Math.max(
-                        0,
-                        seciliIndex
-                    )
-                ] ||
-                bilgiler[0];
+            if (guncel) {
+
+                seciliNot =
+                    guncel;
+
+            }
 
         }
 
 
         seciliNotuGoster();
-
 
         ayarlarListesiniOlustur();
 
@@ -3617,14 +3593,13 @@ async function seciliNotuSil() {
             "✓ Not silindi."
         );
 
-
     }
     catch (error) {
 
         console.error(
+            "Not silme hatası:",
             error
         );
-
 
         alert(
             "Not silinemedi: " +
