@@ -223,7 +223,7 @@
         <div><strong>Ders</strong></div>
         <div class="lesson-head-actions">
           <span id="recordCountText">0 kayıt</span>
-          <button id="openAddLesson" class="add-btn" type="button">＋ Ders Ekle</button>
+          <button id="openAddLesson" class="add-btn" type="button">＋ Soru Çözümü Ekle</button>
         </div>
       </div>
       <div class="filter-group" id="lessonButtons"></div>
@@ -256,17 +256,63 @@
 <div id="overlay" class="overlay"></div>
 <aside id="lessonDrawer" class="drawer">
   <div class="drawer-head">
-    <div><strong>Yeni Ders Ekle</strong><span>TYT veya AYT dersini ders listesine ekler.</span></div>
+    <div><strong>Soru Çözümü Ekle</strong><span>Yeni kayıt oluştur, mevcut kayda ekleme yap veya kaydı düzenle.</span></div>
     <button id="closeLesson" class="close-btn" type="button">✕</button>
   </div>
+
   <form id="lessonForm" class="drawer-body">
-    <div class="field"><label>Ders Adı</label><input id="lessonName" required maxlength="100" placeholder="Örn. TYT Geometri" /></div>
-    <div class="field"><label>Ders Türü</label><select id="lessonTur" required><option value="TYT">TYT</option><option value="AYT">AYT</option></select></div>
-    <div class="calc-box">
-      <div class="calc"><span>Yeni filtre</span><strong id="lessonPreview">TYT • Ders</strong></div>
-      <div class="calc"><span>Durum</span><strong>Hazır</strong></div>
+    <div class="field">
+      <label>İşlem</label>
+      <select id="recordMode" required>
+        <option value="new">Yeni Soru Çözümü Kaydı</option>
+        <option value="append">Mevcut Kayda Üzerine Ekle</option>
+        <option value="edit">Mevcut Kaydı Düzenle</option>
+      </select>
     </div>
-    <button class="submit" id="submitLesson" type="submit">Dersi Kaydet</button>
+
+    <div class="field" id="targetField" style="display:none">
+      <label id="targetLabel">Mevcut Kayıt</label>
+      <select id="recordTarget"></select>
+    </div>
+
+    <div class="field">
+      <label>Ders</label>
+      <select id="lessonName" required></select>
+    </div>
+
+    <div class="field">
+      <label>Konu</label>
+      <input id="lessonTopic" required maxlength="150" placeholder="Örn. Problemler / Paragraf / Türev" />
+    </div>
+
+    <div class="field">
+      <label>Tarih</label>
+      <input id="lessonDate" type="date" required />
+    </div>
+
+    <div class="two">
+      <div class="field"><label>Doğru</label><input id="fDogru" type="number" min="0" step="1" value="0" required /></div>
+      <div class="field"><label>Yanlış</label><input id="fYanlis" type="number" min="0" step="1" value="0" required /></div>
+    </div>
+
+    <div class="two">
+      <div class="field"><label>Boş</label><input id="fBos" type="number" min="0" step="1" value="0" required /></div>
+      <div class="field"><label>Video Çözüm</label><input id="fVideo" type="number" min="0" step="1" value="0" required /></div>
+    </div>
+
+    <div class="field">
+      <label>Verim (0–10)</label>
+      <input id="fVerim" type="number" min="0" max="10" step="0.1" value="0" required />
+    </div>
+
+    <div class="calc-box">
+      <div class="calc"><span>Toplam Soru</span><strong id="previewTotal">0</strong></div>
+      <div class="calc"><span>Puan</span><strong id="previewPuan">0.00</strong></div>
+    </div>
+
+    <div id="targetSummary" class="setting-note" style="display:none;line-height:1.6"></div>
+
+    <button class="submit" id="submitLesson" type="submit">Yeni Kaydı Kaydet</button>
   </form>
 </aside>
 <div id="toast" class="toast"></div>
@@ -280,8 +326,9 @@
   const API_BASE = 'https://yks-bilgi-api.yanhesap100yh.workers.dev';
   const API = {
     list: `${API_BASE}/soru-cozumu`,
-    lessons: `${API_BASE}/soru-cozumu-dersler`,
-    addLesson: `${API_BASE}/soru-cozumu-ders-ekle`
+    add: `${API_BASE}/soru-cozumu`,
+    edit: id => `${API_BASE}/soru-cozumu/${id}`,
+    lessons: `${API_BASE}/soru-cozumu-dersler`
   };
 
   const state = {
@@ -412,12 +459,27 @@
     }
   }
 
+  const STANDARD_DERSLER = [
+    'TYT Matematik','TYT Türkçe','TYT Tarih','TYT Coğrafya','TYT Felsefe','TYT Din Kültürü',
+    'TYT Fizik','TYT Kimya','TYT Biyoloji',
+    'AYT Matematik','AYT Fizik','AYT Kimya','AYT Biyoloji'
+  ];
+
   function dersler() {
     return [...new Set([
+      ...STANDARD_DERSLER,
       ...state.lessons.map(x => x.ders),
       ...state.records.map(x => x.ders)
     ].filter(Boolean))]
       .sort((a,b) => a.localeCompare(b, 'tr'));
+  }
+
+  function normalizeLessonName(x) {
+    const raw = String(x?.ders || x?.name || '').trim();
+    const tur = String(x?.tur || '').trim().toUpperCase();
+    if (!raw) return '';
+    if (/^(TYT|AYT)s+/i.test(raw) || !tur) return raw;
+    return tur + ' ' + raw;
   }
 
   function filteredRecords() {
@@ -1169,12 +1231,12 @@
     return data;
   }
 
-  async function addLesson(body) {
-    const res = await fetch(API.addLesson, {
-      method:'POST',
+  async function requestJson(url, method, body) {
+    const res = await fetch(url, {
+      method,
       mode:'cors',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(body)
+      body: JSON.stringify(body)
     });
     const raw = await res.text();
     let json = null;
@@ -1185,7 +1247,144 @@
     return json;
   }
 
+  async function createRecord(body) {
+    return requestJson(API.add, 'POST', body);
+  }
+
+  async function updateRecord(id, body) {
+    return requestJson(API.edit(id), 'PATCH', body);
+  }
+
+  function populateLessonSelect(selected = '') {
+    const wrap = $('lessonName');
+    const names = dersler();
+    wrap.innerHTML = names.map(d => '<option value="' + escapeHtml(d) + '">' + escapeHtml(d) + '</option>').join('');
+    if (selected && names.includes(selected)) wrap.value = selected;
+    else if (selected) {
+      const opt = document.createElement('option');
+      opt.value = selected;
+      opt.textContent = selected;
+      wrap.appendChild(opt);
+      wrap.value = selected;
+    }
+  }
+
+  function populateTargetSelect(selectedId = '') {
+    const target = $('recordTarget');
+    const records = state.records.slice().sort((a,b) => {
+      const ad = parseDate(a.tarih)?.getTime() ?? 0;
+      const bd = parseDate(b.tarih)?.getTime() ?? 0;
+      return bd - ad;
+    });
+
+    target.innerHTML = records.length
+      ? records.map(x => {
+          const label = (x.ders || 'Ders Yok') + ' — ' +
+                        (x.konu || 'Genel') + ' — ' +
+                        fmtDate(x.tarih) + ' • ' + fmt(x.toplam,0) + ' soru';
+          return '<option value="' + escapeHtml(x.id || '') + '">' + escapeHtml(label) + '</option>';
+        }).join('')
+      : '<option value="">Kayıt yok</option>';
+
+    if (selectedId) target.value = selectedId;
+  }
+
+  function targetRecord() {
+    const id = $('recordTarget').value;
+    return state.records.find(x => String(x.id) === String(id)) || null;
+  }
+
+  function updateRecordModeUI() {
+    const mode = $('recordMode').value;
+    const isTargeted = mode === 'append' || mode === 'edit';
+
+    $('targetField').style.display = isTargeted ? 'grid' : 'none';
+    $('targetLabel').textContent = mode === 'append' ? 'Üzerine Eklenecek Kayıt' : 'Düzenlenecek Kayıt';
+    $('submitLesson').textContent =
+      mode === 'append' ? 'Üzerine Ekle' :
+      mode === 'edit' ? 'Değişiklikleri Kaydet' : 'Yeni Kaydı Kaydet';
+
+    const target = isTargeted ? targetRecord() : null;
+
+    if (mode === 'new') {
+      populateLessonSelect(state.currentDers && state.currentDers !== '__ALL__' ? state.currentDers : '');
+      if (!$('lessonTopic').value) $('lessonTopic').value = '';
+      $('targetSummary').style.display = 'none';
+    }
+
+    if (mode === 'append') {
+      if (target) {
+        $('lessonName').value = target.ders || $('lessonName').value;
+        $('lessonTopic').value = target.konu || '';
+        $('fDogru').value = '0';
+        $('fYanlis').value = '0';
+        $('fBos').value = '0';
+        $('fVideo').value = '0';
+        $('fVerim').value = '0';
+        $('targetSummary').style.display = 'block';
+        $('targetSummary').innerHTML =
+          '<strong>Mevcut kayıt:</strong> ' + escapeHtml(target.ders || 'Ders') +
+          ' • ' + escapeHtml(target.konu || 'Genel') + '<br>' +
+          'Şu an: ' + fmt(target.toplam,0) + ' soru • Doğru ' + fmt(target.dogru,0) +
+          ' • Yanlış ' + fmt(target.yanlis,0) + ' • Boş ' + fmt(target.bos,0) +
+          ' • Verim ' + fmt(target.verim,1) + ' / 10';
+      } else {
+        $('targetSummary').style.display = 'none';
+      }
+    }
+
+    if (mode === 'edit' && target) {
+      populateLessonSelect(target.ders);
+      $('lessonTopic').value = target.konu || '';
+      $('lessonDate').value = String(target.tarih || '').slice(0,10) || new Date().toISOString().slice(0,10);
+      $('fDogru').value = safeNum(target.dogru,0);
+      $('fYanlis').value = safeNum(target.yanlis,0);
+      $('fBos').value = safeNum(target.bos,0);
+      $('fVideo').value = safeNum(target.video,0);
+      $('fVerim').value = safeNum(target.verim,0);
+      $('targetSummary').style.display = 'none';
+    }
+
+    updateRecordPreview();
+  }
+
+  function updateRecordPreview() {
+    const d = Math.max(0, Math.round(safeNum($('fDogru').value,0)));
+    const y = Math.max(0, Math.round(safeNum($('fYanlis').value,0)));
+    const b = Math.max(0, Math.round(safeNum($('fBos').value,0)));
+    const v = Math.max(0, Math.min(10, safeNum($('fVerim').value,0)));
+    const total = d + y + b;
+
+    $('previewTotal').textContent = fmt(total,0);
+    $('previewPuan').textContent = total > 0 && v > 0 ? fmt(total/(v*v)*100,2) : '0.00';
+
+    const target = $('recordMode').value === 'append' ? targetRecord() : null;
+    if (target) {
+      const newTotal = safeNum(target.toplam,0) + total;
+      const newVerim = newTotal > 0
+        ? ((safeNum(target.verim,0) * safeNum(target.toplam,0)) + (v * total)) / newTotal
+        : v;
+      $('targetSummary').innerHTML =
+        '<strong>Eklendikten sonra:</strong> ' + fmt(newTotal,0) + ' soru • ' +
+        'Doğru ' + fmt(safeNum(target.dogru,0)+d,0) + ' • ' +
+        'Yanlış ' + fmt(safeNum(target.yanlis,0)+y,0) + ' • ' +
+        'Boş ' + fmt(safeNum(target.bos,0)+b,0) + ' • ' +
+        'Verim ' + fmt(newVerim,1) + ' / 10';
+    }
+  }
+
   function openLessonDrawer() {
+    populateLessonSelect(state.currentDers && state.currentDers !== '__ALL__' ? state.currentDers : '');
+    populateTargetSelect();
+    $('recordMode').value = 'new';
+    $('lessonTopic').value = '';
+    $('lessonDate').value = new Date().toISOString().slice(0,10);
+    $('fDogru').value = '0';
+    $('fYanlis').value = '0';
+    $('fBos').value = '0';
+    $('fVideo').value = '0';
+    $('fVerim').value = '0';
+    updateRecordModeUI();
     $('lessonDrawer').classList.add('show');
     $('overlay').classList.add('show');
     setTimeout(() => $('lessonName').focus(), 220);
@@ -1196,42 +1395,81 @@
     $('overlay').classList.remove('show');
   }
 
-  function updateLessonPreview() {
-    const tur = $('lessonTur').value || 'TYT';
-    const name = $('lessonName').value.trim();
-    $('lessonPreview').textContent = name ? tur + ' • ' + name : tur + ' • Ders';
-  }
-
   $('openAddLesson').addEventListener('click', openLessonDrawer);
   $('closeLesson').addEventListener('click', closeLessonDrawer);
   $('overlay').addEventListener('click', closeLessonDrawer);
-  $('lessonName').addEventListener('input', updateLessonPreview);
-  $('lessonTur').addEventListener('change', updateLessonPreview);
+  $('recordMode').addEventListener('change', updateRecordModeUI);
+  $('recordTarget').addEventListener('change', updateRecordModeUI);
+  ['fDogru','fYanlis','fBos','fVideo','fVerim'].forEach(id => $(id).addEventListener('input', updateRecordPreview));
 
   $('lessonForm').addEventListener('submit', async e => {
     e.preventDefault();
+
     const button = $('submitLesson');
+    const mode = $('recordMode').value;
+    const target = (mode === 'append' || mode === 'edit') ? targetRecord() : null;
     const ders = $('lessonName').value.trim();
-    const tur = $('lessonTur').value;
-    if (!ders) return;
+    const konu = $('lessonTopic').value.trim();
+    const tarih = $('lessonDate').value;
+    const dogru = Math.max(0, Math.round(safeNum($('fDogru').value,0)));
+    const yanlis = Math.max(0, Math.round(safeNum($('fYanlis').value,0)));
+    const bos = Math.max(0, Math.round(safeNum($('fBos').value,0)));
+    const video = Math.max(0, Math.round(safeNum($('fVideo').value,0)));
+    const verim = Math.max(0, Math.min(10, safeNum($('fVerim').value,0)));
+    const toplam = dogru + yanlis + bos;
+
+    if (!ders || !konu || !tarih) {
+      toast('Ders, konu ve tarih zorunludur.');
+      return;
+    }
+
+    if ((mode === 'append' || mode === 'edit') && !target) {
+      toast('Önce işlem yapılacak kaydı seç.');
+      return;
+    }
 
     button.disabled = true;
     button.textContent = 'Kaydediliyor…';
+
     try {
-      await addLesson({ ders, tur });
-      state.currentDers = ders;
+      if (mode === 'new') {
+        await createRecord({ ders, konu, tarih, toplam, dogru, yanlis, bos, verim, video });
+        state.currentDers = ders;
+        toast('Soru çözümü kaydı eklendi.');
+      } else if (mode === 'append') {
+        const oldTotal = safeNum(target.toplam,0);
+        const oldVerim = safeNum(target.verim,0);
+        const mergedTotal = oldTotal + toplam;
+        const mergedVerim = mergedTotal > 0
+          ? ((oldVerim * oldTotal) + (verim * toplam)) / mergedTotal
+          : verim;
+
+        await updateRecord(target.id, {
+          ders,
+          konu,
+          tarih,
+          toplam: mergedTotal,
+          dogru: safeNum(target.dogru,0) + dogru,
+          yanlis: safeNum(target.yanlis,0) + yanlis,
+          bos: safeNum(target.bos,0) + bos,
+          verim: mergedVerim,
+          video: safeNum(target.video,0) + video
+        });
+        state.currentDers = ders;
+        toast('Mevcut kayda yeni çözümler eklendi.');
+      } else {
+        await updateRecord(target.id, { ders, konu, tarih, toplam, dogru, yanlis, bos, verim, video });
+        state.currentDers = ders;
+        toast('Kayıt güncellendi.');
+      }
+
       closeLessonDrawer();
-      $('lessonForm').reset();
-      $('lessonTur').value = tur;
-      updateLessonPreview();
-      toast('"' + ders + '" dersi eklendi.');
       await reload();
     } catch (err) {
       console.error(err);
-      toast('Ders eklenemedi: ' + err.message);
+      toast('Kayıt kaydedilemedi: ' + err.message);
     } finally {
       button.disabled = false;
-      button.textContent = 'Dersi Kaydet';
     }
   });
 
@@ -1249,7 +1487,7 @@
       state.lessons = lessonData
         .map(x => ({
           id: x.id || null,
-          ders: String(x.ders || x.name || '').trim(),
+          ders: normalizeLessonName(x),
           tur: String(x.tur || '').trim().toUpperCase()
         }))
         .filter(x => x.ders);
