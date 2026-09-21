@@ -237,7 +237,7 @@
         <button class="metric-btn" data-metric="bos">Boş</button>
         <button class="metric-btn" data-metric="video">Video Çözüm</button>
       </div>
-      <div class="footer-note"><span>X ekseni konu, tarih ve diğer bilgiler tooltip içinde gösterilir.</span><span class="strong" id="filterInfo">—</span></div>
+      <div class="footer-note"><span>X ekseni tarih; ders ve çözüm bilgileri tooltip içinde gösterilir.</span><span class="strong" id="filterInfo">—</span></div>
     </section>
 
     <section class="panel">
@@ -1303,7 +1303,6 @@
 
     if (mode === 'new') {
       populateLessonSelect(state.currentDers && state.currentDers !== '__ALL__' ? state.currentDers : '');
-      if (!$('lessonTopic').value)
       $('targetSummary').style.display = 'none';
     }
 
@@ -1318,7 +1317,7 @@
         $('targetSummary').style.display = 'block';
         $('targetSummary').innerHTML =
           '<strong>Mevcut kayıt:</strong> ' + escapeHtml(target.ders || 'Ders') +
-          ' • ' + escapeHtml(target.konu || 'Genel') + '<br>' +
+          'Tarih: ' + escapeHtml(fmtDate(target.tarih)) + '<br>' +
           'Şu an: ' + fmt(target.toplam,0) + ' soru • Doğru ' + fmt(target.dogru,0) +
           ' • Yanlış ' + fmt(target.yanlis,0) + ' • Boş ' + fmt(target.bos,0) +
           ' • Verim ' + fmt(target.verim,1) + ' / 10';
@@ -1329,7 +1328,6 @@
 
     if (mode === 'edit' && target) {
       populateLessonSelect(target.ders);
-      $('lessonTopic').value = target.konu || '';
       $('lessonDate').value = String(target.tarih || '').slice(0,10) || new Date().toISOString().slice(0,10);
       $('fDogru').value = safeNum(target.dogru,0);
       $('fYanlis').value = safeNum(target.yanlis,0);
@@ -1374,7 +1372,6 @@
     populateLessonSelect(state.currentDers && state.currentDers !== '__ALL__' ? state.currentDers : '');
     populateTargetSelect();
     $('recordMode').value = 'new';
-    $('lessonTopic').value = '';
     $('lessonDate').value = new Date().toISOString().slice(0,10);
     $('fDogru').value = '0';
     $('fYanlis').value = '0';
@@ -1406,7 +1403,6 @@
     const mode = $('recordMode').value;
     const target = (mode === 'append' || mode === 'edit') ? targetRecord() : null;
     const ders = $('lessonName').value.trim();
-    const konu = $('lessonTopic').value.trim();
     const tarih = $('lessonDate').value;
     const dogru = Math.max(0, Math.round(safeNum($('fDogru').value,0)));
     const yanlis = Math.max(0, Math.round(safeNum($('fYanlis').value,0)));
@@ -1430,7 +1426,7 @@
 
     try {
       if (mode === 'new') {
-        await createRecord({ ders, konu, tarih, toplam, dogru, yanlis, bos, verim, video });
+        await createRecord({ ders, konu: '', tarih, toplam, dogru, yanlis, bos, verim, video });
         state.currentDers = ders;
         toast('Soru çözümü kaydı eklendi.');
       } else if (mode === 'append') {
@@ -1443,7 +1439,7 @@
 
         await updateRecord(target.id, {
           ders,
-          konu,
+          konu: '',
           tarih,
           toplam: mergedTotal,
           dogru: safeNum(target.dogru,0) + dogru,
@@ -1455,7 +1451,7 @@
         state.currentDers = ders;
         toast('Mevcut kayda yeni çözümler eklendi.');
       } else {
-        await updateRecord(target.id, { ders, konu, tarih, toplam, dogru, yanlis, bos, verim, video });
+        await updateRecord(target.id, { ders, konu: '', tarih, toplam, dogru, yanlis, bos, verim, video });
         state.currentDers = ders;
         toast('Kayıt güncellendi.');
       }
