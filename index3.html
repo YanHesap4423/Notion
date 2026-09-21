@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Soru Çözümü İstatistikleri</title>
+<style>
+  :root{
+    --bg:#070707;
+    --panel:#101010;
+    --panel2:#141414;
+    --panel3:#181818;
+    --border:rgba(255,255,255,.075);
+    --border-strong:rgba(255,255,255,.12);
+    --text:#f5f5f5;
+    --muted:#8d8d8d;
+    --muted2:#666;
+    --orange:#ff7a00;
+    --orange2:#ff9a3d;
+    --orange-soft:rgba(255,122,0,.12);
+    --green:#53d769;
+    --red:#ff5a5f;
+    --shadow:0 22px 60px rgba(0,0,0,.42);
+    --radius:22px;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+  body{min-height:100vh;overflow-x:hidden}
+  button,input,select{font:inherit}
+  button{color:inherit}
+
+  .app{width:min(1460px,100%);margin:0 auto;padding:26px 22px 48px}
+  .header{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:18px}
+  .title-wrap h1{margin:0;font-size:clamp(26px,4vw,42px);letter-spacing:-.035em;line-height:1}
+  .title-wrap p{margin:10px 0 0;color:var(--muted);font-size:14px}
+  .connection{display:inline-flex;align-items:center;gap:9px;padding:9px 13px;border:1px solid var(--border);background:#0d0d0d;border-radius:999px;font-size:12px;color:#cfcfcf;white-space:nowrap}
+  .dot{width:8px;height:8px;border-radius:50%;background:#666;box-shadow:0 0 0 4px rgba(255,255,255,.03)}
+  .connection.ok .dot{background:var(--green);box-shadow:0 0 0 4px rgba(83,215,105,.09)}
+  .connection.warn .dot{background:#ffc257}
+  .connection.err .dot{background:var(--red)}
+
+  .chart-card{position:relative;background:linear-gradient(180deg,#0c0c0c,#0a0a0a);border:1px solid var(--border);border-radius:28px;box-shadow:var(--shadow);overflow:hidden}
+  .chart-head{display:flex;align-items:center;justify-content:space-between;padding:18px 18px 0;gap:10px}
+  .chart-title{display:flex;align-items:center;gap:11px;min-width:0}
+  .chart-title strong{font-size:14px;letter-spacing:.01em}
+  .chart-title span{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .chart-actions{display:flex;align-items:center;gap:8px}
+  .icon-btn{width:38px;height:38px;border-radius:12px;border:1px solid var(--border);background:#121212;display:grid;place-items:center;cursor:pointer;transition:.18s ease;position:relative}
+  .icon-btn:hover{border-color:rgba(255,122,0,.35);background:#171717;transform:translateY(-1px)}
+  .icon-btn.active{border-color:rgba(255,122,0,.45);background:rgba(255,122,0,.1);color:var(--orange2)}
+  .icon-btn svg{width:17px;height:17px;stroke:currentColor}
+  .chart-wrap{position:relative;height:520px;padding:8px 10px 12px}
+  .chart-svg{width:100%;height:100%;display:block;touch-action:none;user-select:none;cursor:grab}
+  .chart-svg.is-dragging{cursor:grabbing}
+  .chart-grid{stroke:rgba(255,255,255,.055);stroke-width:1}
+  .axis-text{fill:#737373;font-size:10px}
+  .axis-label{fill:#555;font-size:10px}
+  .line-glow{fill:none;stroke:rgba(255,122,0,.11);stroke-width:10;stroke-linecap:round;stroke-linejoin:round}
+  .line{fill:none;stroke:var(--orange);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .area{fill:url(#areaFill);opacity:.75}
+  .point{fill:#0b0b0b;stroke:var(--orange);stroke-width:2.3;cursor:pointer}
+  .point:hover{fill:var(--orange);stroke:#fff;stroke-width:1.7}
+  .point.selected{fill:var(--orange);stroke:#fff;stroke-width:2.4;filter:drop-shadow(0 0 9px rgba(255,122,0,.65))}
+  .chart-empty{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+  .empty-box{padding:18px 20px;border-radius:16px;border:1px dashed rgba(255,255,255,.1);background:rgba(255,255,255,.02);text-align:center}
+  .empty-box strong{display:block;font-size:14px;margin-bottom:5px}.empty-box span{font-size:12px;color:var(--muted)}
+
+  .tooltip{position:absolute;z-index:20;min-width:190px;max-width:250px;padding:12px 13px;border-radius:15px;border:1px solid rgba(255,255,255,.1);background:rgba(15,15,15,.97);box-shadow:0 18px 48px rgba(0,0,0,.5);opacity:0;pointer-events:none;transform:translateY(5px);transition:opacity .12s ease,transform .12s ease}
+  .tooltip.show{opacity:1;transform:translateY(0)}
+  .tooltip-name{font-size:13px;font-weight:700;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tooltip-row{display:flex;justify-content:space-between;gap:14px;font-size:11px;padding:3px 0;color:#bdbdbd}.tooltip-row b{color:#fff;font-weight:600}
+  .tooltip-row strong{color:var(--orange2);font-size:12px}
+  .zoom-hint{position:absolute;left:18px;top:17px;padding:7px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.2);color:#676767;font-size:10px;pointer-events:none;transition:.18s ease}
+  .pan-hint{position:absolute;right:18px;bottom:15px;padding:6px 9px;border-radius:9px;border:1px solid rgba(255,255,255,.05);background:rgba(0,0,0,.23);color:#5f5f5f;font-size:9px;pointer-events:none;opacity:0;transform:translateY(4px);transition:.18s ease}
+  .pan-hint.show{opacity:1;transform:translateY(0)}
+
+  .below{display:grid;gap:14px;margin-top:14px}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:16px}
+  .panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:13px}.panel-head strong{font-size:13px}.panel-head span{font-size:11px;color:var(--muted)}
+
+  .control-grid{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:start}
+  .filter-group{display:flex;flex-wrap:wrap;gap:8px}
+  .filter-btn,.branch-btn,.metric-btn{border:1px solid var(--border);background:#121212;color:#bdbdbd;border-radius:12px;padding:10px 13px;cursor:pointer;transition:.18s ease;font-size:12px}
+  .filter-btn:hover,.branch-btn:hover,.metric-btn:hover{border-color:rgba(255,122,0,.28);color:#fff;background:#161616}
+  .filter-btn.active,.branch-btn.active,.metric-btn.active{border-color:rgba(255,122,0,.42);background:linear-gradient(180deg,rgba(255,122,0,.16),rgba(255,122,0,.08));color:#fff;box-shadow:inset 0 0 0 1px rgba(255,122,0,.05)}
+  .metric-btn.active{color:var(--orange2)}
+  .add-btn{height:42px;padding:0 17px;border:none;border-radius:13px;background:linear-gradient(180deg,#ff8a1f,#f16d00);color:#fff;font-weight:700;font-size:12px;cursor:pointer;box-shadow:0 10px 22px rgba(255,122,0,.18);transition:.18s ease}.add-btn:hover{transform:translateY(-1px);box-shadow:0 13px 28px rgba(255,122,0,.23)}
+
+  .branch-wrap{margin-top:12px;display:none;padding-top:12px;border-top:1px solid rgba(255,255,255,.05)}
+  .branch-wrap.show{display:block}.branch-title{font-size:10px;color:#6e6e6e;text-transform:uppercase;letter-spacing:.12em;margin:0 0 8px}
+
+  .metric-strip{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.05)}
+
+  .stats-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+  .stat{padding:15px 14px;border:1px solid var(--border);background:linear-gradient(180deg,#121212,#0f0f0f);border-radius:16px;min-width:0}
+  .stat-label{font-size:10px;text-transform:uppercase;letter-spacing:.11em;color:#666;margin-bottom:8px}
+  .stat-value{font-size:21px;line-height:1;font-weight:750;letter-spacing:-.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stat-sub{margin-top:7px;color:#777;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .orange{color:var(--orange2)}
+
+  .footer-note{margin-top:10px;color:#555;font-size:10px;display:flex;justify-content:space-between;gap:10px;align-items:center}.footer-note .strong{color:#8b8b8b}
+
+  .settings-pop{position:absolute;right:18px;top:64px;width:270px;background:#121212;border:1px solid rgba(255,255,255,.1);border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.55);padding:14px;z-index:30;display:none}.settings-pop.show{display:block}
+  .settings-title{font-size:12px;font-weight:700;margin-bottom:12px}.setting{padding:10px 0;border-top:1px solid rgba(255,255,255,.05)}.setting:first-of-type{border-top:none;padding-top:0}
+  .setting-row{display:flex;justify-content:space-between;align-items:center;gap:12px}.setting-label{font-size:11px;color:#c4c4c4}.setting-note{font-size:9px;color:#676767;margin-top:5px;line-height:1.4}
+  .setting select{background:#0d0d0d;color:#ddd;border:1px solid var(--border);border-radius:9px;padding:7px 9px;font-size:10px;outline:none}
+  .range{width:100%;accent-color:var(--orange)}
+  .switch{position:relative;width:39px;height:23px;display:inline-block}.switch input{display:none}.slider{position:absolute;inset:0;background:#2a2a2a;border:1px solid rgba(255,255,255,.06);border-radius:999px;cursor:pointer}.slider:before{content:"";position:absolute;width:17px;height:17px;left:2px;top:2px;border-radius:50%;background:#7b7b7b;transition:.18s}.switch input:checked+.slider{background:rgba(255,122,0,.23);border-color:rgba(255,122,0,.3)}.switch input:checked+.slider:before{transform:translateX(16px);background:var(--orange)}
+
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.66);backdrop-filter:blur(5px);z-index:80;opacity:0;pointer-events:none;transition:.2s ease}.overlay.show{opacity:1;pointer-events:auto}
+  .drawer{position:fixed;top:0;right:0;width:min(460px,100%);height:100dvh;background:#0d0d0d;border-left:1px solid var(--border-strong);z-index:90;transform:translateX(102%);transition:transform .25s ease;box-shadow:-28px 0 70px rgba(0,0,0,.45);display:flex;flex-direction:column}.drawer.show{transform:translateX(0)}
+  .drawer-head{display:flex;justify-content:space-between;align-items:center;padding:18px 18px 15px;border-bottom:1px solid rgba(255,255,255,.06)}.drawer-head strong{font-size:15px}.drawer-head span{font-size:11px;color:#666;margin-top:4px;display:block}.close-btn{width:36px;height:36px;border-radius:11px;border:1px solid var(--border);background:#131313;cursor:pointer}
+  .drawer-body{padding:18px;overflow:auto;display:grid;gap:12px}.field{display:grid;gap:7px}.field label{font-size:11px;color:#9a9a9a}.field input,.field select{width:100%;height:44px;border-radius:12px;border:1px solid var(--border);background:#111;color:#eee;padding:0 12px;outline:none}.field input:focus,.field select:focus{border-color:rgba(255,122,0,.4);box-shadow:0 0 0 3px rgba(255,122,0,.07)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .calc-box{display:grid;grid-template-columns:1fr 1fr;gap:10px}.calc{padding:13px;border-radius:13px;background:#111;border:1px solid rgba(255,255,255,.055)}.calc span{display:block;font-size:9px;color:#666;text-transform:uppercase;letter-spacing:.1em}.calc strong{display:block;margin-top:7px;font-size:20px;color:#fff}
+  .submit{margin-top:4px;height:46px;border:none;border-radius:13px;background:linear-gradient(180deg,#ff8b23,#f16e00);color:#fff;font-weight:800;cursor:pointer}.submit:disabled{opacity:.55;cursor:default}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);background:#121212;border:1px solid rgba(255,255,255,.1);box-shadow:0 15px 40px rgba(0,0,0,.45);border-radius:13px;padding:11px 14px;font-size:11px;z-index:120;opacity:0;pointer-events:none;transition:.2s ease}.toast.show{opacity:1;transform:translate(-50%,0)}
+
+  .fullscreen-active{background:#050505}
+  body.graph-fullscreen .app{width:100%;max-width:none;padding:10px}
+  body.graph-fullscreen .header, body.graph-fullscreen .below{display:none}
+  body.graph-fullscreen .chart-card{border-radius:18px;height:calc(100dvh - 20px)}
+  body.graph-fullscreen .chart-wrap{height:calc(100dvh - 78px)}
+  body.graph-fullscreen .chart-head{padding-top:12px}
+  body.graph-fullscreen .zoom-hint{display:block}
+  body.graph-fullscreen .chart-title span{display:none}
+  body.graph-fullscreen .chart-title strong:after{content:" • Yatay görünüm";color:#666;font-weight:500}
+
+  @media (max-width:1100px){
+    .stats-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .control-grid{grid-template-columns:1fr}
+    .add-btn{width:max-content}
+  }
+  @media (max-width:700px){
+    .app{padding:14px 10px 30px}.header{align-items:flex-start}.connection{padding:8px 10px}
+    .chart-card{border-radius:20px}.chart-wrap{height:410px;padding:5px 5px 8px}.chart-head{padding:12px 12px 0}.chart-title span{display:none}.icon-btn{width:36px;height:36px}
+    .zoom-hint{left:12px;top:12px;font-size:9px}
+    .panel{padding:13px;border-radius:18px}.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stats-grid .stat:last-child{grid-column:span 2}
+    .filter-group{gap:7px}.filter-btn,.branch-btn,.metric-btn{padding:9px 10px}
+  }
+  @media (max-width:700px) and (orientation:landscape){
+    body:not(.graph-fullscreen) .chart-wrap{height:calc(100svh - 125px)}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="title-wrap">
+      <h1>Soru Çözümü</h1>
+      <p id="headerSub">Ders bazında çözdüğün soruların verim ve puan değişimini tek grafik üzerinden takip et.</p>
+    </div>
+    <div id="connection" class="connection"><span class="dot"></span><span id="connectionText">Bağlanıyor…</span></div>
+  </div>
+
+  <section id="chartCard" class="chart-card">
+    <div class="chart-head">
+      <div class="chart-title">
+        <strong id="chartTitle">Soru Çözümü • Verim</strong>
+        <span id="chartMeta">Veri bekleniyor</span>
+      </div>
+      <div class="chart-actions">
+        <button id="settingsBtn" class="icon-btn" title="Grafik ayarları" aria-label="Grafik ayarları">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="m19.4 15 .1.1a2 2 0 0 1-2.8 2.8l-.1-.1a2 2 0 0 0-3.4 1.4V19a2 2 0 0 1-4 0v-.1A2 2 0 0 0 5.8 17.5l-.1.1a2 2 0 0 1-2.8-2.8L3 14.7A2 2 0 0 0 1.6 11H1.5a2 2 0 0 1 0-4h.1A2 2 0 0 0 3 3.6L2.9 3.5A2 2 0 0 1 5.7.7l.1.1A2 2 0 0 0 9.2-.6V-.7a2 2 0 0 1 4 0v.1a2 2 0 0 0 3.4 1.4l.1-.1a2 2 0 0 1 2.8 2.8l-.1.1A2 2 0 0 0 20.8 7h.1a2 2 0 0 1 0 4h-.1A2 2 0 0 0 19.4 15Z" transform="translate(1.6 2.6) scale(.82)"/></svg>
+        </button>
+        <button id="fullscreenBtn" class="icon-btn" title="Grafiği yatay tam ekran aç" aria-label="Grafiği yatay tam ekran aç">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M21 16v5h-5"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div id="settingsPop" class="settings-pop">
+      <div class="settings-title">Grafik Ayarları</div>
+      <div class="setting">
+        <div class="setting-row"><span class="setting-label">Başlangıç veri yoğunluğu</span><select id="densitySelect"><option value="10">10 nokta</option><option value="12" selected>12 nokta</option><option value="16">16 nokta</option><option value="20">20 nokta</option></select></div>
+        <div class="setting-note">Normal görünümde kaç veri noktasının gösterileceğini belirler. Zoom yaptıkça gizli noktalar kademeli olarak açılır.</div>
+      </div>
+      <div class="setting">
+        <div class="setting-row"><span class="setting-label">Zoom hassasiyeti</span><select id="zoomSelect"><option value="0.12">Düşük</option><option value="0.18" selected>Orta</option><option value="0.25">Yüksek</option><option value="0.35">Çok yüksek</option></select></div>
+        <div class="setting-note">Mouse tekerleği veya iki parmak pinch hareketinin ne kadar veri açacağını ayarlar.</div>
+      </div>
+      <div class="setting">
+        <div class="setting-row"><span class="setting-label">Izgarayı göster</span><label class="switch"><input id="gridSwitch" type="checkbox" checked><span class="slider"></span></label></div>
+      </div>
+      <div class="setting">
+        <div class="setting-row"><span class="setting-label">Noktaları göster</span><label class="switch"><input id="pointSwitch" type="checkbox" checked><span class="slider"></span></label></div>
+      </div>
+      <div class="setting">
+        <div class="setting-row"><span class="setting-label">Zoom sıfırla</span><button id="resetZoomBtn" class="filter-btn" style="padding:7px 10px">1× Görünüm</button></div>
+      </div>
+    </div>
+
+    <div id="chartWrap" class="chart-wrap">
+      <div class="zoom-hint">Zoom: sol tık + tekerlek • Telefon: iki parmak pinch</div>
+      <div id="panHint" class="pan-hint">Zoom sonrası: grafiği sağa / sola sürükleyerek gez</div>
+      <svg id="chart" class="chart-svg" viewBox="0 0 1000 500" preserveAspectRatio="none" aria-label="Soru çözümü performans grafiği">
+        <defs>
+          <linearGradient id="areaFill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#ff7a00" stop-opacity=".22"/>
+            <stop offset="100%" stop-color="#ff7a00" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <g id="gridLayer"></g>
+        <path id="areaPath" class="area"></path>
+        <path id="glowPath" class="line-glow"></path>
+        <path id="linePath" class="line"></path>
+        <g id="pointsLayer"></g>
+        <g id="axesLayer"></g>
+      </svg>
+      <div id="emptyState" class="chart-empty" style="display:none">
+        <div class="empty-box"><strong>Bu ders için veri yok</strong><span>Başka bir ders veya metrik seçebilirsin.</span></div>
+      </div>
+      <div id="tooltip" class="tooltip"></div>
+    </div>
+  </section>
+
+  <div class="below">
+    <section class="panel">
+      <div class="panel-head"><div><strong>Ders</strong></div><span id="recordCountText">0 kayıt</span></div>
+      <div class="filter-group" id="lessonButtons"></div>
+      <div class="metric-strip">
+        <button class="metric-btn active" data-metric="verim">Verim</button>
+        <button class="metric-btn" data-metric="puan">Puan</button>
+        <button class="metric-btn" data-metric="toplam">Toplam</button>
+        <button class="metric-btn" data-metric="dogru">Doğru</button>
+        <button class="metric-btn" data-metric="yanlis">Yanlış</button>
+        <button class="metric-btn" data-metric="bos">Boş</button>
+        <button class="metric-btn" data-metric="video">Video Çözüm</button>
+      </div>
+      <div class="footer-note"><span>X ekseni konu, tarih ve diğer bilgiler tooltip içinde gösterilir.</span><span class="strong" id="filterInfo">—</span></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><div><strong>Özet İstatistikler</strong></div><span id="statsScope">Seçili ders</span></div>
+      <div class="stats-grid">
+        <div class="stat"><div class="stat-label">Çözüm</div><div class="stat-value orange" id="sCount">0</div><div class="stat-sub">filtrelenmiş kayıt</div></div>
+        <div class="stat"><div class="stat-label">Ortalama Verim</div><div class="stat-value" id="sAvgVerim">—</div><div class="stat-sub">10 üzerinden</div></div>
+        <div class="stat"><div class="stat-label">Ortalama Puan</div><div class="stat-value" id="sAvgPuan">—</div><div class="stat-sub">Toplam / Verim² × 100</div></div>
+        <div class="stat"><div class="stat-label">Toplam Soru</div><div class="stat-value" id="sTotal">—</div><div class="stat-sub">çözülen soru</div></div>
+        <div class="stat"><div class="stat-label">Seçili Metrik Ort.</div><div class="stat-value" id="sAvgMetric">—</div><div class="stat-sub" id="sMetricLabel">Verim</div></div>
+        <div class="stat"><div class="stat-label">En Yüksek</div><div class="stat-value" id="sMaxMetric">—</div><div class="stat-sub" id="sBestName">—</div></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+(() => {
+  'use strict';
+
+  // Soru Çözümü için Worker route'u.
+  // Worker tarafındaki endpoint farklıysa sadece bu satırı değiştir:
+  const API_BASE = 'https://yks-bilgi-api.yanhesap100yh.workers.dev';
+  const API = {
+    list: `${API_BASE}/soru-cozumu`
+  };
+
+  const state = {
+    records: [],
+    currentDers: null,
+    metric: 'verim',
+    visibleCount: 12,
+    viewStart: null,
+    viewEnd: null,
+    densityStart: 12,
+    zoomSensitivity: 0.18,
+    showGrid: true,
+    showPoints: true,
+    mouseZoomArmed: false,
+    touchPointers: new Map(),
+    pinchDistance: null,
+    pinchStartDistance: null,
+    pinchLastDistance: null,
+    pinchBaseStart: null,
+    pinchBaseEnd: null,
+    pinchBaseCount: null,
+    pinchCenterRatio: null,
+    lastHoverIndex: null,
+    mouseDragging: false,
+    dragStartX: 0,
+    dragStartViewStart: 0,
+    dragStartViewEnd: 0,
+    touchDragActive: false,
+    touchDragStartX: 0,
+    touchDragStartViewStart: 0,
+    touchDragStartViewEnd: 0
+  };
+
+  const $ = id => document.getElementById(id);
+  const chart = $('chart');
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const plot = { left: 70, right: 980, top: 36, bottom: 430 };
+
+  const METRIC_LABELS = {
+    verim: 'Verim',
+    puan: 'Puan',
+    toplam: 'Toplam',
+    dogru: 'Doğru',
+    yanlis: 'Yanlış',
+    bos: 'Boş',
+    video: 'Video Çözüm'
+  };
+
+  function safeNum(v, fallback = 0) {
+    const n = Number(v);
+    return Number.isFinite(n) ? n : fallback;
+  }
+
+  function firstDefined(...vals) {
+    for (const v of vals) if (v !== undefined && v !== null && v !== '') return v;
+    return null;
+  }
+
+  function parseDate(v) {
+    if (!v) return null;
+    const d = new Date(v);
+    return Number.isNaN(d.getTime()) ? null : d;
+  }
+
+  function fmtDate(v) {
+    const d = parseDate(v);
+    if (!d) return 'Tarih yok';
+    return new Intl.DateTimeFormat('tr-TR', { day:'2-digit', month:'2-digit', year:'numeric' }).format(d);
+  }
+
+  function fmt(v, decimals = 1) {
+    if (v === null || v === undefined || !Number.isFinite(Number(v))) return '—';
+    return Number(v).toLocaleString('tr-TR', {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    });
+  }
+
+  function avg(arr) {
+    const xs = arr.filter(v => Number.isFinite(Number(v))).map(Number);
+    return xs.length ? xs.reduce((a,b) => a + b, 0) / xs.length : null;
+  }
+
+  function normalizeRecord(x) {
+    const ders = firstDefined(x.ders, x.Ders, x.sinav, x.subject, x.name) ?? 'Ders Yok';
+    const konu = firstDefined(x.konu, x.Konu, x.topic, x.name) ?? 'Genel';
+    const tarih = firstDefined(x.tarih, x.Tarih, x.date, x.createdAt) ?? '';
+
+    const toplam = safeNum(firstDefined(x.toplam, x.Toplam, x.total), 0);
+    const dogru = safeNum(firstDefined(x.dogru, x.Doğru, x.correct), 0);
+    const yanlis = safeNum(firstDefined(x.yanlis, x.Yanlış, x.wrong), 0);
+    const bos = safeNum(firstDefined(x.bos, x.Boş, x.blank), 0);
+    const verim = safeNum(firstDefined(x.verim, x.Verim, x.efficiency), 0);
+    const video = safeNum(firstDefined(x.video, x.VideoÇözüm, x.videocozum, x.videoCozum), 0);
+
+    return {
+      ...x,
+      ders: String(ders),
+      konu: String(konu),
+      tarih,
+      toplam,
+      dogru,
+      yanlis,
+      bos,
+      verim,
+      video
+    };
+  }
+
+  function puanFor(record) {
+    const x = safeNum(record.toplam, 0);
+    const y = safeNum(record.verim, 0);
+    if (x <= 0 || y <= 0) return null;
+    return x / (y * y) * 100;
+  }
+
+  function metricValue(record, metric) {
+    switch(metric) {
+      case 'verim': return safeNum(record.verim, 0);
+      case 'puan': return puanFor(record);
+      case 'toplam': return safeNum(record.toplam, 0);
+      case 'dogru': return safeNum(record.dogru, 0);
+      case 'yanlis': return safeNum(record.yanlis, 0);
+      case 'bos': return safeNum(record.bos, 0);
+      case 'video': return safeNum(record.video, 0);
+      default: return 0;
+    }
+  }
+
+  function dersler() {
+    return [...new Set(state.records.map(x => x.ders).filter(Boolean))]
+      .sort((a,b) => a.localeCompare(b, 'tr'));
+  }
+
+  function filteredRecords() {
+    let out = state.records.slice();
+    if (state.currentDers && state.currentDers !== '__ALL__') {
+      out = out.filter(x => x.ders === state.currentDers);
+    }
+
+    out.sort((a,b) => {
+      const ad = parseDate(a.tarih)?.getTime() ?? 0;
+      const bd = parseDate(b.tarih)?.getTime() ?? 0;
+      if (ad !== bd) return ad - bd;
+      const ak = String(a.konu || '');
+      const bk = String(b.konu || '');
+      return ak.localeCompare(bk, 'tr');
+    });
+
+    return out;
+  }
+
+  function setStatus(text, type = '') {
+    const box = $('connection');
+    box.className = `connection ${type}`;
+    $('connectionText').textContent = text;
+  }
+
+  function toast(msg) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => t.classList.remove('show'), 2300);
+  }
+
+  async function getRecords() {
+    const res = await fetch(`${API.list}?_=${Date.now()}`, {
+      method:'GET',
+      mode:'cors',
+      cache:'no-store'
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if (!json || !Array.isArray(json.data)) throw new Error('Beklenmeyen API yanıtı');
+    return json.data;
+  }
+
+  function selectInitialFilter() {
+    const list = dersler();
+    if (!list.length) {
+      state.currentDers = '__ALL__';
+      return;
+    }
+
+    if (state.currentDers && list.includes(state.currentDers)) return;
+    state.currentDers = list[0];
+  }
+
+  function resetView() {
+    const count = filteredRecords().length;
+    state.visibleCount = Math.min(Math.max(1, state.densityStart), Math.max(1, count));
+    state.viewEnd = Math.max(0, count - 1);
+    state.viewStart = Math.max(0, count - state.visibleCount);
+  }
+
+  function resetZoom() {
+    resetView();
+    drawChart(true);
+  }
+
+  function clampView(start, end, n) {
+    const count = Math.max(1, Math.min(n, end - start + 1));
+    const maxStart = Math.max(0, n - count);
+    start = Math.max(0, Math.min(maxStart, start));
+    end = start + count - 1;
+    return { start, end, count };
+  }
+
+  function zoomBy(delta, anchorRatio = .5) {
+    const data = filteredRecords();
+    const n = data.length;
+    if (n <= 1) return;
+
+    let start = Number.isInteger(state.viewStart) ? state.viewStart : Math.max(0, n - state.visibleCount);
+    let end = Number.isInteger(state.viewEnd) ? state.viewEnd : n - 1;
+    let count = Math.max(1, end - start + 1);
+
+    const factor = delta > 0 ? (1 + state.zoomSensitivity) : (1 - state.zoomSensitivity);
+    let nextCount = Math.round(count / factor);
+    if (delta < 0) nextCount = Math.round(count * (1 + state.zoomSensitivity));
+    nextCount = Math.max(1, Math.min(n, nextCount));
+    if (nextCount === count) return;
+
+    const ratio = Math.min(1, Math.max(0, anchorRatio));
+    const anchorIndex = start + Math.round((end - start) * ratio);
+    let nextStart = anchorIndex - Math.round((nextCount - 1) * ratio);
+
+    nextStart = Math.max(0, Math.min(n - nextCount, nextStart));
+    state.viewStart = nextStart;
+    state.viewEnd = nextStart + nextCount - 1;
+    state.visibleCount = nextCount;
+    drawChart(true);
+  }
+
+  function panByPixels(deltaX, startOverride = null, endOverride = null) {
+    const data = filteredRecords();
+    const n = data.length;
+    if (n <= 1) return false;
+
+    let start = Number.isInteger(startOverride) ? startOverride : state.viewStart;
+    let end = Number.isInteger(endOverride) ? endOverride : state.viewEnd;
+    if (!Number.isInteger(start) || !Number.isInteger(end)) return false;
+
+    const count = Math.max(1, end - start + 1);
+    if (count >= n) return false;
+
+    const svgWidth = chart.getBoundingClientRect().width || 1;
+    const svgDelta = deltaX * (1000 / svgWidth);
+    const pixelsPerIndex = (plot.right - plot.left) / Math.max(1, count - 1);
+    const shift = Math.round(-svgDelta / pixelsPerIndex);
+    if (shift === 0) return false;
+
+    const next = clampView(start + shift, start + shift + count - 1, n);
+    if (next.start === start && next.end === end) return false;
+
+    state.viewStart = next.start;
+    state.viewEnd = next.end;
+    state.visibleCount = next.count;
+    state.lastHoverIndex = null;
+    drawChart(false);
+    return true;
+  }
+
+  function activeView() {
+    const data = filteredRecords();
+    if (!data.length) return [];
+
+    let start = Number.isInteger(state.viewStart) ? state.viewStart : Math.max(0, data.length - state.visibleCount);
+    let end = Number.isInteger(state.viewEnd) ? state.viewEnd : data.length - 1;
+
+    start = Math.max(0, Math.min(data.length - 1, start));
+    end = Math.max(start, Math.min(data.length - 1, end));
+
+    return data.slice(start, end + 1);
+  }
+
+  function updatePanHint() {
+    const data = filteredRecords();
+    const zoomed = data.length > 1 && (state.viewEnd - state.viewStart + 1) < data.length;
+    $('panHint').classList.toggle('show', zoomed);
+  }
+
+  function svgEl(tag, attrs = {}) {
+    const el = document.createElementNS(svgNS, tag);
+    Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k, String(v)));
+    return el;
+  }
+
+  function clear(el) {
+    while (el.firstChild) el.removeChild(el.firstChild);
+  }
+
+  function renderGrid(min, max) {
+    const g = $('gridLayer');
+    clear(g);
+    if (!state.showGrid) return;
+
+    const rows = 5;
+    for (let i = 0; i <= rows; i++) {
+      const y = plot.bottom - (plot.bottom - plot.top) * (i / rows);
+
+      g.appendChild(svgEl('line', {
+        x1:plot.left, y1:y, x2:plot.right, y2:y, class:'chart-grid'
+      }));
+
+      const val = min + (max - min) * (i / rows);
+      const tx = svgEl('text', {
+        x:plot.left - 10,
+        y:y + 4,
+        'text-anchor':'end',
+        class:'axis-text'
+      });
+
+      const decimals = state.metric === 'verim' ? 1 : (state.metric === 'puan' ? 2 : 0);
+      tx.textContent = fmt(val, decimals);
+      g.appendChild(tx);
+    }
+  }
+
+  function pathFor(points) {
+    if (!points.length) return '';
+    return points.map((p,i) => (i === 0 ? 'M' : 'L') + ` ${p.x.toFixed(2)} ${p.y.toFixed(2)}`).join(' ');
+  }
+
+  function metricDecimals(metric) {
+    if (metric === 'verim') return 1;
+    if (metric === 'puan') return 2;
+    return 0;
+  }
+
+  function metricSuffix(metric) {
+    if (metric === 'verim') return ' / 10';
+    return '';
+  }
+
+  function drawChart(animated = false) {
+    const data = filteredRecords();
+    const visible = activeView();
+    const pointsLayer = $('pointsLayer');
+    const axesLayer = $('axesLayer');
+    clear(pointsLayer);
+    clear(axesLayer);
+
+    const dersTitle = state.currentDers === '__ALL__' ? 'Tüm Dersler' : (state.currentDers || 'Ders');
+    $('chartTitle').textContent = `${dersTitle} • ${METRIC_LABELS[state.metric]}`;
+    $('chartMeta').textContent = data.length ? `${data.length} kayıt • ${visible.length}/${data.length} nokta` : 'Veri yok';
+    $('recordCountText').textContent = `${data.length} kayıt`;
+    $('filterInfo').textContent = dersTitle;
+    $('statsScope').textContent = `${dersTitle} • ${data.length} kayıt`;
+    updatePanHint();
+
+    if (!data.length) {
+      $('emptyState').style.display = 'grid';
+      $('areaPath').setAttribute('d','');
+      $('linePath').setAttribute('d','');
+      $('glowPath').setAttribute('d','');
+      updateStats([]);
+      return;
+    }
+
+    $('emptyState').style.display = 'none';
+
+    const values = visible
+      .map(x => metricValue(x, state.metric))
+      .filter(v => v !== null && Number.isFinite(v));
+
+    let min = Math.min(...values);
+    let max = Math.max(...values);
+
+    if (state.metric === 'verim') {
+      min = 0;
+      max = 10;
+    } else if (state.metric === 'toplam' || state.metric === 'dogru' || state.metric === 'yanlis' || state.metric === 'bos' || state.metric === 'video') {
+      min = Math.max(0, min);
+      if (min === max) max = Math.max(1, max + 1);
+    } else {
+      if (!Number.isFinite(min)) { min = 0; max = 1; }
+      if (min === max) {
+        const pad = Math.max(1, Math.abs(min) * .14);
+        min -= pad;
+        max += pad;
+      } else {
+        const pad = (max - min) * .14;
+        min -= pad;
+        max += pad;
+      }
+    }
+
+    renderGrid(min, max);
+
+    const pts = visible.map((item, i) => {
+      const ratioX = visible.length === 1 ? .5 : i / (visible.length - 1);
+      const x = plot.left + (plot.right - plot.left) * ratioX;
+      const value = metricValue(item, state.metric);
+      const ratioY = (value - min) / Math.max(1e-9, (max - min));
+      const y = plot.bottom - (plot.bottom - plot.top) * ratioY;
+      return { x, y, item, index:data.indexOf(item), value };
+    });
+
+    const linePath = pathFor(pts);
+    let areaPath = '';
+    if (pts.length) {
+      areaPath = pathFor(pts) + ` L ${pts[pts.length-1].x} ${plot.bottom} L ${pts[0].x} ${plot.bottom} Z`;
+    }
+
+    $('linePath').setAttribute('d', linePath);
+    $('glowPath').setAttribute('d', linePath);
+    $('areaPath').setAttribute('d', areaPath);
+
+    pts.forEach(p => {
+      const circle = svgEl('circle', {
+        cx:p.x,
+        cy:p.y,
+        r:visible.length > 38 ? 3.1 : 4.3,
+        class:'point'
+      });
+
+      if (state.lastHoverIndex === p.index) circle.classList.add('selected');
+      if (!state.showPoints) circle.setAttribute('display','none');
+
+      circle.addEventListener('mouseenter', e => showTooltip(e, p));
+      circle.addEventListener('mouseleave', hideTooltip);
+      circle.addEventListener('click', e => {
+        e.stopPropagation();
+        showTooltip(e, p, true);
+      });
+
+      pointsLayer.appendChild(circle);
+    });
+
+    if (visible.length) {
+      const labelCount = Math.min(visible.length, state.visibleCount <= 20 ? visible.length : 8);
+      const step = Math.max(1, Math.floor((visible.length - 1) / Math.max(1, labelCount - 1)));
+
+      for (let i = 0; i < visible.length; i += step) {
+        const p = pts[i];
+        const tx = svgEl('text', {
+          x:p.x,
+          y:466,
+          'text-anchor':i === 0 ? 'start' : (i === visible.length - 1 ? 'end' : 'middle'),
+          class:'axis-text'
+        });
+
+        tx.textContent = String(visible[i].konu || `Kayıt ${i+1}`);
+        tx.setAttribute('transform', `rotate(-18 ${p.x} 466)`);
+        axesLayer.appendChild(tx);
+      }
+    }
+
+    const axis = svgEl('text', {
+      x:(plot.left + plot.right) / 2,
+      y:495,
+      'text-anchor':'middle',
+      class:'axis-label'
+    });
+    axis.textContent = 'Konu';
+    axesLayer.appendChild(axis);
+
+    updateStats(data);
+
+    if (animated) {
+      $('linePath').style.strokeDasharray = '4000';
+      $('linePath').style.strokeDashoffset = '4000';
+
+      requestAnimationFrame(() => {
+        $('linePath').style.transition = 'stroke-dashoffset .38s ease';
+        $('linePath').style.strokeDashoffset = '0';
+
+        setTimeout(() => {
+          $('linePath').style.transition = '';
+          $('linePath').style.strokeDasharray = '';
+          $('linePath').style.strokeDashoffset = '';
+        }, 420);
+      });
+    }
+  }
+
+  function updateStats(data) {
+    $('sCount').textContent = data.length;
+
+    const avgVerim = avg(data.map(x => safeNum(x.verim)).filter(v => v >= 0));
+    const avgPuan = avg(data.map(x => puanFor(x)).filter(v => v !== null));
+    const totalSoru = data.reduce((sum, x) => sum + safeNum(x.toplam, 0), 0);
+
+    const vals = data
+      .map(x => metricValue(x, state.metric))
+      .filter(v => v !== null && Number.isFinite(v));
+
+    const av = avg(vals);
+    const max = vals.length ? Math.max(...vals) : null;
+    const maxItem = max === null ? null : data.find(x => Math.abs((metricValue(x, state.metric) ?? -Infinity) - max) < 1e-9);
+
+    $('sAvgVerim').textContent = avgVerim === null ? '—' : `${fmt(avgVerim,1)} / 10`;
+    $('sAvgPuan').textContent = avgPuan === null ? '—' : fmt(avgPuan,2);
+    $('sTotal').textContent = totalSoru ? totalSoru.toLocaleString('tr-TR') : '0';
+    $('sAvgMetric').textContent = av === null ? '—' : `${fmt(av, metricDecimals(state.metric))}${metricSuffix(state.metric)}`;
+    $('sMetricLabel').textContent = `${METRIC_LABELS[state.metric]} ortalaması`;
+    $('sMaxMetric').textContent = max === null ? '—' : `${fmt(max, metricDecimals(state.metric))}${metricSuffix(state.metric)}`;
+    $('sBestName').textContent = maxItem?.konu || '—';
+  }
+
+  function showTooltip(evt, p, sticky = false) {
+    const item = p.item;
+    state.lastHoverIndex = p.index;
+
+    const decimals = metricDecimals(state.metric);
+    const suffix = metricSuffix(state.metric);
+
+    const tip = $('tooltip');
+    tip.innerHTML = `
+      <div class="tooltip-name">${escapeHtml(item.konu || 'Konu yok')}</div>
+      <div class="tooltip-row"><span>Ders</span><b>${escapeHtml(item.ders)}</b></div>
+      <div class="tooltip-row"><span>Tarih</span><b>${escapeHtml(fmtDate(item.tarih))}</b></div>
+      <div class="tooltip-row"><span>Toplam</span><b>${fmt(item.toplam,0)}</b></div>
+      <div class="tooltip-row"><span>Verim</span><strong>${fmt(item.verim,1)} / 10</strong></div>
+      <div class="tooltip-row"><span>Puan</span><strong>${fmt(puanFor(item),2)}</strong></div>
+      <div class="tooltip-row"><span>${METRIC_LABELS[state.metric]}</span><strong>${fmt(p.value,decimals)}${suffix}</strong></div>`;
+
+    const rect = $('chartWrap').getBoundingClientRect();
+    const svgRect = chart.getBoundingClientRect();
+    const cx = svgRect.left + (p.x / 1000) * svgRect.width;
+    const cy = svgRect.top + (p.y / 500) * svgRect.height;
+
+    let left = cx - rect.left + 13;
+    let top = cy - rect.top - 18;
+
+    const tw = tip.offsetWidth || 240;
+    const th = tip.offsetHeight || 150;
+
+    if (left + tw > rect.width - 10) left = rect.width - tw - 10;
+    if (left < 10) left = 10;
+    if (top + th > rect.height - 10) top = rect.height - th - 10;
+    if (top < 10) top = 10;
+
+    tip.style.left = `${left}px`;
+    tip.style.top = `${top}px`;
+    tip.classList.add('show');
+
+    clearTimeout(showTooltip._timer);
+    if (!sticky) showTooltip._timer = setTimeout(() => hideTooltip(), 2400);
+    drawPointSelectionOnly();
+  }
+
+  function drawPointSelectionOnly() {
+    document.querySelectorAll('#pointsLayer .point').forEach((node, i) => {
+      node.classList.toggle('selected', false);
+    });
+    const data = activeView();
+    data.forEach((item, i) => {
+      if (filteredRecords().indexOf(item) === state.lastHoverIndex) {
+        const node = $('pointsLayer').children[i];
+        if (node) node.classList.add('selected');
+      }
+    });
+  }
+
+  function hideTooltip() {
+    $('tooltip').classList.remove('show');
+    state.lastHoverIndex = null;
+    drawChart(false);
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  function renderLessonButtons() {
+    const wrap = $('lessonButtons');
+    wrap.innerHTML = '';
+
+    const list = dersler();
+
+    const all = document.createElement('button');
+    all.className = 'filter-btn';
+    all.dataset.ders = '__ALL__';
+    all.textContent = 'Tüm Dersler';
+    wrap.appendChild(all);
+
+    list.forEach(ders => {
+      const btn = document.createElement('button');
+      btn.className = 'filter-btn';
+      btn.dataset.ders = ders;
+      btn.textContent = ders;
+      wrap.appendChild(btn);
+    });
+
+    wrap.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.currentDers = btn.dataset.ders;
+        resetZoom();
+        renderAll();
+      });
+    });
+
+    renderControls();
+  }
+
+  function renderControls() {
+    $('lessonButtons').querySelectorAll('.filter-btn').forEach(btn =>
+      btn.classList.toggle('active', btn.dataset.ders === state.currentDers)
+    );
+
+    document.querySelectorAll('.metric-btn').forEach(btn =>
+      btn.classList.toggle('active', btn.dataset.metric === state.metric)
+    );
+  }
+
+  function renderAll() {
+    renderControls();
+    drawChart(false);
+  }
+
+  async function lockOrientation(mode) {
+    try {
+      if (screen.orientation?.lock) await screen.orientation.lock(mode);
+    } catch (_) {}
+  }
+
+  async function restorePortrait() {
+    try { screen.orientation?.unlock?.(); } catch (_) {}
+    try { await lockOrientation('portrait-primary'); } catch (_) {}
+  }
+
+  async function setFullscreen(active) {
+    const entering = !!active;
+
+    if (entering) {
+      document.body.classList.add('graph-fullscreen');
+      $('fullscreenBtn').classList.add('active');
+
+      try {
+        if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+          await document.documentElement.requestFullscreen({ navigationUI:'hide' });
+        }
+      } catch (_) {}
+
+      await lockOrientation('landscape-primary');
+      toast('Yatay grafik modu açıldı');
+    } else {
+      document.body.classList.remove('graph-fullscreen');
+      $('fullscreenBtn').classList.remove('active');
+
+      try {
+        if (document.fullscreenElement) await document.exitFullscreen();
+      } catch (_) {}
+
+      await restorePortrait();
+    }
+
+    setTimeout(() => drawChart(false), 180);
+  }
+
+  $('fullscreenBtn').addEventListener('click', () =>
+    setFullscreen(!document.body.classList.contains('graph-fullscreen'))
+  );
+
+  document.addEventListener('fullscreenchange', async () => {
+    if (!document.fullscreenElement && document.body.classList.contains('graph-fullscreen')) {
+      document.body.classList.remove('graph-fullscreen');
+      $('fullscreenBtn').classList.remove('active');
+      await restorePortrait();
+      setTimeout(() => drawChart(false), 180);
+    }
+  });
+
+  $('settingsBtn').addEventListener('click', e => {
+    e.stopPropagation();
+    $('settingsPop').classList.toggle('show');
+    $('settingsBtn').classList.toggle('active', $('settingsPop').classList.contains('show'));
+  });
+
+  document.addEventListener('click', e => {
+    if (!$('settingsPop').contains(e.target) && e.target !== $('settingsBtn')) {
+      $('settingsPop').classList.remove('show');
+      $('settingsBtn').classList.remove('active');
+    }
+  });
+
+  $('densitySelect').addEventListener('change', e => {
+    state.densityStart = safeNum(e.target.value, 12);
+    resetZoom();
+  });
+
+  $('zoomSelect').addEventListener('change', e => {
+    state.zoomSensitivity = safeNum(e.target.value, .18);
+  });
+
+  $('gridSwitch').addEventListener('change', e => {
+    state.showGrid = e.target.checked;
+    drawChart(false);
+  });
+
+  $('pointSwitch').addEventListener('change', e => {
+    state.showPoints = e.target.checked;
+    drawChart(false);
+  });
+
+  $('resetZoomBtn').addEventListener('click', resetZoom);
+
+  document.querySelectorAll('.metric-btn').forEach(btn =>
+    btn.addEventListener('click', () => {
+      state.metric = btn.dataset.metric;
+      renderAll();
+    })
+  );
+
+  chart.addEventListener('mousedown', e => {
+    state.mouseZoomArmed = e.button === 0;
+    if (e.button !== 0) return;
+
+    const data = filteredRecords();
+    const count = Number.isInteger(state.viewEnd) && Number.isInteger(state.viewStart)
+      ? state.viewEnd - state.viewStart + 1
+      : data.length;
+
+    if (data.length > 1 && count < data.length) {
+      state.mouseDragging = true;
+      state.dragStartX = e.clientX;
+      state.dragStartViewStart = state.viewStart;
+      state.dragStartViewEnd = state.viewEnd;
+      state.lastHoverIndex = null;
+      chart.classList.add('is-dragging');
+    }
+  });
+
+  window.addEventListener('mouseup', () => {
+    state.mouseZoomArmed = false;
+    if (state.mouseDragging) {
+      state.mouseDragging = false;
+      chart.classList.remove('is-dragging');
+    }
+  });
+
+  chart.addEventListener('mousemove', e => {
+    if (!state.mouseDragging) return;
+    panByPixels(e.clientX - state.dragStartX, state.dragStartViewStart, state.dragStartViewEnd);
+  });
+
+  chart.addEventListener('wheel', e => {
+    if (!state.mouseZoomArmed) return;
+    e.preventDefault();
+
+    const r = chart.getBoundingClientRect();
+    const ratio = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+    zoomBy(e.deltaY < 0 ? 1 : -1, ratio);
+  }, { passive:false });
+
+  chart.addEventListener('dblclick', e => {
+    e.preventDefault();
+    resetZoom();
+  });
+
+  // Mobil dokunmatik: tek parmak pan, iki parmak gerçek pinch zoom.
+  chart.addEventListener('pointerdown', e => {
+    if (e.pointerType !== 'touch') return;
+    e.preventDefault();
+
+    chart.setPointerCapture?.(e.pointerId);
+    state.touchPointers.set(e.pointerId, { x:e.clientX, y:e.clientY });
+
+    if (state.touchPointers.size === 1) {
+      const data = filteredRecords();
+      const count = Number.isInteger(state.viewEnd) && Number.isInteger(state.viewStart)
+        ? state.viewEnd - state.viewStart + 1
+        : data.length;
+
+      state.touchDragActive = data.length > 1 && count < data.length;
+      state.touchDragStartX = e.clientX;
+      state.touchDragStartViewStart = state.viewStart;
+      state.touchDragStartViewEnd = state.viewEnd;
+    } else if (state.touchPointers.size === 2) {
+      state.touchDragActive = false;
+
+      const pts = [...state.touchPointers.values()];
+      const dx = pts[0].x - pts[1].x;
+      const dy = pts[0].y - pts[1].y;
+      const dist = Math.max(2, Math.hypot(dx, dy));
+      const cx = (pts[0].x + pts[1].x) / 2;
+      const rect = chart.getBoundingClientRect();
+
+      state.pinchDistance = dist;
+      state.pinchStartDistance = dist;
+      state.pinchLastDistance = dist;
+      state.pinchBaseStart = Number.isInteger(state.viewStart) ? state.viewStart : 0;
+      state.pinchBaseEnd = Number.isInteger(state.viewEnd) ? state.viewEnd : Math.max(0, filteredRecords().length - 1);
+      state.pinchBaseCount = Math.max(1, state.pinchBaseEnd - state.pinchBaseStart + 1);
+      state.pinchCenterRatio = Math.min(1, Math.max(0, (cx - rect.left) / Math.max(1, rect.width)));
+      state.lastHoverIndex = null;
+      $('tooltip').classList.remove('show');
+    }
+  });
+
+  chart.addEventListener('pointermove', e => {
+    if (e.pointerType !== 'touch') return;
+    if (!state.touchPointers.has(e.pointerId)) return;
+    e.preventDefault();
+
+    state.touchPointers.set(e.pointerId, { x:e.clientX, y:e.clientY });
+
+    if (state.touchPointers.size === 2) {
+      const pts = [...state.touchPointers.values()];
+      const dx = pts[0].x - pts[1].x;
+      const dy = pts[0].y - pts[1].y;
+      const dist = Math.max(2, Math.hypot(dx, dy));
+
+      const sensitivity = Math.max(.08, Math.min(.5, state.zoomSensitivity));
+      const startDistance = Math.max(2, state.pinchStartDistance || state.pinchDistance || dist);
+      const adjustedScale = Math.pow(dist / startDistance, sensitivity / .18);
+
+      const data = filteredRecords();
+      const n = data.length;
+      const baseCount = Math.max(1, state.pinchBaseCount || 1);
+
+      let nextCount = Math.round(baseCount / Math.max(.15, Math.min(6, adjustedScale)));
+      nextCount = Math.max(1, Math.min(n, nextCount));
+
+      const ratio = state.pinchCenterRatio ?? .5;
+      const anchorIndex = (state.pinchBaseStart || 0) + Math.round((baseCount - 1) * ratio);
+      let nextStart = anchorIndex - Math.round((nextCount - 1) * ratio);
+
+      nextStart = Math.max(0, Math.min(Math.max(0, n - nextCount), nextStart));
+      const nextEnd = nextStart + nextCount - 1;
+
+      if (nextStart !== state.viewStart || nextEnd !== state.viewEnd) {
+        state.viewStart = nextStart;
+        state.viewEnd = nextEnd;
+        state.visibleCount = nextCount;
+        drawChart(false);
+      }
+
+      state.pinchLastDistance = dist;
+      return;
+    }
+
+    if (state.touchDragActive && state.touchPointers.size === 1) {
+      panByPixels(e.clientX - state.touchDragStartX, state.touchDragStartViewStart, state.touchDragStartViewEnd);
+    }
+  });
+
+  const clearPointer = e => {
+    if (e.pointerType !== 'touch') return;
+
+    state.touchPointers.delete(e.pointerId);
+
+    if (state.touchPointers.size >= 1) {
+      const remaining = [...state.touchPointers.values()][0];
+      if (remaining) {
+        state.touchDragActive = true;
+        state.touchDragStartX = remaining.x;
+        state.touchDragStartViewStart = state.viewStart;
+        state.touchDragStartViewEnd = state.viewEnd;
+      }
+    } else {
+      state.touchDragActive = false;
+    }
+
+    if (state.touchPointers.size < 2) {
+      state.pinchDistance = null;
+      state.pinchStartDistance = null;
+      state.pinchLastDistance = null;
+      state.pinchBaseStart = null;
+      state.pinchBaseEnd = null;
+      state.pinchBaseCount = null;
+      state.pinchCenterRatio = null;
+    }
+  };
+
+  chart.addEventListener('pointerup', clearPointer);
+  chart.addEventListener('pointercancel', clearPointer);
+
+  async function reload() {
+    setStatus('Veriler yükleniyor…', 'warn');
+
+    try {
+      state.records = (await getRecords()).map(normalizeRecord);
+      setStatus(`${state.records.length} kayıt yüklendi`, 'ok');
+
+      selectInitialFilter();
+      resetView();
+      renderLessonButtons();
+      renderAll();
+    } catch (err) {
+      console.error(err);
+      setStatus('Bağlantı hatası', 'err');
+      state.records = [];
+      renderLessonButtons();
+      renderAll();
+      toast('Soru Çözümü verileri yüklenemedi. Worker endpointini kontrol et.');
+    }
+  }
+
+  reload();
+})();
+</script>
+</body>
+</html>
