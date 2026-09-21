@@ -230,6 +230,7 @@
       <div class="metric-strip">
         <button class="metric-btn active" data-metric="verim">Verim</button>
         <button class="metric-btn" data-metric="puan">Puan</button>
+        <button class="metric-btn" data-metric="net">Net</button>
         <button class="metric-btn" data-metric="toplam">Toplam</button>
         <button class="metric-btn" data-metric="dogru">Doğru</button>
         <button class="metric-btn" data-metric="yanlis">Yanlış</button>
@@ -244,7 +245,7 @@
       <div class="stats-grid">
         <div class="stat"><div class="stat-label">Çözüm</div><div class="stat-value orange" id="sCount">0</div><div class="stat-sub">filtrelenmiş kayıt</div></div>
         <div class="stat"><div class="stat-label">Ortalama Verim</div><div class="stat-value" id="sAvgVerim">—</div><div class="stat-sub">10 üzerinden</div></div>
-        <div class="stat"><div class="stat-label">Ortalama Puan</div><div class="stat-value" id="sAvgPuan">—</div><div class="stat-sub">Toplam / Verim² × 100</div></div>
+        <div class="stat"><div class="stat-label">Ortalama Puan</div><div class="stat-value" id="sAvgPuan">—</div><div class="stat-sub">Net × Verim² / 100</div></div>
         <div class="stat"><div class="stat-label">Toplam Soru</div><div class="stat-value" id="sTotal">—</div><div class="stat-sub">çözülen soru</div></div>
         <div class="stat"><div class="stat-label">Seçili Metrik Ort.</div><div class="stat-value" id="sAvgMetric">—</div><div class="stat-sub" id="sMetricLabel">Verim</div></div>
         <div class="stat"><div class="stat-label">En Yüksek</div><div class="stat-value" id="sMaxMetric">—</div><div class="stat-sub" id="sBestName">—</div></div>
@@ -307,7 +308,7 @@
 
     <div class="calc-box">
       <div class="calc"><span>Toplam Soru</span><strong id="previewTotal">0</strong></div>
-      <div class="calc"><span>Puan</span><strong id="previewPuan">0.00</strong></div>
+      <div class="calc"><span>Puan • Net × Verim² / 100</span><strong id="previewPuan">0.00</strong></div>
     </div>
 
     <div id="targetSummary" class="setting-note" style="display:none;line-height:1.6"></div>
@@ -375,7 +376,8 @@
     dogru: 'Doğru',
     yanlis: 'Yanlış',
     bos: 'Boş',
-    video: 'Video Çözüm'
+    video: 'Video Çözüm',
+    net: 'Net'
   };
 
   function safeNum(v, fallback = 0) {
@@ -440,16 +442,17 @@
   }
 
   function puanFor(record) {
-    const x = safeNum(record.toplam, 0);
+    const x = safeNum(record.dogru, 0) - safeNum(record.yanlis, 0) / 4;
     const y = safeNum(record.verim, 0);
-    if (x <= 0 || y <= 0) return null;
-    return x / (y * y) * 100;
+    if (x < 0 || y <= 0) return null;
+    return x * y * y / 100;
   }
 
   function metricValue(record, metric) {
     switch(metric) {
       case 'verim': return safeNum(record.verim, 0);
       case 'puan': return puanFor(record);
+      case 'net': return safeNum(record.dogru, 0) - safeNum(record.yanlis, 0) / 4;
       case 'toplam': return safeNum(record.toplam, 0);
       case 'dogru': return safeNum(record.dogru, 0);
       case 'yanlis': return safeNum(record.yanlis, 0);
@@ -676,6 +679,7 @@
   function metricDecimals(metric) {
     if (metric === 'verim') return 1;
     if (metric === 'puan') return 2;
+    if (metric === 'net') return 2;
     return 0;
   }
 
@@ -863,6 +867,7 @@
       <div class="tooltip-row"><span>Ders</span><b>${escapeHtml(item.ders)}</b></div>
       <div class="tooltip-row"><span>Tarih</span><b>${escapeHtml(fmtDate(item.tarih))}</b></div>
       <div class="tooltip-row"><span>Toplam</span><b>${fmt(item.toplam,0)}</b></div>
+      <div class="tooltip-row"><span>Net</span><strong>${fmt(safeNum(item.dogru,0) - safeNum(item.yanlis,0) / 4,2)}</strong></div>
       <div class="tooltip-row"><span>Verim</span><strong>${fmt(item.verim,1)} / 10</strong></div>
       <div class="tooltip-row"><span>Puan</span><strong>${fmt(puanFor(item),2)}</strong></div>
       <div class="tooltip-row"><span>${METRIC_LABELS[state.metric]}</span><strong>${fmt(p.value,decimals)}${suffix}</strong></div>`;
@@ -1355,8 +1360,9 @@
     const v = Math.max(0, Math.min(10, safeNum($('fVerim').value,0)));
     const total = d + y + b;
 
+    const net = d - y / 4;
     $('previewTotal').textContent = fmt(total,0);
-    $('previewPuan').textContent = total > 0 && v > 0 ? fmt(total/(v*v)*100,2) : '0.00';
+    $('previewPuan').textContent = fmt(net * v * v / 100,2);
 
     const target = $('recordMode').value === 'append' ? targetRecord() : null;
     if (target) {
@@ -1364,12 +1370,14 @@
       const newVerim = newTotal > 0
         ? ((safeNum(target.verim,0) * safeNum(target.toplam,0)) + (v * total)) / newTotal
         : v;
+      const mergedNet = safeNum(target.dogru,0) + d - (safeNum(target.yanlis,0) + y) / 4;
+      const mergedPuan = mergedNet * newVerim * newVerim / 100;
       $('targetSummary').innerHTML =
         '<strong>Eklendikten sonra:</strong> ' + fmt(newTotal,0) + ' soru • ' +
-        'Doğru ' + fmt(safeNum(target.dogru,0)+d,0) + ' • ' +
+        'Net ' + fmt(mergedNet,2) + ' • Doğru ' + fmt(safeNum(target.dogru,0)+d,0) + ' • ' +
         'Yanlış ' + fmt(safeNum(target.yanlis,0)+y,0) + ' • ' +
         'Boş ' + fmt(safeNum(target.bos,0)+b,0) + ' • ' +
-        'Verim ' + fmt(newVerim,1) + ' / 10';
+        'Verim ' + fmt(newVerim,1) + ' / 10 • Puan ' + fmt(mergedPuan,2);
     }
   }
 
