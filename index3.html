@@ -86,6 +86,9 @@
   .filter-btn.active,.branch-btn.active,.metric-btn.active{border-color:rgba(255,122,0,.42);background:linear-gradient(180deg,rgba(255,122,0,.16),rgba(255,122,0,.08));color:#fff;box-shadow:inset 0 0 0 1px rgba(255,122,0,.05)}
   .metric-btn.active{color:var(--orange2)}
   .add-btn{height:42px;padding:0 17px;border:none;border-radius:13px;background:linear-gradient(180deg,#ff8a1f,#f16d00);color:#fff;font-weight:700;font-size:12px;cursor:pointer;box-shadow:0 10px 22px rgba(255,122,0,.18);transition:.18s ease}.add-btn:hover{transform:translateY(-1px);box-shadow:0 13px 28px rgba(255,122,0,.23)}
+  .lesson-head-actions{display:flex;align-items:center;gap:9px}
+  .lesson-head-actions .add-btn{height:36px;padding:0 13px;font-size:11px;box-shadow:0 8px 18px rgba(255,122,0,.16)}
+  .lesson-head-actions .add-btn:hover{box-shadow:0 11px 22px rgba(255,122,0,.22)}
 
   .branch-wrap{margin-top:12px;display:none;padding-top:12px;border-top:1px solid rgba(255,255,255,.05)}
   .branch-wrap.show{display:block}.branch-title{font-size:10px;color:#6e6e6e;text-transform:uppercase;letter-spacing:.12em;margin:0 0 8px}
@@ -216,7 +219,13 @@
 
   <div class="below">
     <section class="panel">
-      <div class="panel-head"><div><strong>Ders</strong></div><span id="recordCountText">0 kayıt</span></div>
+      <div class="panel-head">
+        <div><strong>Ders</strong></div>
+        <div class="lesson-head-actions">
+          <span id="recordCountText">0 kayıt</span>
+          <button id="openAddLesson" class="add-btn" type="button">＋ Ders Ekle</button>
+        </div>
+      </div>
       <div class="filter-group" id="lessonButtons"></div>
       <div class="metric-strip">
         <button class="metric-btn active" data-metric="verim">Verim</button>
@@ -244,6 +253,22 @@
   </div>
 </div>
 
+<div id="overlay" class="overlay"></div>
+<aside id="lessonDrawer" class="drawer">
+  <div class="drawer-head">
+    <div><strong>Yeni Ders Ekle</strong><span>TYT veya AYT dersini ders listesine ekler.</span></div>
+    <button id="closeLesson" class="close-btn" type="button">✕</button>
+  </div>
+  <form id="lessonForm" class="drawer-body">
+    <div class="field"><label>Ders Adı</label><input id="lessonName" required maxlength="100" placeholder="Örn. TYT Geometri" /></div>
+    <div class="field"><label>Ders Türü</label><select id="lessonTur" required><option value="TYT">TYT</option><option value="AYT">AYT</option></select></div>
+    <div class="calc-box">
+      <div class="calc"><span>Yeni filtre</span><strong id="lessonPreview">TYT • Ders</strong></div>
+      <div class="calc"><span>Durum</span><strong>Hazır</strong></div>
+    </div>
+    <button class="submit" id="submitLesson" type="submit">Dersi Kaydet</button>
+  </form>
+</aside>
 <div id="toast" class="toast"></div>
 
 <script>
@@ -254,11 +279,14 @@
   // Worker tarafındaki endpoint farklıysa sadece bu satırı değiştir:
   const API_BASE = 'https://yks-bilgi-api.yanhesap100yh.workers.dev';
   const API = {
-    list: `${API_BASE}/soru-cozumu`
+    list: `${API_BASE}/soru-cozumu`,
+    lessons: `${API_BASE}/soru-cozumu-dersler`,
+    addLesson: `${API_BASE}/soru-cozumu-ders-ekle`
   };
 
   const state = {
     records: [],
+    lessons: [],
     currentDers: null,
     metric: 'verim',
     visibleCount: 12,
@@ -385,7 +413,10 @@
   }
 
   function dersler() {
-    return [...new Set(state.records.map(x => x.ders).filter(Boolean))]
+    return [...new Set([
+      ...state.lessons.map(x => x.ders),
+      ...state.records.map(x => x.ders)
+    ].filter(Boolean))]
       .sort((a,b) => a.localeCompare(b, 'tr'));
   }
 
@@ -1126,12 +1157,104 @@
   chart.addEventListener('pointerup', clearPointer);
   chart.addEventListener('pointercancel', clearPointer);
 
+  async function getLessons() {
+    const res = await fetch(API.lessons + '?_=' + Date.now(), {
+      method:'GET',
+      mode:'cors',
+      cache:'no-store'
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    const data = Array.isArray(json?.data) ? json.data : (Array.isArray(json?.dersler) ? json.dersler : []);
+    return data;
+  }
+
+  async function addLesson(body) {
+    const res = await fetch(API.addLesson, {
+      method:'POST',
+      mode:'cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
+    const raw = await res.text();
+    let json = null;
+    try { json = JSON.parse(raw); } catch (_) {}
+    if (!res.ok || json?.ok === false || json?.success === false) {
+      throw new Error(json?.error || raw || ('HTTP ' + res.status));
+    }
+    return json;
+  }
+
+  function openLessonDrawer() {
+    $('lessonDrawer').classList.add('show');
+    $('overlay').classList.add('show');
+    setTimeout(() => $('lessonName').focus(), 220);
+  }
+
+  function closeLessonDrawer() {
+    $('lessonDrawer').classList.remove('show');
+    $('overlay').classList.remove('show');
+  }
+
+  function updateLessonPreview() {
+    const tur = $('lessonTur').value || 'TYT';
+    const name = $('lessonName').value.trim();
+    $('lessonPreview').textContent = name ? tur + ' • ' + name : tur + ' • Ders';
+  }
+
+  $('openAddLesson').addEventListener('click', openLessonDrawer);
+  $('closeLesson').addEventListener('click', closeLessonDrawer);
+  $('overlay').addEventListener('click', closeLessonDrawer);
+  $('lessonName').addEventListener('input', updateLessonPreview);
+  $('lessonTur').addEventListener('change', updateLessonPreview);
+
+  $('lessonForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const button = $('submitLesson');
+    const ders = $('lessonName').value.trim();
+    const tur = $('lessonTur').value;
+    if (!ders) return;
+
+    button.disabled = true;
+    button.textContent = 'Kaydediliyor…';
+    try {
+      await addLesson({ ders, tur });
+      state.currentDers = ders;
+      closeLessonDrawer();
+      $('lessonForm').reset();
+      $('lessonTur').value = tur;
+      updateLessonPreview();
+      toast('"' + ders + '" dersi eklendi.');
+      await reload();
+    } catch (err) {
+      console.error(err);
+      toast('Ders eklenemedi: ' + err.message);
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Dersi Kaydet';
+    }
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLessonDrawer();
+  });
+
   async function reload() {
     setStatus('Veriler yükleniyor…', 'warn');
 
     try {
-      state.records = (await getRecords()).map(normalizeRecord);
-      setStatus(`${state.records.length} kayıt yüklendi`, 'ok');
+      const [recordData, lessonData] = await Promise.all([getRecords(), getLessons()]);
+
+      state.records = recordData.map(normalizeRecord);
+      state.lessons = lessonData
+        .map(x => ({
+          id: x.id || null,
+          ders: String(x.ders || x.name || '').trim(),
+          tur: String(x.tur || '').trim().toUpperCase()
+        }))
+        .filter(x => x.ders);
+
+      setStatus(state.records.length + ' kayıt • ' + state.lessons.length + ' ders', 'ok');
 
       selectInitialFilter();
       resetView();
@@ -1141,6 +1264,7 @@
       console.error(err);
       setStatus('Bağlantı hatası', 'err');
       state.records = [];
+      state.lessons = [];
       renderLessonButtons();
       renderAll();
       toast('Soru Çözümü verileri yüklenemedi. Worker endpointini kontrol et.');
