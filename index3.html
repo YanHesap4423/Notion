@@ -280,13 +280,7 @@
       <label>Ders</label>
       <select id="lessonName" required></select>
     </div>
-
-    <div class="field">
-      <label>Konu</label>
-      <input id="lessonTopic" required maxlength="150" placeholder="Örn. Problemler / Paragraf / Türev" />
-    </div>
-
-    <div class="field">
+<div class="field">
       <label>Tarih</label>
       <input id="lessonDate" type="date" required />
     </div>
@@ -481,7 +475,7 @@
     const raw = String(x?.ders || x?.name || '').trim();
     const tur = String(x?.tur || '').trim().toUpperCase();
     if (!raw) return '';
-    if (/^(TYT|AYT)s+/i.test(raw) || !tur) return raw;
+    if (/^(TYT|AYT)\s+/i.test(raw) || !tur) return raw;
     return tur + ' ' + raw;
   }
 
@@ -495,9 +489,7 @@
       const ad = parseDate(a.tarih)?.getTime() ?? 0;
       const bd = parseDate(b.tarih)?.getTime() ?? 0;
       if (ad !== bd) return ad - bd;
-      const ak = String(a.konu || '');
-      const bk = String(b.konu || '');
-      return ak.localeCompare(bk, 'tr');
+      return String(a.ders || '').localeCompare(String(b.ders || ''), 'tr');
     });
 
     return out;
@@ -796,7 +788,7 @@
           class:'axis-text'
         });
 
-        tx.textContent = String(visible[i].konu || `Kayıt ${i+1}`);
+        tx.textContent = fmtDate(visible[i].tarih) || `Kayıt ${i+1}`;
         tx.setAttribute('transform', `rotate(-18 ${p.x} 466)`);
         axesLayer.appendChild(tx);
       }
@@ -808,7 +800,7 @@
       'text-anchor':'middle',
       class:'axis-label'
     });
-    axis.textContent = 'Konu';
+    axis.textContent = 'Tarih';
     axesLayer.appendChild(axis);
 
     updateStats(data);
@@ -851,7 +843,7 @@
     $('sAvgMetric').textContent = av === null ? '—' : `${fmt(av, metricDecimals(state.metric))}${metricSuffix(state.metric)}`;
     $('sMetricLabel').textContent = `${METRIC_LABELS[state.metric]} ortalaması`;
     $('sMaxMetric').textContent = max === null ? '—' : `${fmt(max, metricDecimals(state.metric))}${metricSuffix(state.metric)}`;
-    $('sBestName').textContent = maxItem?.konu || '—';
+    $('sBestName').textContent = maxItem ? (fmtDate(maxItem.tarih) || '—') : '—';
   }
 
   function showTooltip(evt, p, sticky = false) {
@@ -863,8 +855,7 @@
 
     const tip = $('tooltip');
     tip.innerHTML = `
-      <div class="tooltip-name">${escapeHtml(item.konu || 'Konu yok')}</div>
-      <div class="tooltip-row"><span>Ders</span><b>${escapeHtml(item.ders)}</b></div>
+      <div class="tooltip-name">${escapeHtml(item.ders || "Ders")}</div>
       <div class="tooltip-row"><span>Tarih</span><b>${escapeHtml(fmtDate(item.tarih))}</b></div>
       <div class="tooltip-row"><span>Toplam</span><b>${fmt(item.toplam,0)}</b></div>
       <div class="tooltip-row"><span>Net</span><strong>${fmt(safeNum(item.dogru,0) - safeNum(item.yanlis,0) / 4,2)}</strong></div>
@@ -1285,7 +1276,6 @@
     target.innerHTML = records.length
       ? records.map(x => {
           const label = (x.ders || 'Ders Yok') + ' — ' +
-                        (x.konu || 'Genel') + ' — ' +
                         fmtDate(x.tarih) + ' • ' + fmt(x.toplam,0) + ' soru';
           return '<option value="' + escapeHtml(x.id || '') + '">' + escapeHtml(label) + '</option>';
         }).join('')
@@ -1313,14 +1303,13 @@
 
     if (mode === 'new') {
       populateLessonSelect(state.currentDers && state.currentDers !== '__ALL__' ? state.currentDers : '');
-      if (!$('lessonTopic').value) $('lessonTopic').value = '';
+      if (!$('lessonTopic').value)
       $('targetSummary').style.display = 'none';
     }
 
     if (mode === 'append') {
       if (target) {
         $('lessonName').value = target.ders || $('lessonName').value;
-        $('lessonTopic').value = target.konu || '';
         $('fDogru').value = '0';
         $('fYanlis').value = '0';
         $('fBos').value = '0';
@@ -1426,8 +1415,8 @@
     const verim = Math.max(0, Math.min(10, safeNum($('fVerim').value,0)));
     const toplam = dogru + yanlis + bos;
 
-    if (!ders || !konu || !tarih) {
-      toast('Ders, konu ve tarih zorunludur.');
+    if (!ders || !tarih) {
+      toast('Ders ve tarih zorunludur.');
       return;
     }
 
